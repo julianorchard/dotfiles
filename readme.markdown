@@ -1,3 +1,5 @@
+![Another example of the desktop](Examples/example2.png)
+
 # CMD (Windows Config)
 
 Windows configuration files that live in `C:\cmd` for me, hence the name.
@@ -76,6 +78,12 @@ Windows machines.
 
 ### Wallpapers (`\wallpapers`)
 
-Some scripts to manage wallpapers; the wallpapers aren't in this repo, these are
-just scripts I used to manage my small collection (some examples). Check out
-[the readme file](wallpapers/).
+![Example of what my desktop on Windows looks like, using papetime.vbs](wallpapers/Examples/example.png)
+
+A few nice scripts to manage my wallpapers. Wallpapers aren't in this repo
+(there's some examples, as above). `papesort.sh` renames all the images in the
+folder to match the folder name, `papetime.vbs` overlays text using
+ImageMagick, and I regret writing it in VBScript (it really wasn't the best
+idea...).
+
+
