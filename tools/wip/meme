@@ -1,0 +1,23 @@
+#!/bin/bash
+
+# File:       meme
+# Author:     Julian Orchard [hello@julianorchard.co.uk]
+# Tag Added:  2022-02-23
+# Desciption: add meme text to images, using imagemagick
+
+# Get Image Location
+	[ ! -z $1 ] && image=$1 || read -p "Enter image location; " image
+# Get Text String
+#[ ! -z $2 ] && for w in "${@: 2}" ; do text="$text $w"; done || read -p "Enter text; " text
+	
+	read -p "Enter text line 1: " text1
+	read -p "Enter text line 2: " text2
+
+
+#width=$(magick identify -format %w ${image})
+	magick convert ${image} -gravity Center -crop 1:1 -resize 500x500! \
+		-stroke "#FFF" -strokewidth 2 -fill "#000" -font "Impact" -background "#0000" \
+		-gravity North -annotate +0+0 "${text1}" \
+		-stroke "#FFF" -strokewidth 2 -fill "#000" -font "Impact" -background "#0000" \
+		-gravity South -annotate +0+0 "${text2}" image.jpg
+
