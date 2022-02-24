@@ -1,4 +1,4 @@
-![Another example of the desktop](Examples/example2.png)
+![Another example of the desktop](wallpapers/Examples/example2.png)
 
 # CMD (Windows Config)
 
