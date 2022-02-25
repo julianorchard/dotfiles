@@ -1,0 +1,10 @@
+tools/remote.bat
+tools/smol/*vim*
+tools/smol/*view*
+shortcuts
+*~
+*.swp
+*.swo
+**.exe
+bin/*.xml
+bin/*.icc

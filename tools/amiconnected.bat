@@ -1,0 +1,47 @@
+@echo off
+@setlocal enableextensions enabledelayedexpansion
+ ::  File:       amiconnected.bat
+ ::  Author:     Julian Orchard [hello@julianorchard.co.uk]
+ ::  Tag Added:  2022-02-24
+ ::  Desciption: Designed to notify you when the internet is 
+ ::              back up and running (uses msgBox.vbs, in \cmd\bin).
+
+echo.
+echo Try running with 'notify' as an argument. It will
+echo notify you via a popup when your connection is re-established...
+echo.
+set oldstate=Error
+set notify=false
+if [%1]==[] (
+  set ipaddress=google.com
+) else (
+  if [%1]==[notify] (
+    set ipaddress=google.com
+    set notify=true
+  ) else (
+    set ipaddress=%1
+  )
+)
+
+:loop
+  set state=Down
+  for /f "tokens=5,7" %%a in ('ping -n 1 !ipaddress!') do (
+      if "x%%a"=="xReceived" if "x%%b"=="x1," set state=Up
+  )
+  if not !state!==!oldstate! (
+    echo    Pinging: !ipaddress!    State: !state!
+    set oldstate=!state!
+  )
+  pushd \CMD\bin
+  if [%2]==[notify] set notify=true
+  if [!notify!]==[true] (
+    if [!state!]==[Up] (
+    :: Use msgBox.vbs to notify
+      WScript msgBox.vbs Connected
+      goto :end
+    )
+  )
+  ping -n 2 127.0.0.1 >nul: 2>nul:
+goto :loop
+:end
+endlocal
