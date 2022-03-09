@@ -139,7 +139,11 @@ Desciption: General AutoHotkey Bindings
       Send, % silly[randum]
       Send, {space}regards, 
     Return
+<<<<<<< Updated upstream
 ; Insert a random, LinkedIn Style Message
+=======
+  ; Insert a random, LinkedIn Style Message
+>>>>>>> Stashed changes
     !F9::
       linkedin := [] 
       lines := 0
@@ -150,6 +154,53 @@ Desciption: General AutoHotkey Bindings
       }
       Random, randum, 0, %lines%
       Send, % linkedin[randum]
+<<<<<<< Updated upstream
+=======
+    Return
+
+  ; 'mod+e' on roids
+  ;  Usage; alt+e, then c/w/j/p/s/etc.
+  ;  opens up folder in Win Expl
+    emodeoff()
+    {
+      Hotkey, c, C, Off
+      Hotkey, w, W, Off
+      Hotkey, j, J, Off
+      Hotkey, p, P, Off
+      Hotkey, s, S, Off
+      Hotkey, Esc, EModeEscape, Off
+    }
+    !e::
+      Hotkey, c, C, On
+      Hotkey, w, W, On
+      Hotkey, j, J, On
+      Hotkey, p, P, On
+      Hotkey, s, S, On
+      Hotkey, Esc, EModeEscape, On
+    Return
+    C:
+      Run, C:\Users\%A_UserName%\
+      emodeoff()
+    Return
+    W:
+      Run, C:\Users\%A_UserName%\Documents\Website
+      emodeoff()
+    Return
+    J:
+      Run, J:\TSD\
+      emodeoff()
+    Return
+    P:
+      Run, P:\
+      emodeoff()
+    Return
+    S:
+      Run, S:\
+      emodeoff()
+    Return
+    EModeEscape:
+      emodeoff()
+>>>>>>> Stashed changes
     Return
 ; Insert Lipsum Text
 		!F10::

@@ -49,4 +49,8 @@ I'm fine
 How's work?
 How's life?
 Thanks for asking
+<<<<<<< Updated upstream
 Please keep in touch
+=======
+Please keep in touch
+>>>>>>> Stashed changes

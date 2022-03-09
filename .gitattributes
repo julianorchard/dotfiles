@@ -1,0 +1,7 @@
+# Better Reflecting the Composition of the Repo
+# .ps1 Files, Mainly
+tools/wip/** linguist-vendored
+tools/archive/** linguist-vendored
+# .ahk Files, Mainly
+ahk/temp/** linguist-vendored
+
