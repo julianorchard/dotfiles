@@ -11,11 +11,6 @@ Desciption: Run Bakkesmod when Rocket League opens
   CheckForRL:
   if WinExist("Rocket League") and !WinExist("ahk_exe BakkesMod.exe")
   {
-<<<<<<< Updated upstream
     Run, "D:\Programs\Bakkesmod"
-=======
-    
-    Run, "C:\Program Files\BakkesMod\BakkesMod.exe"
->>>>>>> Stashed changes
   }
   Return
