@@ -196,10 +196,22 @@ Desciption: General AutoHotkey Bindings
 		Hotkey, p, P, Off
 		Hotkey, s, S, Off
 		Hotkey, Esc, EModeEscape, Off
-		Progress, Off
+	; Destroy GUI
+			Gui, Destroy
 	}
 	!e::
-		Progress, B1 M C0 fs10 ZH0, C = C:\Users\%A_UserName% `n W = C:\Users\%A_UserName%\Documents\Website `n J = J:\TSD\ `n  P = P:\Marketing Images `n S = S:\, Alt+E Locations
+	; Create GUI
+			Gui, -Caption
+			Gui, Margin, 100, 30
+			Gui, Font, s12, Segoe UI
+			Gui, Add, Text,, Alt+E locations you can open (bindings below): 
+			Gui, Font, s10, Consolas
+			Gui, Add, Text,, - binding:    C   =     C:\Users\%A_UserName%\
+			Gui, Add, Text,, - binding:    W   =     C:\Users\%A_UserName%\Documents\Website\
+			Gui, Add, Text,, - binding:    J   =     J:\TSD\
+			Gui, Add, Text,, - binding:    P   =     P:\Marketing Images\
+			Gui, Add, Text,, - binding:    S   =     S:\
+			Gui, Show
 		Hotkey, c, C, On
 		Hotkey, w, W, On
 		Hotkey, j, J, On
