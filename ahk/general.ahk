@@ -227,6 +227,7 @@ Desciption: General AutoHotkey Bindings
 		Run, S:\
 		emodeoff()
 	Return
+	Esc:
 		EModeEscape:
 		emodeoff()
 	Return
