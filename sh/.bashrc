@@ -1,3 +1,8 @@
+# File:       .bashrc
+# Author:     Julian Orchard <hello@julianorchard.co.uk>
+# Tag Added:  2022-03-14
+# Desciption: Minimal BASHRC for Windows (Mintty)
+
 # Aliases 
 	alias cls="clear"
 	alias grep="grep --color=auto"
@@ -7,10 +12,14 @@
 	alias l='ls -CF'
 
 # PS1
-	export PS1=" \[$(tput sgr0)\]\[\033[38;5;4m\]\\$\[$(tput sgr0)\] \[$(tput sgr0)\]\[\033[38;5;1m\]\u\[$(tput sgr0)\] \[$(tput sgr0)\]\[\033[38;5;4m\]@\[$(tput sgr0)\] \[$(tput sgr0)\]\[\033[38;5;1m\]\w\[$(tput sgr0)\] \[$(tput sgr0)\]\[\033[38;5;4m\]>\[$(tput sgr0)\] \[$(tput sgr0)\]"
+	export PS1="  森 @ \w > \[$(tput sgr0)\]"
 
 # Shortcuts
-	alias dev="cd /c/cmd/"
-	alias home="cd ~"
-	alias backup="cp ~/.bashrc ~/.minttyrc /c/cmd/gitbash/."
-
+  alias backup="cp ~/.bashrc ~/.minttyrc /c/cmd/sh/."
+  alias gui="explorer ."
+  alias dev="cd /c/cmd/"
+  alias home="cd ~"
+  alias uk="cd ~/Documents/Website/2\)\ UK\ Site/"
+  alias us="cd ~/Documents/Website/3\)\ Export/US\ Site/"
+  alias eu="cd ~/Documents/Website/3\)\ Export/EU\ Site/"
+  alias ca="cd ~/Documents/Website/3\)\ Export/CA\ Site/"
