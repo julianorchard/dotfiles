@@ -16,6 +16,7 @@
 
 # Shortcuts
   alias backup="cp ~/.bashrc ~/.minttyrc /c/cmd/sh/."
+  alias ga="git pull --recurse-submodules; git add ."
   alias gui="explorer ."
   alias dev="cd /c/cmd/"
   alias home="cd ~"

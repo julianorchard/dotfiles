@@ -96,7 +96,7 @@
 	' To String
 	replacetext = str1 & " " & str2
 	If Not curtext.AtEndOfStream Then 
-		WScript.Echo "okay, we made it this far..."
+'	WScript.Echo "okay, we made it this far..."
 	' To String
 		currenttext = curtext.ReadAll
 		If currenttext = replacetext Then
@@ -118,19 +118,19 @@
 	shell.CurrentDirectory = "C:\cmd\wallpapers\"
 
 ' Getting Colour, Test
-''	colour = "magick convert C:\cmd\wallpapers\current.jpg +dither -colors 1 -unique-colors txt:"
-''	Const cFini = 1
-''	Const cFail = 2
-''	Set shellExec = shell.Exec(colour), 0, true
-''	WScript.Sleep 10000
-''	Select Case shellExec.Status
-''		Case cFini
-''			colour = shellExec.StdOut.ReadAll
-''		Case cFail 
-''		' Error
-''			colour = "#FFF"
-''	End Select 
-''	WScript.Echo "color = " & colour
+ '	colour = "magick convert C:\cmd\wallpapers\current.jpg +dither -colors 1 -unique-colors txt:"
+ '	Const cFini = 1
+ '	Const cFail = 2
+ '	Set shellExec = shell.Exec(colour), 0, true
+ '	WScript.Sleep 10000
+ '	Select Case shellExec.Status
+ '		Case cFini
+ '			colour = shellExec.StdOut.ReadAll
+ '		Case cFail 
+ '		' Error
+ '			colour = "#FFF"
+ '	End Select 
+ '	WScript.Echo "color = " & colour
 
 '	Convert Imagemagick 
 		shell.Run "magick convert C:\cmd\wallpapers\current.jpg -pointsize 80 -stroke #222 -strokewidth 1.5 -fill #b57eb7 -gravity Center -font Times-New-Roman-Bold -annotate +0-260 """ & _
