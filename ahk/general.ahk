@@ -3,7 +3,7 @@ File:       ahk
 Author:     Julian Orchard [hello@julianorchard.co.uk]
 Tag Added:  2022-02-24
 Desciption: General AutoHotkey Bindings
- */
+*/
 
   ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
   ;;;                          ;;;
@@ -39,6 +39,7 @@ Desciption: General AutoHotkey Bindings
 		#!Enter:: Run "C:\ProgramData\Microsoft\Windows\Start Menu\Programs\Git\Git Bash"
 	; Run Firefox with Alt+F
 		!f::Run, "C:\Program Files\Mozilla Firefox\firefox.exe"
+    #!e::Run, "C:\Users\%A_UserName%\Documents\Applications\emacs\bin\runemacs.exe"
 
 ; Snipping Tool and Drawing
 	; Print Screen Opens 'Snipping Tool'

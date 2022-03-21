@@ -1,16 +1,12 @@
 ' Getting Colour, Test
- '	colour = "magick convert C:\cmd\wallpapers\current.jpg +dither -colors 1 -unique-colors txt:"
- '	Const cFini = 1
- '	Const cFail = 2
- '	Set shellExec = shell.Exec(colour), 0, true
- '	WScript.Sleep 10000
- '	Select Case shellExec.Status
- '		Case cFini
- '			colour = shellExec.StdOut.ReadAll
- '		Case cFail 
- '		' Error
- '			colour = "#FFF"
- '	End Select 
- '	WScript.Echo "color = " & colour
-
-
+  With CreateObject("WScript.Shell")
+    .Run "magick convert C:\cmd\wallpapers\current.jpg +dither -colors 1 -unique-colours txt: >C:\cmd\wallpapers\bin\colour.txt", 0, True
+  End With
+  WScript.Sleep 5000
+  Dim colourOut
+  With CreateObject("Scripting.FileSystemObject")
+    colourOut = .OpenTextFile("C:\cmd\wallpapers\bin\colour.txt").ReadAll()
+    .DeleteFile "C:\cmd\wallpapers\bin\colour.txt"
+	End With 
+	WScript.Echo "color = " & colourOut
+  

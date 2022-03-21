@@ -1,8 +1,7 @@
-' File:       papetime.vbs
-' Author:     Julian Orchard [hello@julianorchard.co.uk]
+' File:       pape-set.vbs
+' Author:     Julian Orchard <hello@julianorchard.co.uk>
 ' Tag Added:  2022-02-17
-' Desciption: Add a clock to your Wallpaper, Windows 10
-'             I fully regret writing this in VBScript...
+' Desciption: Add current date and time text to your background... horrible, Windows 10
 
 	username = CreateObject("WScript.Network").UserName
 	datetime = FormatDateTime(now, 4)
@@ -78,36 +77,53 @@
 	" of " & Split(FormatDateTime(Now,1))(1) & _
 	", " & Split(FormatDateTime(Now,1))(2)
 
+' -~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~--~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~--~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-
+' Get Colour From bin/colours.txt File
+  With CreateObject("Scripting.FileSystemObject")
+    hexcolour = .OpenTextFile("C:\cmd\wallpapers\bin\colours.txt").ReadAll()
+    savedcolour = .OpenTextFile("C:\cmd\wallpapers\bin\colours.txt").ReadAll()
+    .CopyFile "C:\cmd\wallpapers\bin\colours.txt", "C:\cmd\wallpapers\bin\colours-saved.txt"
+	End With 
+  ' Default White Text, If Error 
+  If hexcolour = Empty Then 
+    hexcolour = "#FFFFFF" 
+  End If
 
 ' -~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~--~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~--~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-
 ' Save some system resources...
-' -  Read old txt 'bin\cur.txt'
-' -  Compare the text as it is currently, and the text in bin\cur.txt
-
-	Set curtext = CreateObject("Scripting.FileSystemObject").OpenTextFile("C:\cmd\wallpapers\bin\cur.txt")
+' Curtext
+  With CreateObject("Scripting.FileSystemObject")
+    filestr = .OpenTextFile("C:\cmd\wallpapers\bin\cur.txt").ReadAll()
+	End With 
+' CurStr
   curstr = str1 & " " & str2
-  For i = 1 To 1
-    curtext.ReadLine
-  Next
-  filestr = curtext.ReadLine
- 	curtext.Close
-	Set curtext = Nothing
 
-
-  If filestr <> curstr Then
+  If filestr <> curstr _
+  Or hexcolour <> savedcolour Then
     Set newtext = CreateObject("Scripting.FileSystemObject").OpenTextFile("C:\cmd\wallpapers\bin\cur.txt",2)
-    newtext.WriteLine(vbNewLine & curstr) 'I don't know why it won't read one line only... Just adding a linebreak to make it work
+    newtext.WriteLine(curstr) 
 ' -~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~--~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~--~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-
 ' Set the Wallpaper with CMD's
-    Set shell = CreateObject("WScript.Shell")
-    shell.CurrentDirectory = "C:\cmd\wallpapers\"
-  '	Convert Imagemagick 
-    shell.Run "magick convert C:\cmd\wallpapers\current.jpg -pointsize 80 -stroke #222 -strokewidth 1.5 -fill #b57eb7 -gravity Center -font Times-New-Roman-Bold -annotate +0-260 """ & _
-              str1 & """ -pointsize 50 -font Gill-Sans-Condensed -strokewidth 1 -annotate +0-180 """ & str2 & _
-              """ C:\cmd\wallpapers\current.bmp", 0, true
-  ' Wait For The Magick To Happen	
+'   With CreateObject("WScript.Shell")
+'     .CurrentDirectory = "C:\cmd\wallpapers\"
+'     .Run "magick convert C:\cmd\wallpapers\current.jpg -pointsize 80 -stroke #222 -strokewidth 1.5 -fill " & _
+'             hexcolour & " -gravity Center -font Times-New-Roman-Bold -annotate +0-260 """ & _
+'             str1 & """ -pointsize 50 -font Gill-Sans-Condensed -strokewidth 1 -annotate +0-180 """ & str2 & _
+'             """ C:\cmd\wallpapers\current.bmp", 0, true
+'     WScript.Sleep 10000
+'     .Run "reg add ""HKEY_CURRENT_USER\Control Panel\Desktop"" /v Wallpaper /t REG_SZ /d C:\cmd\wallpapers\current.bmp /f", 0, true
+'     .Run "RUNDLL32.EXE user32.dll,UpdatePerUserSystemParameters", 0, true
+'   End With
+   Set shell = CreateObject("WScript.Shell")
+   shell.CurrentDirectory = "C:\cmd\wallpapers\"
+ '	Convert Imagemagick 
+   shell.Run "magick convert C:\cmd\wallpapers\current.jpg -pointsize 80 -stroke #222 -strokewidth 1.5 -fill " & _
+             hexcolour & " -gravity Center -font Times-New-Roman-Bold -annotate +0-260 """ & _
+             str1 & """ -pointsize 50 -font Gill-Sans-Condensed -strokewidth 1 -annotate +0-180 """ & str2 & _
+             """ C:\cmd\wallpapers\current.bmp", 0, true
+ ' Wait For The Magick To Happen	
     WScript.Sleep 10000
-  ' Set Paper (pain...)
+ ' Set Paper (pain...)
     shell.Run "reg add ""HKEY_CURRENT_USER\Control Panel\Desktop"" /v Wallpaper /t REG_SZ /d C:\cmd\wallpapers\current.bmp /f", 0, true
     shell.Run "RUNDLL32.EXE user32.dll,UpdatePerUserSystemParameters", 0, true
     newtext.Close
