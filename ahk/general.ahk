@@ -103,6 +103,14 @@ Desciption: General AutoHotkey Bindings
     !-::
       Send, {space}o{space}-{space}
     Return
+  ; Insert Instagram Hashtags for Business
+		#!i::
+			FileRead, Clipboard, C:\cmd\ahk\res\wt.txt
+			Clipwait, 1
+			Send, %clipboard%
+			Clipboard:=""
+		Return
+
 
 ; Alt + FX Inserts
   ; F5 Insert Timestamp
@@ -152,39 +160,38 @@ Desciption: General AutoHotkey Bindings
       Random, randum, 0, %lines%
       Send, % linkedin[randum]
     Return
-
-; Insert Lipsum Text
+  ; Insert Lipsum Text
 		!F10::
 			FileRead, Clipboard, res\lipsum.txt
 			Clipwait, 1
 			SendInput, %clipboard%
 			Clipboard:=""
 		Return
-; Alt+F12 to hide the taskbar entirely 
-	; Edited from; https://www.autohotkey.com/board/topic/83594-how-to-hide-taskbar-with-hotkey/
-	; !!! Works only really when the taskbar will autohide in desktop mode !!!
-	!F12::
-		WinExist("ahk_class Shell_TrayWnd")
-		Tog := !Tog
-		if (Tog = "1") 
-		{
-			; This is what I've added...
-			SetTimer, CheckForBar, 1000
-			CheckForBar:
-				if WinExist("ahk_class Shell_TrayWnd") 
-				{
-					WinHide, ahk_class Shell_TrayWnd
-					WinHide, Start ahk_class Button
-				}
-			Return
-		} 
-		else 
-		{
-			SetTimer, CheckForBar, Off ; Also this, ofc
-			WinShow, ahk_class Shell_TrayWnd
-			WinShow, Start ahk_class Button
-		}
-	Return
+  ; Alt+F12 to hide the taskbar entirely 
+    ; Edited from; https://www.autohotkey.com/board/topic/83594-how-to-hide-taskbar-with-hotkey/
+    ; !!! Works only really when the taskbar will autohide in desktop mode !!!
+    !F12::
+      WinExist("ahk_class Shell_TrayWnd")
+      Tog := !Tog
+      if (Tog = "1") 
+      {
+        ; This is what I've added...
+        SetTimer, CheckForBar, 1000
+        CheckForBar:
+          if WinExist("ahk_class Shell_TrayWnd") 
+          {
+            WinHide, ahk_class Shell_TrayWnd
+            WinHide, Start ahk_class Button
+          }
+        Return
+      } 
+      else 
+      {
+        SetTimer, CheckForBar, Off ; Also this, ofc
+        WinShow, ahk_class Shell_TrayWnd
+        WinShow, Start ahk_class Button
+      }
+    Return
 
 ; 'Start+E' On Roids (Alt+E)
   ;  Usage; Alt+E, then c/w/j/p/s/etc.
