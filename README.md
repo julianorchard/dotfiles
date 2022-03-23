@@ -1,4 +1,4 @@
-![Another example of the desktop](wallpapers/Examples/example2.png)
+![Another example of the desktop](wallpapers/Examples/Examples-2.jpg)
 
 # CMD (Windows Config)
 
@@ -78,7 +78,7 @@ Windows machines.
 
 ### Wallpapers (`\wallpapers`)
 
-![Example of what my desktop on Windows looks like, using papetime.vbs](wallpapers/Examples/example.png)
+![Example of what my desktop on Windows looks like, using papetime.vbs](wallpapers/Examples/Examples-1.jpg)
 
 A few nice scripts to manage my wallpapers. Wallpapers aren't in this repo
 (there's some examples, as above). `papesort.sh` renames all the images in the
