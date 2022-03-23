@@ -36,7 +36,7 @@
   }
 
 # Return Readable Numbers from 0-99
-  function Readable-Numbers($InputNumber) 
+  function Readable-Numbers($InputNumber,$NumberFormat) 
   {
   # Single Digits
     function One-Digit($in) 

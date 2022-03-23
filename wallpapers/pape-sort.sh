@@ -10,6 +10,7 @@
 # Do not go further than one level down (so I can store
 # different named items there)
 
+cd files
 for dir in ./* 
 do
 	if [ -d $dir ] 
@@ -18,6 +19,7 @@ do
 		name=${dir:2}
 	# Rename Files In Dir
 		c=0
+    echo $dir
 		for file in ./$name/*
 		do
 		# Check it's not a directory
