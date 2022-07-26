@@ -116,313 +116,316 @@ I use [[https://github.com/edwardtufte/et-book][ETBookOT]] as my Serif font of c
 
 #+begin_src elisp :tangle init.el
 
-;; Command Log Mode
-(use-package command-log-mode)
+  ;; Command Log Mode
+  (use-package command-log-mode)
 
-;; Ivy Package
-(use-package ivy
-  :diminish
-  :bind (("C-s" . swiper)
-         :map ivy-minibuffer-map
-         ("TAB" . ivy-alt-done)	
-         ("C-l" . ivy-alt-done)
-         ("C-j" . ivy-next-line)
-         ("C-k" . ivy-previous-line)
-         :map ivy-switch-buffer-map
-         ("C-k" . ivy-previous-line)
-         ("C-l" . ivy-done)
-         ("C-d" . ivy-switch-buffer-kill)
-         :map ivy-reverse-i-search-map
-         ("C-k" . ivy-previous-line)
-         ("C-d" . ivy-reverse-i-search-kill))
-  :config
-  (ivy-mode 1))
-(global-set-key (kbd "C-x C-b") 'ivy-switch-buffer)
-(global-set-key (kbd "C-x C-k") 'kill-this-buffer)
+  ;; Ivy Package
+  (use-package ivy
+    :diminish
+    :bind (("C-s" . swiper)
+           :map ivy-minibuffer-map
+           ("TAB" . ivy-alt-done)	
+           ("C-l" . ivy-alt-done)
+           ("C-j" . ivy-next-line)
+           ("C-k" . ivy-previous-line)
+           :map ivy-switch-buffer-map
+           ("C-k" . ivy-previous-line)
+           ("C-l" . ivy-done)
+           ("C-d" . ivy-switch-buffer-kill)
+           :map ivy-reverse-i-search-map
+           ("C-k" . ivy-previous-line)
+           ("C-d" . ivy-reverse-i-search-kill))
+    :config
+    (ivy-mode 1))
+  (global-set-key (kbd "C-x C-b") 'ivy-switch-buffer)
+  (global-set-key (kbd "C-x C-k") 'kill-this-buffer)
 
-;; Company Completion
-(use-package company
-  :custom
-  (company-global-modes '(not shell-mode eaf-mode))
-  :config
-  (global-company-mode 1))
+  ;; Company Completion
+  (use-package company
+    :custom
+    (company-global-modes '(not shell-mode eaf-mode))
+    :config
+    (global-company-mode 1))
 
-;; Helpful Package
-(use-package helpful
-  :custom
-  (counsel-describe-function-function #'helpful-callable)
-  (counsel-describe-variable-function #'helpful-variable)
-  :bind
-  ([remap describe-function] . counsel-describe-function)
-  ([remap describe-command] . helpful-command)
-  ([remap describe-variable] . counsel-describe-variable)
-  ([remap describe-key] . helpful-key))
+  ;; Helpful Package
+  (use-package helpful
+    :custom
+    (counsel-describe-function-function #'helpful-callable)
+    (counsel-describe-variable-function #'helpful-variable)
+    :bind
+    ([remap describe-function] . counsel-describe-function)
+    ([remap describe-command] . helpful-command)
+    ([remap describe-variable] . counsel-describe-variable)
+    ([remap describe-key] . helpful-key))
 
-;; Evil!
-(use-package evil
-  :init
-  (setq evil-want-integration t)
-  (setq evil-want-keybinding nil)
-  (setq evil-want-C-u-scroll t)
-  (setq evil-want-C-i-jump nil)
-  :config
-  (evil-mode 1)
-  (define-key evil-insert-state-map (kbd "C-g") 'evil-normal-state)
-  (define-key evil-insert-state-map (kbd "C-h") 'evil-delete-backward-char-and-join)
-  ;; (evil-global-set-key 'motion "j" 'evil-next-visual-line)
-  ;; (evil-global-set-key 'motion "k" 'evil-previous-visual-line)
-  (evil-set-initial-state 'messages-buffer-mode 'normal)
-  (evil-set-initial-state 'dashboard-mode 'normal)
-  (define-key evil-normal-state-map (kbd "C-l") 'evil-window-next)
-  (define-key evil-normal-state-map (kbd "C-h") 'evil-window-next))
-;; Evil Collection
-(use-package evil-collection
-  :after evil
-  :config
-  (evil-collection-init))
-;; Vim Commentary In Evil!
-(use-package evil-commentary
-  :after evil
-  :diminish
-  :config (evil-commentary-mode +1))
+  ;; Evil!
+  (use-package evil
+    :init
+    (setq evil-want-integration t)
+    (setq evil-want-keybinding nil)
+    (setq evil-want-C-u-scroll t)
+    (setq evil-want-C-i-jump nil)
+    :config
+    (evil-mode 1)
+    (define-key evil-insert-state-map (kbd "C-g") 'evil-normal-state)
+    (define-key evil-insert-state-map (kbd "C-h") 'evil-delete-backward-char-and-join)
+    ;; (evil-global-set-key 'motion "j" 'evil-next-visual-line)
+    ;; (evil-global-set-key 'motion "k" 'evil-previous-visual-line)
+    (evil-set-initial-state 'messages-buffer-mode 'normal)
+    (evil-set-initial-state 'dashboard-mode 'normal)
+    (define-key evil-normal-state-map (kbd "C-l") 'evil-window-next)
+    (define-key evil-normal-state-map (kbd "C-h") 'evil-window-next))
+  ;; Evil Collection
+  (use-package evil-collection
+    :after evil
+    :config
+    (evil-collection-init))
+  ;; Vim Commentary In Evil!
+  (use-package evil-commentary
+    :after evil
+    :diminish
+    :config (evil-commentary-mode +1))
 
-;; Org
-(defun efs/org-font-setup ()
-  ;; Replace list hyphen with dot
-  (font-lock-add-keywords 'org-mode
-                          '(("^ *\\([-]\\) "
-                             (0 (prog1 () (compose-region (match-beginning 1) (match-end 1) "•"))))))
-  ;; Set faces for heading levels
-  (dolist (face '((org-document-title . 2.0)
-		  (org-level-1 . 1.4)
-                  (org-level-2 . 1.2)
-                  (org-level-3 . 1.1)
-                  (org-level-4 . 1.1)
-                  (org-level-5 . 1.0)
-                  (org-level-6 . 1.0)
-                  (org-level-7 . 1.0)
-                  (org-level-8 . 1.0)))
-    (set-face-attribute (car face) nil :font "ETBookOT" :weight 'Light :height (cdr face)))
+  ;; Org
+  (defun efs/org-font-setup ()
+    ;; Replace list hyphen with dot
+    (font-lock-add-keywords 'org-mode
+                            '(("^ *\\([-]\\) "
+                               (0 (prog1 () (compose-region (match-beginning 1) (match-end 1) "•"))))))
+    ;; Set faces for heading levels
+    (dolist (face '((org-document-title . 2.0)
+                    (org-level-1 . 1.4)
+                    (org-level-2 . 1.2)
+                    (org-level-3 . 1.1)
+                    (org-level-4 . 1.1)
+                    (org-level-5 . 1.0)
+                    (org-level-6 . 1.0)
+                    (org-level-7 . 1.0)
+                    (org-level-8 . 1.0)))
+      (set-face-attribute (car face) nil :font "ETBookOT" :weight 'Light :height (cdr face)))
 
-;; Ensure that anything that should be fixed-pitch in Org files appears that way
-;;  (set-face-attribute 'org-block nil :foreground nil :inherit 'fixed-pitch)
-  (set-face-attribute 'org-table nil :inherit 'fixed-pitch)
-  (set-face-attribute 'org-formula nil :inherit 'fixed-pitch)
-  (set-face-attribute 'org-code nil :inherit 'fixed-pitch)
-  (set-face-attribute 'org-table nil :inherit 'fixed-pitch)
-  (set-face-attribute 'org-verbatim nil :inherit 'fixed-pitch)
-  (set-face-attribute 'org-special-keyword nil :inherit '(font-lock-comment-face fixed-pitch))
-  ;; (set-face-attribute 'org-meta-line nil :inherit '(font-lock-comment-face fixed-pitch))
-  (set-face-attribute 'org-checkbox nil :inherit 'fixed-pitch)
-  (set-face-attribute 'line-number nil :inherit 'fixed-pitch)
-  (set-face-attribute 'line-number-current-line nil :inherit 'fixed-pitch)
-  (set-face-attribute 'org-quote nil :inherit 'variable-pitch :slant 'italic)
-  )
+  ;; Ensure that anything that should be fixed-pitch in Org files appears that way
+  ;;  (set-face-attribute 'org-block nil :foreground nil :inherit 'fixed-pitch)
+    (set-face-attribute 'org-table nil :inherit 'fixed-pitch)
+    (set-face-attribute 'org-formula nil :inherit 'fixed-pitch)
+    (set-face-attribute 'org-code nil :inherit 'fixed-pitch)
+    (set-face-attribute 'org-table nil :inherit 'fixed-pitch)
+    (set-face-attribute 'org-verbatim nil :inherit 'fixed-pitch)
+    (set-face-attribute 'org-special-keyword nil :inherit '(font-lock-comment-face fixed-pitch))
+    ;; (set-face-attribute 'org-meta-line nil :inherit '(font-lock-comment-face fixed-pitch))
+    (set-face-attribute 'org-checkbox nil :inherit 'fixed-pitch)
+    (set-face-attribute 'line-number nil :inherit 'fixed-pitch)
+    (set-face-attribute 'line-number-current-line nil :inherit 'fixed-pitch)
+    (set-face-attribute 'org-quote nil :inherit 'variable-pitch :slant 'italic)
+    )
 
-;; Org Package / Main Config
-(use-package org
-  :pin org
-  :commands (org-capture org-agenda)
-  :hook (org-mode . efs/org-mode-setup)
-  :config
-  (setq org-ellipsis "     ↓")
-  (setq header-line-format " ")
-  (setq org-agenda-files
-        '("~/OneDrive/org/weekly.org" "~/OneDrive/org/todo.org"))
-  (setq org-duration-format (quote h:mm))
-  (setq org-todo-keywords
-	'((sequence "TODO" "PENDING" "|" "DONE" "CANCELLED")))
-  (efs/org-font-setup)
+  ;; Org Package / Main Config
+  (use-package org
+    :pin org
+    :commands (org-capture org-agenda)
+    :hook (org-mode . efs/org-mode-setup)
+    :config
+    (setq org-ellipsis "     ↓")
+    (setq header-line-format " ")
+    (setq org-agenda-files
+          '("~/OneDrive/org/weekly.org" "~/OneDrive/org/todo.org"))
+    (setq org-duration-format (quote h:mm))
+    (setq org-todo-keywords
+          '((sequence "TODO" "PENDING" "|" "DONE" "CANCELLED")))
+    (efs/org-font-setup)
 
-  ;; ;; Get this working...
-  ;; (appendq! +ligatures-extra-symbols
-  ;;           `(:checkbox      "☐"
-  ;; 			     :pending       "◼"
-  ;; 			     :checkedbox    "☑"
-  ;; 			     :list_property "∷"
-  ;; 			     :em_dash       "—"
-  ;; 			     :ellipses      "…"
-  ;; 			     :arrow_right   "→"
-  ;; 			     :arrow_left    "←"
-  ;; 			     :title         "𝙏"
-  ;; 			     :subtitle      "𝙩"
-  ;; 			     :author        "𝘼"
-  ;; 			     :date          "𝘿"
-  ;; 			     :property      "☸"
-  ;; 			     :options       "⌥"
-  ;; 			     :startup       "⏻"
-  ;; 			     :macro         "𝓜"
-  ;; 			     :html_head     "🅷"
-  ;; 			     :html          "🅗"
-  ;; 			     :latex_class   "🄻"
-  ;; 			     :latex_header  "🅻"
-  ;; 			     :beamer_header "🅑"
-  ;; 			     :latex         "🅛"
-  ;; 			     :attr_latex    "🄛"
-  ;; 			     :attr_html     "🄗"
-  ;; 			     :attr_org      "⒪"
-  ;; 			     :begin_quote   "❝"
-  ;; 			     :end_quote     "❞"
-  ;; 			     :caption       "☰"
-  ;; 			     :header        "›"
-  ;; 			     :results       "🠶"
-  ;; 			     :begin_export  "⏩"
-  ;; 			     :end_export    "⏪"
-  ;; 			     :properties    "⚙"
-  ;; 			     :end           "∎"
-  ;; 			     :priority_a   ,(propertize "⚑" 'face 'all-the-icons-red)
-  ;; 			     :priority_b   ,(propertize "⬆" 'face 'all-the-icons-orange)
-  ;; 			     :priority_c   ,(propertize "■" 'face 'all-the-icons-yellow)
-  ;; 			     :priority_d   ,(propertize "⬇" 'face 'all-the-icons-green)
-  ;; 			     :priority_e   ,(propertize "❓" 'face 'all-the-icons-blue)))
-  ;; (set-ligatures! 'org-mode
-  ;; 		  :merge t
-  ;; 		  :checkbox      "[ ]"
-  ;; 		  :pending       "[-]"
-  ;; 		  :checkedbox    "[X]"
-  ;; 		  :list_property "::"
-  ;; 		  :em_dash       "---"
-  ;; 		  :ellipsis      "..."
-  ;; 		  :arrow_right   "->"
-  ;; 		  :arrow_left    "<-"
-  ;; 		  :title         "#+title:"
-  ;; 		  :subtitle      "#+subtitle:"
-  ;; 		  :author        "#+author:"
-  ;; 		  :date          "#+date:"
-  ;; 		  :property      "#+property:"
-  ;; 		  :options       "#+options:"
-  ;; 		  :startup       "#+startup:"
-  ;; 		  :macro         "#+macro:"
-  ;; 		  :html_head     "#+html_head:"
-  ;; 		  :html          "#+html:"
-  ;; 		  :latex_class   "#+latex_class:"
-  ;; 		  :latex_header  "#+latex_header:"
-  ;; 		  :beamer_header "#+beamer_header:"
-  ;; 		  :latex         "#+latex:"
-  ;; 		  :attr_latex    "#+attr_latex:"
-  ;; 		  :attr_html     "#+attr_html:"
-  ;; 		  :attr_org      "#+attr_org:"
-  ;; 		  :begin_quote   "#+begin_quote"
-  ;; 		  :end_quote     "#+end_quote"
-  ;; 		  :caption       "#+caption:"
-  ;; 		  :header        "#+header:"
-  ;; 		  :begin_export  "#+begin_export"
-  ;; 		  :end_export    "#+end_export"
-  ;; 		  :results       "#+RESULTS:"
-  ;; 		  :property      ":PROPERTIES:"
-  ;; 		  :end           ":END:"
-  ;; 		  :priority_a    "[#A]"
-  ;; 		  :priority_b    "[#B]"
-  ;; 		  :priority_c    "[#C]"
-  ;; 		  :priority_d    "[#D]"
-  ;; 		  :priority_e    "[#E]")
-  ;; (plist-put +ligatures-extra-symbols :name "⁍")
-  )
-(defun efs/org-mode-setup ()
-  (org-indent-mode)
-  (variable-pitch-mode 1)
-  (visual-line-mode 1)
-  (line-spacing 9))
-(defun efs/org-mode-visual-fill ()
-  (setq visual-fill-column-width 100
-        visual-fill-column-center-text t)
-  (visual-fill-column-mode 1))
-(use-package visual-fill-column
-  :hook (org-mode . efs/org-mode-visual-fill))
-;; Bullets Org
-(use-package org-bullets
-  :hook (org-mode . org-bullets-mode)
-  :custom
-  ;; (org-bullets-bullet-list '("◉" "○" "●" "○" "●" "○" "●")))
-  (org-bullets-bullet-list '("\u200b" " " "◉" "-")))
-;; Evil Bindings For Org
-(use-package evil-org
-  :ensure t
-  :after org
-  :hook (org-mode . (lambda () evil-org-mode))
-  :config
-  (require 'evil-org-agenda)
-  (evil-org-agenda-set-keys))
-;; How to make org-templates without the 'capture' part
-;; Would be to a file with the name of the Monday of the given week. 
-(setq org-capture-templates
-      '(("t" "Todo / Journal")
-	("tt" "To Sort" entry (file+olp "~/OneDrive/org/todo.org" "Todo")
-         "* TODO %?\n  %U\n %a\n %i")
-	("j" "Journal" entry (file+datetree "~/OneDrive/org/journal.org")
-         "* %?\nEntered on %U\n  %i\n  %a")))
-;; Org-Pretty-Table-Mode
-(progn
-  (add-to-list 'load-path "~/.emacs.d/site-lisp")
-  (require 'org-pretty-table)
-  (add-hook 'org-mode-hook (lambda () (org-pretty-table-mode))))
-;; Org-Tempo
-(require 'org-tempo)
-;; Org Padding
-;;(require 'org-padding)
-(add-hook 'org-mode-hook
-          (lambda ()
-            (push '("[ ]" . "o" ) prettify-symbols-alist)
-            (push '("[X]" . "x" ) prettify-symbols-alist)
-            (push '("[-]" . "~" ) prettify-symbols-alist)
-            (prettify-symbols-mode)))
+    ;; ;; Get this working...
+    ;; (appendq! +ligatures-extra-symbols
+    ;;           `(:checkbox      "☐"
+    ;; 			     :pending       "◼"
+    ;; 			     :checkedbox    "☑"
+    ;; 			     :list_property "∷"
+    ;; 			     :em_dash       "—"
+    ;; 			     :ellipses      "…"
+    ;; 			     :arrow_right   "→"
+    ;; 			     :arrow_left    "←"
+    ;; 			     :title         "𝙏"
+    ;; 			     :subtitle      "𝙩"
+    ;; 			     :author        "𝘼"
+    ;; 			     :date          "𝘿"
+    ;; 			     :property      "☸"
+    ;; 			     :options       "⌥"
+    ;; 			     :startup       "⏻"
+    ;; 			     :macro         "𝓜"
+    ;; 			     :html_head     "🅷"
+    ;; 			     :html          "🅗"
+    ;; 			     :latex_class   "🄻"
+    ;; 			     :latex_header  "🅻"
+    ;; 			     :beamer_header "🅑"
+    ;; 			     :latex         "🅛"
+    ;; 			     :attr_latex    "🄛"
+    ;; 			     :attr_html     "🄗"
+    ;; 			     :attr_org      "⒪"
+    ;; 			     :begin_quote   "❝"
+    ;; 			     :end_quote     "❞"
+    ;; 			     :caption       "☰"
+    ;; 			     :header        "›"
+    ;; 			     :results       "🠶"
+    ;; 			     :begin_export  "⏩"
+    ;; 			     :end_export    "⏪"
+    ;; 			     :properties    "⚙"
+    ;; 			     :end           "∎"
+    ;; 			     :priority_a   ,(propertize "⚑" 'face 'all-the-icons-red)
+    ;; 			     :priority_b   ,(propertize "⬆" 'face 'all-the-icons-orange)
+    ;; 			     :priority_c   ,(propertize "■" 'face 'all-the-icons-yellow)
+    ;; 			     :priority_d   ,(propertize "⬇" 'face 'all-the-icons-green)
+    ;; 			     :priority_e   ,(propertize "❓" 'face 'all-the-icons-blue)))
+    ;; (set-ligatures! 'org-mode
+    ;; 		  :merge t
+    ;; 		  :checkbox      "[ ]"
+    ;; 		  :pending       "[-]"
+    ;; 		  :checkedbox    "[X]"
+    ;; 		  :list_property "::"
+    ;; 		  :em_dash       "---"
+    ;; 		  :ellipsis      "..."
+    ;; 		  :arrow_right   "->"
+    ;; 		  :arrow_left    "<-"
+    ;; 		  :title         "#+title:"
+    ;; 		  :subtitle      "#+subtitle:"
+    ;; 		  :author        "#+author:"
+    ;; 		  :date          "#+date:"
+    ;; 		  :property      "#+property:"
+    ;; 		  :options       "#+options:"
+    ;; 		  :startup       "#+startup:"
+    ;; 		  :macro         "#+macro:"
+    ;; 		  :html_head     "#+html_head:"
+    ;; 		  :html          "#+html:"
+    ;; 		  :latex_class   "#+latex_class:"
+    ;; 		  :latex_header  "#+latex_header:"
+    ;; 		  :beamer_header "#+beamer_header:"
+    ;; 		  :latex         "#+latex:"
+    ;; 		  :attr_latex    "#+attr_latex:"
+    ;; 		  :attr_html     "#+attr_html:"
+    ;; 		  :attr_org      "#+attr_org:"
+    ;; 		  :begin_quote   "#+begin_quote"
+    ;; 		  :end_quote     "#+end_quote"
+    ;; 		  :caption       "#+caption:"
+    ;; 		  :header        "#+header:"
+    ;; 		  :begin_export  "#+begin_export"
+    ;; 		  :end_export    "#+end_export"
+    ;; 		  :results       "#+RESULTS:"
+    ;; 		  :property      ":PROPERTIES:"
+    ;; 		  :end           ":END:"
+    ;; 		  :priority_a    "[#A]"
+    ;; 		  :priority_b    "[#B]"
+    ;; 		  :priority_c    "[#C]"
+    ;; 		  :priority_d    "[#D]"
+    ;; 		  :priority_e    "[#E]")
+    ;; (plist-put +ligatures-extra-symbols :name "⁍")
+    )
+  (defun efs/org-mode-setup ()
+    (org-indent-mode)
+    (variable-pitch-mode 1)
+    (visual-line-mode 1)
+    (line-spacing 9))
+  (defun efs/org-mode-visual-fill ()
+    (setq visual-fill-column-width 100
+          visual-fill-column-center-text t)
+    (visual-fill-column-mode 1))
+  (use-package visual-fill-column
+    :hook (org-mode . efs/org-mode-visual-fill))
+  ;; Bullets Org
+  (use-package org-bullets
+    :hook (org-mode . org-bullets-mode)
+    :custom
+    ;; (org-bullets-bullet-list '("◉" "○" "●" "○" "●" "○" "●")))
+    (org-bullets-bullet-list '("\u200b" " " "◉" "-")))
+  ;; Evil Bindings For Org
+  (use-package evil-org
+    :ensure t
+    :after org
+    :hook (org-mode . (lambda () evil-org-mode))
+    :config
+    (require 'evil-org-agenda)
+    (evil-org-agenda-set-keys))
+  ;; How to make org-templates without the 'capture' part
+  ;; Would be to a file with the name of the Monday of the given week. 
+  (setq org-capture-templates
+        '(("t" "Todo / Journal")
+          ("tt" "To Sort" entry (file+olp "~/OneDrive/org/todo.org" "Todo")
+           "* TODO %?\n  %U\n %a\n %i")
+          ("j" "Journal" entry (file+datetree "~/OneDrive/org/journal.org")
+           "* %?\nEntered on %U\n  %i\n  %a")))
+  ;; Org-Pretty-Table-Mode
+  (progn
+    (add-to-list 'load-path "~/.emacs.d/site-lisp")
+    (require 'org-pretty-table)
+    (add-hook 'org-mode-hook (lambda () (org-pretty-table-mode))))
+  ;; Org-Tempo
+  (require 'org-tempo)
+  ;; Org Padding
+  ;;(require 'org-padding)
+  (add-hook 'org-mode-hook
+            (lambda ()
+              (push '("[ ]" . "o" ) prettify-symbols-alist)
+              (push '("[X]" . "x" ) prettify-symbols-alist)
+              (push '("[-]" . "~" ) prettify-symbols-alist)
+              (prettify-symbols-mode)))
 
-;; Magit
-(use-package magit
-  :commands magit-status
-  :custom
-  (magit-display-buffer-function #'magit-display-buffer-same-window-except-diff-v1))
+  ;; Magit
+  (use-package magit
+    :commands magit-status
+    :custom
+    (magit-display-buffer-function #'magit-display-buffer-same-window-except-diff-v1))
 
-;; YAS
-(use-package yasnippet
-  :custom
-  (setq yas-snippet-dirs)
-  :init
-  (use-package yasnippet-snippets :after yasnippet))
+  ;; YAS
+  (use-package yasnippet
+    :custom
+    (setq yas-snippet-dirs)
+    :init
+    (use-package yasnippet-snippets :after yasnippet))
 
-;; Ruby
-(add-to-list 'auto-mode-alist
-               '("\\.\\(?:cap\\|gemspec\\|irbrc\\|gemrc\\|rake\\|rb\\|ru\\|thor\\)\\'" . ruby-mode))
-(add-to-list 'auto-mode-alist
-               '("\\(?:Brewfile\\|Capfile\\|Gemfile\\(?:\\.[a-zA-Z0-9._-]+\\)?\\|[rR]akefile\\)\\'" . ruby-mode))
-
-;; Web Mode
-(use-package web-mode
-  :mode
-  (("\\.tpl\\.php\\'" . web-mode)
-   ("\\.erb\\'" . web-mode)))
-
-;; AutoHotkey
-(use-package ahk-mode
-  :config
+  ;; Ruby
   (add-to-list 'auto-mode-alist
-	     '("\\.ahk" . ahk-mode)))
-
-;; Powershell
-(use-package powershell
-  :config
+                 '("\\.\\(?:cap\\|gemspec\\|irbrc\\|gemrc\\|rake\\|rb\\|ru\\|thor\\)\\'" . ruby-mode))
   (add-to-list 'auto-mode-alist
-	       '("\\.ps1" . powershell)))
+                 '("\\(?:Brewfile\\|Capfile\\|Gemfile\\(?:\\.[a-zA-Z0-9._-]+\\)?\\|[rR]akefile\\)\\'" . ruby-mode))
 
-; VBScript
-(setq auto-mode-alist
-      (append '(("\\.\\(vbs\\|wsf\\)$" . vbscript-mode))
-              auto-mode-alist))
+  ;; Web Mode
+  (use-package web-mode
+    :mode
+    (("\\.tpl\\.php\\'" . web-mode)
+     ("\\.erb\\'" . web-mode)))
 
-;; Connect Remote
-(defun connect-remote ()
-  (interactive)
-  (dired "/ssh:o@01001010.ml:/home/o/"))
-(setq tramp-default-method "sshx")
+  ;; AutoHotkey
+  (use-package ahk-mode
+    :config
+    (add-to-list 'auto-mode-alist
+               '("\\.ahk" . ahk-mode)))
 
-;; TODO: Check if Discord is installed for this one!
-;; Discord Emacs 
-;; (use-package elcord
-;;   :config
-;;   (elcord-mode 1))
+  ;; Powershell
+  (use-package powershell
+    :config
+    (add-to-list 'auto-mode-alist
+                 '("\\.ps1" . powershell)))
 
-;; XeLaTeX as Default
-(setq latex-run-command "xelatex")
+  ; VBScript
+  (setq auto-mode-alist
+        (append '(("\\.\\(vbs\\|wsf\\)$" . vbscript-mode))
+                auto-mode-alist))
+
+  ;; Connect Remote
+  (defun connect-remote ()
+    (interactive)
+    (dired "/ssh:o@01001010.ml:/home/o/"))
+  (setq tramp-default-method "sshx")
+
+  ;; TODO: Check if Discord is installed for this one!
+  ;; Discord Emacs 
+  ;; (use-package elcord
+  ;;   :config
+  ;;   (elcord-mode 1))
+
+  ;; XeLaTeX as Default
+  (setq latex-run-command "xelatex")
+
+  ;; YAML Mode
+  (use-package yaml-mode)
 
 #+end_src
 

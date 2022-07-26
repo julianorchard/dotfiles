@@ -1,0 +1,409 @@
+#+author: Julian Orchard <hello@julianorchard.co.uk>
+#+title: /arch/
+
+#+begin_quote
+I use arch, btw.
+#+end_quote
+
+Very occasionally, and only on my ThinkPad x220, sadly.
+
+I'd love to use Arch more, to be honest, as it's a lovely experience, but I don't use it so often these days. 
+
+** Content                                                      :toc:quote:
+** Zshell
+
+I switched from a =.bashrc= to =.zshrc= too late, I think. I didn't know how good it was!
+
+One of the first things I ever did when I hopped into a terminal emulator for the first time was =chsh=... which was, in hindsight, a mistake. By doing this I overcomplicated things; I initially used [[https://github.com/fish-shell/fish-shell][Fish]] (which I've heard great things about) which was quite far away from the stock shell experience I should have probably been getting used to.
+
+So when I switched back to =.bashrc=, I got in the mindset that Bash is enough, and it definitely is for most things I do, to be honest. But eventually I got seduced once again by the slightly more fully featured shell, and this time I knew enough to do what I wanted with it.
+
+Firstly, we start by trying to accomplish the eternal task of cleaning the home directory:
+
+#+begin_src sh :tangle ~/.zshrc :mkdirp yes
+
+  # Bundler, Ruby
+  export BUNDLE_USER_CONFIG="$XDG_CONFIG_HOME"/bundle
+  export BUNDLE_USER_CACHE="$XDG_CACHE_HOME"/bundle
+  export BUNDLE_USER_PLUGIN="$XDG_DATA_HOME"/bundle
+  # GPG
+  export GNUPGHOME="$XDG_CONFIG_HOME"/gnupg
+  # Less
+  export LESSHISTFILE="$XDG_CACHE_HOME"/less/history
+  export LESSKEY="$XDG_CONFIG_HOME"/less/lesskey
+  # Not Much
+  export NMBGIT="$XDG_DATA_HOME"/notmuch/nmbug⎋k
+  export NOTMUCH_CONFIG="$XDG_CONFIG_HOME"/notmuch/notmuchrc
+  # Node/NPM
+  export NODE_PATH="$NPM_PACKAGES"/lib/node_modules:"$NODE_PATH"
+  export NODE_REPL_HISTORY="$XDG_DATA_HOME"/node_repl_history
+  export NPM_PACKAGES="$XDG_CONFIG_HOME"/npm-packages
+  export PATH="$NPM_PACKAGES"/bin:"$PATH"
+  # GNU Pass
+  export PASSWORD_STORE_DIR="$XDG_DATA_HOME"/pass
+  # X11
+  export XAUTHORITY="$XDG_RUNTIME_DIR"/Xauthority
+  export XINITRC="$XDG_CONFIG_HOME"/X11/xinitrc 
+  # HISTFILE
+  HISTFILE=~/.cache/zsh/zsh_histfile
+  # ZDOTDIR (not sure if this changes the HISTFILE, 
+  # so setting it for zcompdump anyway)
+  ZDOTDIR=~/.cache/zsh/
+
+#+end_src
+
+A lot of this file is, in fact, dedicated to trying to clean the home dir. I mostly use [[https://wiki.archlinux.org/title/XDG_Base_Directory][this lifesaving Arch wiki page]] for help.
+
+Next, some more Zsh setup (from the wizard):
+
+#+begin_src sh :tangle ~/.zshrc :mkdirp yes
+
+  HISTSIZE=1000
+  SAVEHIST=2000
+  # AutoCD (cd without cd) and 
+  # Notify of background processes
+  setopt autocd notify
+  bindkey -e
+  zstyle :compinstall filename '/home/ju/.zshrc'
+  autoload -Uz compinit
+  compinit
+
+#+end_src
+
+We style the prompt:
+
+#+begin_src sh :tangle ~/.zshrc :mkdirp yes
+  PROMPT=" △  %1~  "
+ #+end_src
+
+We set some lang/locale stuff:
+
+#+begin_src sh :tangle ~/.zshrc :mkdirp yes
+
+  export LANG=en_GB.UTF8
+  export LANGUAGE=en_GB.UTF8
+  export LC_CTYPE=en_GB.UTF8
+
+ #+end_src
+
+And we set some default applications to use:
+
+- Browser - Firefox
+- Editor - Vim, or Nvim
+- Filemanager - Ranger
+- Terminal - Kitty
+
+#+begin_src sh :tangle ~/.zshrc :mkdirp yes
+
+  export BROWSER="firefox"
+  [ -x /usr/bin/nvim ] && export EDITOR="nvim" || export EDITOR="vim"
+  export FILE="ranger"
+  export TERMINAL="kitty"
+
+ #+end_src
+
+ Next, we set up some aliases that I commonly use. I've written a bit about them below:
+
+ | Alias       | Purpose                                                | Requirement     |
+ |-------------+--------------------------------------------------------+-----------------|
+ | =cls=       | Clears the terminal                                    | Using CMD often |
+ | =md=        | Make directory and create any we need to along the way |                 |
+ | =cat=       | Replace =cat= command with =bat=                       | [[https://github.com/sharkdp/bat][sharkdp/bat]]     |
+ | =la= / =ls= | Replace some =ls -la= commands with LSD                | [[https://github.com/Peltoche/lsd][Peltoche/lsd]]    |
+
+#+begin_src sh :tangle ~/.zshrc :mkdirp yes
+
+  alias cls='clear'
+  alias free="free -h"
+  alias md="mkdir -p"
+  alias xc="xclip -sel c <"
+  alias site='cd /srv/http/'
+  alias home='cd ${HOME}'
+  [ -x /usr/bin/bat ] && alias cat="bat" 
+  [ -x /usr/bin/hue ] && alias lights='hue lights'
+  [ -x /usr/bin/kitty ] && alias iv="kitty +kitten icat"
+  if [ -x /usr/bin/lsd ] ; then
+      alias la="lsd -la"
+      alias ll="lsd -l"
+      alias ls="lsd"
+  else
+      alias la="ls -la"
+      alias ll="ls -l"
+      alias ls="ls --color=tty"
+  fi
+  [ -x /usr/bin/neomutt ] && alias mutt='neomutt'
+  [ -x /usr/bin/nvim ] && alias vim='nvim'
+  [ -x /usr/bin/protonvpn ] && alias vpn="protonvpn"  
+  [ -x /usr/bin/ranger ] && alias r="ranger"
+  [ -x /usr/bin/sxiv ] && [ -z "${HOME}/.bin/sxiv.sh" ] && alias sxiv="${HOME}/.bin/sxiv.sh"
+  [ -x /usr/bin/zathura ] && [ -z "${HOME}/.bin/zath.sh" ] && alias z="${HOME}/.bin/zath.sh"
+
+#+end_src
+
+Finally, we set *possibly* the only path I'll need; =~/.local/bin=. Then we start the X11 enrivonment, the =.xinitrc= of which we'll explore in the next bit (it's small)!
+
+#+begin_src sh :tangle ~/.zshrc :mkdirp yes
+  export PATH=${PATH}:${HOME}/.local/bin/
+  systemctl -q is-active graphical.target && [[ ! $DISPLAY && $XDG_VTNR -eq 1 ]] && exec startx ${HOME}/.config/X11/xinitrc
+#+end_src
+
+** X11
+
+Some files for x11 include xinitrc, and that's it, for me. 
+
+#+begin_src sh :tangle ~/.config/X11/xinitrc :mkdirp yes
+  #!/bin/sh
+
+  # userresources=$HOME/.config/X11/Xresources
+  # usermodmap=$HOME/.config/X11/Xmodmap
+  # sysresources=/etc/X11/xinit/Xresources
+  # sysmodmap=/etc/X11/xinit/.Xmodmap
+
+  # Systemctl Fix
+  #systemctl --user set-environment DISPLAY=:0
+#+end_src
+
+[[https://youtu.be/XkCBhKs4faI?t=17][These days...]]
+
+#+begin_src sh :tangle ~/.config/X11/xinitrc :mkdirp yes
+  setxkbmap -layout gb
+#+end_src
+
+Basically, we're just pointing [[https://en.wikipedia.org/wiki/Xrdb][xrdb]] at the [[https://en.wikipedia.org/wiki/X_resources][Xresources]] file, in =~/.config/X11/Xresources=:
+
+#+begin_src sh :tangle ~/.config/X11/xinitrc :mkdirp yes
+  xrdb -merge "$HOME"/.config/X11/Xresources
+#+end_src
+
+This part is from the default =xinitrc= file. I believe it just starts programs in =xinitrc.d=:
+
+#+begin_src sh :tangle ~/.config/X11/xinitrc :mkdirp yes
+
+  # if [ -d /etc/X11/xinit/xinitrc.d ]
+  # then
+  #   for f in /etc/X11/xinit/xinitrc.d/?*.sh
+  #   do
+  #     # If $f executable, execute
+  #     [ -x "$f" ] && . "$f"
+  #   done
+  #   unset f
+  # fi
+
+#+end_src
+
+Meanwhile, I want to start some programs of my own! Including the essential [[https://github.com/coldfix/udiskie][udiskie]]! I then execute [[https://github.com/awesomeWM/awesome][AwesomeWM]]... aaaand this is where we diverge from reality; so soon! 
+
+#+begin_src sh :tangle ~/.config/X11/xinitrc :mkdirp yes
+  [ -x /usr/bin/udiskie ] && udiskie &
+  exec awesome
+#+end_src
+
+I've stopped using Awesome since discovering Emacs and wanting to focus on an less overwhelmingly fully featured window manager.
+
+Right, but that's not the end. Here's my /MESS/ of an Xresources file. It needs some serious spring cleaning. These four are apparently from [[https://github.com/dylanaraps/pywal][wal]]: 
+
+#+begin_src sh :tangle ~/.config/X11/Xresources :mkdirp yes
+  ,*foreground: #f1e0d1
+  ,*background: #141e27
+  ,*.foreground: #f1e0d1
+  ,*.background: #141e27
+#+end_src
+
+But only that bit...? Not sure. This is apparently for a [[https://wiki.archlinux.org/title/rxvt-unicode][terminal emulator I no longer use]], [[https://github.com/muennich/sxiv][an image viewer that's no longer maintained]], and [[https://github.com/davatorium/rofi][rofi]]...
+
+#+begin_src sh :tangle ~/.config/X11/Xresources :mkdirp yes
+  ! Terminal
+  URxvt*foreground: #f1e0d1
+  !URxvt*background: [100]#141e27
+  URxvt*background: [100]#949494
+  URxvt*cursorColor: #f1e0d1
+  URxvt*borderColor: [100]#141e27
+  ! Term Language Support
+  URxvt.inputMethod: ibus
+  URxvt.preeditType: OverTheSpot
+  ! Set depth to make transparency work.
+  URxvt*depth: 32
+  ! Sxiv
+  Sxiv.foreground: #f1e9d1
+  Sxiv.background: #141e27
+  Sxiv.font: Roboto-Mono:size=9
+  ! Rofi
+  rofi.font: RobotoMono-Light 8
+#+end_src
+
+Now, a long list of the system colours:
+
+#+begin_src sh :tangle ~/.config/X11/Xresources :mkdirp yes
+  ! Colors 0-15.
+  ! special
+  ,*.foreground:   #c5c8c6
+  ,*.background:   #1d1f21
+  ,*.cursorColor:  #c5c8c6
+  ! black
+  ,*.color0:       #282a2e
+  ,*.color8:       #373b41
+  ! red
+  ,*.color1:       #a54242
+  ,*.color9:       #cc6666
+  ! green
+  ,*.color2:       #8c9440
+  ,*.color10:      #b5bd68
+  ! yellow
+  ,*.color3:       #de935f
+  ,*.color11:      #f0c674
+  ! blue
+  ,*.color4:       #5f819d
+  ,*.color12:      #81a2be
+  ! magenta
+  ,*.color5:       #85678f
+  ,*.color13:      #b294bb
+  ! cyan
+  ,*.color6:       #5e8d87
+  ,*.color14:      #8abeb7
+  ! white
+  ,*.color7:       #707880
+  ,*.color15:      #c5c8c6
+#+end_src
+
+Now, for more colours, for xterm and Urxvt:
+
+#+begin_src sh :tangle ~/.config/X11/Xresources :mkdirp yes
+  ! Atom One Light theme
+  xterm*background: #f9f9f9
+  xterm*foreground: #383a42
+  xterm*cursorColor: #d0d0d0
+  xterm*color0: #000000
+  xterm*color1: #E45649
+  xterm*color2: #50A14F
+  xterm*color3: #986801
+  xterm*color4: #4078F2
+  xterm*color5: #A626A4
+  xterm*color6: #0184BC
+  xterm*color7: #A0A1A7
+  xterm*color8: #5c6370
+  xterm*color9: #e06c75
+  xterm*color10: #50A14F
+  xterm*color11: #986801
+  xterm*color12: #4078F2
+  xterm*color13: #A626A4
+  xterm*color14: #0184BC
+  xterm*color15: #ffffff
+  ! Atom One Light theme
+  urxvt*background: #f9f9f9
+  urxvt*foreground: #383a42
+  urxvt*cursorColor: #d0d0d0
+  urxvt*color0: #000000
+  urxvt*color1: #E45649
+  urxvt*color2: #50A14F
+  urxvt*color3: #986801
+  urxvt*color4: #4078F2
+  urxvt*color5: #A626A4
+  urxvt*color6: #0184BC
+  urxvt*color7: #A0A1A7
+  urxvt*color8: #5c6370
+  urxvt*color9: #e06c75
+  urxvt*color10: #50A14F
+  urxvt*color11: #986801
+  urxvt*color12: #4078F2
+  urxvt*color13: #A626A4
+  urxvt*color14: #0184BC
+  urxvt*color15: #ffffff
+#+end_src
+
+Not the best.
+
+** Zathura
+
+A very nice little PDF viewer, with a nice little config, here:
+
+#+begin_src sh :tangle ~/.config/zathura/zathurarc :mkdirp yes
+# Setting:
+set statusbar-h-padding 0
+set statusbar-v-padding 0
+set page-padding 1
+# Colouring:
+set default-bg      "#FF0000"
+set default-fg      "#00FFFF"
+set statusbar-bg    "#00FFFF"
+set statusbar-fg    "#000000"
+# Mapping:
+map i recolor
+#+end_src
+
+I've had this same configuration since I basically started using Arch, and although it doesn't match a lot of other stuff I'm using now, I need to keep it.
+
+** Terminal
+
+I used urxvt for a very long time, but I now use Kitty, and it's brilliant.
+
+The things I want in a terminal include being fast, the ability to have padding, and ligature/extensive character support, and Kitty does those things for me.
+
+Setting the fonts:
+
+#+begin_src sh :tangle ~/.config/kitty/kitty.conf :mkdirp yes
+    font_family                     monospace
+    bold_font                       auto
+    italic_font                     auto
+    bold_italic_font                auto
+    font_size                       10.0
+#+end_src
+
+Sorting the cursor (although I think I was having trouble getting this working outside of NeoVim...): 
+
+#+begin_src sh :tangle ~/.config/kitty/kitty.conf :mkdirp yes
+    cursor_shape                    underline
+    cursor_underline_thickness      3.0
+    cursor                          #FF0000
+    cursor_text_color               #00FFFF
+#+end_src
+
+Want to experiment with this more, but here I'm adjusting the line height and column width. I assume this could cause issues with certain characters lining up properly, but I've not tested it extensively enough yet:
+
+#+begin_src sh :tangle ~/.config/kitty/kitty.conf :mkdirp yes
+    adjust_line_height              120%
+    adjust_column_width             110%
+#+end_src
+
+Get rid of audio bell, add a tiny visual one:
+
+#+begin_src sh :tangle ~/.config/kitty/kitty.conf :mkdirp yes
+    enable_audio_bell               False
+    visual_bell_duration            0.1
+#+end_src
+
+Sweet, sweet aesthetics:
+
+#+begin_src sh :tangle ~/.config/kitty/kitty.conf :mkdirp yes
+    window_margin_width             10
+    background_opacity 0.8
+#+end_src
+
+=Alt + Backspace= to delete words is important for me:
+
+#+begin_src sh :tangle ~/.config/kitty/kitty.conf :mkdirp yes
+    map alt+backspace send_text all \x17
+    map super+backspace send_text all \x15
+#+end_src
+
+That's it for Kitty. 
+** LSD
+
+A little LSD config:
+
+#+begin_src yaml :tangle ~/.config/lsd/config.yaml
+  blocks:
+    - permission
+    - user
+    - group
+    - size
+    - date
+    - name
+  color:
+    when: auto
+    theme: default
+  date: '+%d %b %X'
+  icons:
+    when: auto
+    theme: fancy
+    separator: "  "
+#+end_src
