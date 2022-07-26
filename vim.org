@@ -1,0 +1,462 @@
+#+author: Julian Orchard <git@julianorchard.co.uk>
+#+title: /vim/
+
+This is the main =.vimrc= file, but obviously it'll be in =.vim/vimrc=.
+
+** Contents                                                             :TOC_3:QUOTE:
+#+BEGIN_QUOTE
+  - [[#vimrc][vimrc]]
+    - [[#initial-setup][Initial Setup]]
+    - [[#plugins][Plugins]]
+    - [[#plugin-settings][Plugin Settings]]
+    - [[#defaults][Defaults]]
+    - [[#center-comment-function][Center Comment Function]]
+    - [[#abbreviations][Abbreviations]]
+  - [[#gvimrc][gvimrc]]
+    - [[#defaults-1][Defaults]]
+    - [[#fonts][Fonts]]
+    - [[#plugin-settings-1][Plugin Settings]]
+    - [[#misc][Misc.]]
+  - [[#language-specific][Language Specific]]
+    - [[#about][About]]
+    - [[#indentation][Indentation]]
+    - [[#filetype-plugin][Filetype Plugin]]
+#+END_QUOTE
+
+** vimrc
+*** Initial Setup
+
+This does some initial stuff, and copies the configuration files to a more suitable Windows location (I want to be able to use this with Cygwin, primarily, but also Gvim and in CMD if required):
+
+ #+begin_src vimrc :tangle .vim/vimrc :mkdirp yes
+
+   se all&
+   se viminfo+=n~/.vim/viminfo
+
+   if expand('%:p:h') =~ '.vim' && has('win32unix')
+     silent !cp ~/.vim/vimrc ~/vimfiles/vimrc
+     silent !cp ~/.vim/gvimrc ~/vimfiles/gvimrc
+   en
+
+ #+end_src
+
+*** Plugins
+
+ I use [[https://github.com/junegunn/vim-plug][Vim Plug]], a very good plugin manager. The plugins I use are listed here:
+
+ - [[https://github.com/tpope/vim-sensible/][Vim Sensible]], by Tim Pope
+ - [[https://github.com/blueyed/vim-diminactive][Vim Diminactive]], by Daniel Hahler
+ - ... Complete this list...
+
+ #+begin_src vimrc :tangle .vim/vimrc :mkdirp yes
+
+   if empty(glob('~/.vim/autoload/plug.vim'))
+   if has('win32unix') || has('unix')
+   silent !curl -fLo ~\.vim\autoload\plug.vim --create-dirs
+   \ https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
+   aug PLUG
+   au!
+   au VimEnter * PlugInstall --sync | so $MYVIMRC
+   aug END
+   el
+   " Use ps1 Script to Install
+   echom "Please install Plugins with Cygwin, or script."
+   en
+   en
+
+   call plug#begin('~/.vim/plugged')
+   Plug 'tpope/vim-sensible'
+   " Appearance
+   Plug 'blueyed/vim-diminactive'
+   Plug 'flazz/vim-colorschemes'
+   Plug 'junegunn/goyo.vim'
+   Plug 'junegunn/limelight.vim'
+   Plug 'vim-airline/vim-airline'
+   Plug 'vim-airline/vim-airline-themes'
+   " Org-Like
+   Plug 'itchyny/calendar.vim'
+   Plug 'dhruvasagar/vim-dotoo'
+   Plug 'mattn/vim-gist'
+   Plug 'mattn/webapi-vim'
+   " Text Manipulation
+   Plug 'tpope/vim-commentary'
+   Plug 'tpope/vim-surround'
+   Plug 'dhruvasagar/vim-table-mode'
+   Plug 'mg979/vim-visual-multi'
+   " NerdTree
+   Plug 'preservim/nerdtree' |
+   \ Plug 'Xuyuanp/nerdtree-git-plugin'
+   Plug 'ryanoasis/vim-devicons'
+   " Language
+   Plug 'dense-analysis/ale'
+   Plug 'pprovost/vim-ps1'
+   " Plug 'alvan/vim-closteag'
+   " Plug 'mattn/vim-lsp-settings'
+   " Plug 'pangloss/vim-javascript'
+   " Plug 'prabirshrestha/asyncomplete-lsp.vim'
+   " Plug 'prabirshrestha/asyncomplete.vim'
+   " Plug 'prabirshrestha/vim-lsp'
+   " Under Development
+  #+end_src
+
+  This is how I handly plugins that might have local versions I want to test, in this case, [[https://github.com/julianorchard/desc.vim/][desc.vim]]:
+
+ #+begin_src vimrc :tangle .vim/vimrc :mkdirp yes
+   try
+   so ~/desc.vim/plugin/desc.vim
+   cat
+   Plug 'julianorchard/desc.vim'
+   endt
+   call plug#end()
+ #+end_src
+
+*** Plugin Settings
+
+ Setting some variables for plugins is the goal here:
+
+ #+begin_src vimrc :tangle .vim/vimrc
+
+   " Desc
+   let g:desc_author = [["desc", "Julian Orchard <hello@julianorchard.co.uk>"],
+   \["wesc", "Wessex Lifts <marketing@wessexlifts.co.uk>"]]
+   " Diminactive
+   let g:diminactive_use_colorcolumn = 0
+
+   " Colourscheme
+   color louver
+   let g:airline_theme='silver'
+   " Limelight
+   aug GOYOLL
+   au!
+   au User GoyoEnter Limelight
+   au User GoyoLeave Limelight!
+   aug END
+   "Closetag Extensions
+   let g:closetag_filenames = '*.html,*.xhtml,*.phtml,*.php'
+   "Clock Shortcut
+   nn <c-c> :Calendar -view=clock<cr>
+   "NERDTree
+   aug NERD
+   au!
+   au BufEnter * if tabpagenr('$') == 1 && winnr('$') == 1 &&
+   \exists('b:NERDTree') && b:NERDTree.isTabTree() | quit | en
+   aug END
+   let g:NERDTreeDirArrowExpandable = ' |'
+   let g:NERDTreeDirArrowCollapsible = '  ↘'
+   let NERDTreeShowHidden=1
+   nn <C-t> :NERDTreeToggle<CR>
+   "Vim Gist
+   " ~/.vim-gist file wasn't working, source a file with:
+   "   let g:gist_token = 'TOKEN'
+   try
+   so ~/.vim/gist.vim
+   cat
+   echom "ERROR SOURCING ~/.vim/gist.vim: Vim Gist needs token in ~/.vim/gist.vim"
+   endt
+   "asyncomplete.vim
+   " inoremap <expr> <Tab>   pumvisible() ? "\<C-n>" : "\<Tab>"
+   " inoremap <expr> <S-Tab> pumvisible() ? "\<C-p>" : "\<S-Tab>"
+   " inoremap <expr> <cr>    pumvisible() ? asyncomplete#close_popup() : "\<cr>"
+
+ #+end_src
+
+*** Defaults
+
+ These are some of the basic defaults required in a vimrc, in my opinion:
+
+ #+begin_src vimrc :tangle .vim/vimrc
+
+   syntax on
+   se popt=paper:A4           " print options
+   set noeb vb t_vb=          " no error bells
+   se enc=utf8                " file encoding
+   se history=1000            " command (:) hist
+   se mouse=                  " mouse (default)
+   se nosm                    " matching bracket on insert
+   se nosol                   " jump to rough current cursor position
+   se noswapfile              " yep
+   se shm=a                   " avoid all 'hit enter to continue'
+   se title                   " title bar title (content below)
+   se titlestring=vim:\ %-25.55F\ %a%r%m titlelen=70
+   se tf                      " better xterm mainly experience
+   se backspace=indent,eol,start
+
+   aug RTS
+   au!
+   au BufWritePre * :%s/\s\+$//e
+   aug END
+
+   if has('persistent_undo')
+   silent !mkdir ~/.vim/backups > /dev/null 2>&1
+   se undodir=~/.vim/backups
+   se undofile
+   en
+
+   se fo+=q fo+=t
+   if has("autocmd")
+   autocmd FileType * setlocal formatoptions-=c formatoptions-=r formatoptions-=o
+   en
+   se nolist
+   se scrolloff=13
+   se textwidth=80
+
+   se autoindent
+   se shiftround
+   se smartindent
+   if has("autocmd")
+   filetype plugin indent on
+   en
+   se cpoptions  +=I
+
+   se number
+   se relativenumber
+
+   se hlsearch
+   se ic
+   se incsearch
+   se showmatch
+
+   se list lcs=tab:·\ ,nbsp:␣
+   se ts=2 shiftwidth=2 et
+   vn <tab> >vgv
+   vn <s-tab> <vgv
+   nn j gj
+   nn k gk
+   vn j gj
+   vn k gk
+
+   nn <c-j> <C-W><C-J>
+   nn <c-k> <C-W><C-K>
+   nn <c-l> <C-W><C-L>
+   nn <c-h> <C-W><C-H>
+
+ #+end_src
+
+*** Center Comment Function
+
+ This is a local function which centres comments, like this bash example:
+
+ #+begin_src sh
+ #                                   A COMMENT                                   #
+ #  -------- ANOTHER, LONGER COMMENT, WITH A CHARACTER HIGHLIGHTING IT --------- #
+ #+end_src
+
+ And here it is, in all its unfinished, flawed glory:
+
+ #+begin_src vimrc :tangle .vim/vimrc
+
+   fun! s:CenterComment(...)
+   " Comment Strings
+   let [l,r] = split(get(b:, 'commentary_format',
+   \substitute(&commentstring, '^$', '%s', '')), '%s', 1)
+   if r == ""
+   let r = l
+   en
+   " Chars and Text
+   try
+   let l:line_char = a:1
+   cat
+   let l:line_char = " "
+   endt
+   let l:line_text = " " . toupper(substitute(substitute(getline('.')
+   \, ".*" . l, "", ""), r, "", "")) . " "
+   let l:line_len = ((80 - strlen(l:line_text)) / 2) - 2
+   if l:line_len < 6
+   echom "This line is too long to add a title to."
+   el
+   " Make oddly numbered lines even
+   let l:fill_char = ""
+   if strlen(l:line_text) % 2 == 1
+   let l:fill_char = l:line_char
+   en
+   " Create the Line Parts
+   let l:i = 1
+   wh l:i < l:line_len
+   let l:i += 1
+   let l:line_char = l:line_char . l:line_char[0]
+   endw
+   " Insert the Line and Text
+   call setline(line("."), substitute(getline('.'),
+   \ getline('.'), l . " ". l:line_char . l:line_text .
+   \ l:line_char . l:fill_char . " " . r, "g"))
+   en
+   endfun
+   " Function only accepts single chars
+   nn comm  :call <SID>CenterComment(" ")<cr>
+   nn comm- :call <SID>CenterComment("-")<cr>
+   nn comm~ :call <SID>CenterComment("~")<cr>
+   nn comm@ :call <SID>CenterComment("@")<cr>
+   nn comm! :call <SID>CenterComment("!")<cr>
+   nn comm* :call <SID>CenterComment("*")<cr>
+
+ #+end_src
+
+*** Abbreviations
+
+ And we end with some useful abbreviations:
+
+ #+begin_src vimrc :tangle .vim/vimrc
+
+   iab @@ hello@julianorchard.co.uk
+   iab rubyenv #!/c/MAMP/bin/ruby/bin/ruby.exe
+   iab pythonenv #!/c/MAMP/bin/python/bin/python.exe
+   iab ~~ Julian Orchard <hello@julianorchard.co.uk>
+   iab <expr> ~g substitute(system('git config --global user.name') . " <" .
+   \system('git config --global user.email') . ">", '\n', '', 'g')
+   iab lipsum
+   \ Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
+   \ eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim
+   \ veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea
+   \ commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit
+   \ esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat
+   \ non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+ #+end_src
+
+** gvimrc
+
+*** Defaults
+
+#+begin_src vimrc :tangle ~/.vim/gvimrc :mkdirp yes
+    set vb t_vb=
+    se guioptions-=m
+    se guioptions-=T
+    se guioptions-=r
+    se guioptions-=L
+    se guioptions-=tT
+    se guitabtooltip=%{InfoGuiTooltip()}
+    se balloonexpr=FoldSpellBalloon()
+    let mapleader = ","
+#+end_src
+
+*** Fonts
+
+I use slightly different fonts for the graphical version of vim:
+
+#+begin_src vimrc :tangle ~/.vim/gvimrc :mkdirp yes
+    if has('win32') || has('win32unix')
+      set guifont=Consolas:h12:cANSI
+    el
+      set guifont=Monospace:h12
+    en
+    se textwidth=50
+#+end_src
+
+And we defiantly need some spell checking: 
+
+#+begin_src vimrc :tangle ~/.vim/gvimrc :mkdirp yes
+    setl spell spelllang=en_gb
+#+end_src
+
+*** Plugin Settings
+    
+The only plugin we use slightly differently is [[https://github.com/junegunn/goyo.vim][Goyo]].
+
+#+begin_src vimrc :tangle ~/.vim/gvimrc :mkdirp yes
+    augroup GGOYO
+      autocmd!
+      autocmd VimEnter * :Goyo 55
+    augroup END
+#+end_src 
+
+*** Misc.
+
+Ctrl+Backspace, we set to deleting a whole word. If I remember correctly, I don't think this works in the non-graphical vim. 
+
+#+begin_src vimrc :tangle ~/.vim/gvimrc :mkdirp yes
+  im <C-BS> <C-w>
+
+#+end_src
+
+Finally, because I mostly call gvim from a Powershell vim-anywhere-esqe script, I usually want to close everything once I've finished typing (including Goyo). This does that: 
+
+#+begin_src vimrc :tangle ~/.vim/gvimrc :mkdirp yes
+  if expand('%:p:h') =~ 'vim-anywhere'
+    se fo+=a
+    nn <Leader>q :wqa<cr>
+  en
+#+end_src
+
+** Language Specific
+*** About
+
+I was excited to be able to do this like this:
+
+#+begin_src org
+  ,#+begin_src vimrc :tangle php.vim css.vim something-else.vim :mkdirp yes
+	'file content would go here
+  ,#+end_src 
+#+end_src
+
+But you can't tangle the same block to multiple files like that, as far as I'm aware. So I'm going to have to look for another solution.
+
+*** Indentation
+    
+This is stored in multiple files in =~/.vim/after/indent/=: 
+
+- php.vim
+
+#+begin_src vimrc :tangle .vim/after/indent/php.vim :mkdirp yes
+set tabstop=4 softtabstop=0 noexpandtab shiftwidth=4 smarttab
+#+end_src
+
+- css.vim
+
+#+begin_src vimrc :tangle .vim/after/indent/css.vim :mkdirp yes
+set tabstop=4 softtabstop=0 noexpandtab shiftwidth=4 smarttab
+#+end_src
+
+- makefile.vim
+
+#+begin_src vimrc :tangle .vim/after/indent/makefile.vim :mkdirp yes
+set tabstop=4 softtabstop=0 noexpandtab shiftwidth=4 smarttab
+#+end_src
+
+- html.vim
+
+#+begin_src vimrc :tangle .vim/after/indent/html.vim :mkdirp yes
+set tabstop=4 softtabstop=0 noexpandtab shiftwidth=4 smarttab
+#+end_src
+
+- javascript.vim
+
+#+begin_src vimrc :tangle .vim/after/indent/javascript.vim :mkdirp yes
+set tabstop=4 softtabstop=0 noexpandtab shiftwidth=4 smarttab
+#+end_src
+
+*** Filetype Plugin
+
+These are a few file specific bits and pieces, loaded from =~/.vim/after/ftplugin/=: 
+
+- AutoHotkey
+
+#+begin_src vimrc :tangle .vim/after/ftplugin/autohotkey.vim :mkdirp yes
+setl commentstring=;\ %s
+#+end_src
+
+- Go-lang
+
+#+begin_src vimrc :tangle .vim/after/ftplugin/go.vim :mkdirp yes
+nn <c-b> :!go run % <cr>
+#+end_src
+
+- Markdown and Textfiles
+
+#+begin_src vimrc :tangle .vim/after/ftplugin/text.vim :mkdirp yes
+setlocal spell spelllang=en_gb
+set textwidth=50
+nnoremap :q :qa
+augroup GOYOMD
+	autocmd!
+	autocmd VimEnter * :Goyo
+augroup END
+#+end_src
+
+#+begin_src vimrc :tangle .vim/after/ftplugin/markdown.vim :mkdirp yes
+setlocal spell spelllang=en_gb
+set textwidth=50
+nnoremap :q :qa
+augroup GOYOMD
+	autocmd!
+	autocmd VimEnter * :Goyo
+augroup END
+#+end_src

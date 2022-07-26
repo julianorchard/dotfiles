@@ -1,0 +1,2592 @@
+#+author: Julian Orchard <git@julianorchard.co.uk>
+#+title: /windows/
+
+A literate Windows 10 configuration, set up in the folder =C:/cmd=.
+
+** Contents                                                    :TOC_3:QUOTE:
+#+BEGIN_QUOTE
+  - [[#about][About]]
+  - [[#dosbatch][DOSBatch]]
+    - [[#prompt-cmdrcbat][Prompt (=cmdrc.bat=)]]
+    - [[#windows-path-stuff][Windows Path Stuff]]
+    - [[#quick-navigation-with-cmd][Quick Navigation with CMD]]
+    - [[#ping-based-scripts][Ping-Based Scripts]]
+    - [[#very-small-andor-unix-y][Very Small and/or Unix-y]]
+  - [[#powershell][Powershell]]
+    - [[#no-admin-powershell][No Admin Powershell]]
+    - [[#config][Config]]
+    - [[#unfinished-email-script][Unfinished 'Email' Script]]
+    - [[#fonts][Fonts]]
+  - [[#autohotkey][AutoHotkey]]
+    - [[#about-1][About]]
+    - [[#essentials][Essentials]]
+    - [[#snipping-tools][Snipping Tools]]
+    - [[#lines-and-symbols][Lines and Symbols]]
+    - [[#instagram-hashtags][Instagram Hashtags]]
+    - [[#timestamps][Timestamps]]
+    - [[#email-sign-offs][Email Sign-Offs]]
+    - [[#linkedin][LinkedIn]]
+    - [[#lipsum][Lipsum]]
+    - [[#taskbar][Taskbar]]
+    - [[#custom-start--e][Custom Start + E]]
+    - [[#screen-refresher-and-keyboard-locker][Screen Refresher and Keyboard Locker]]
+    - [[#printing][Printing]]
+    - [[#fun-stuff][Fun Stuff]]
+  - [[#cygwin][Cygwin]]
+    - [[#about-2][About]]
+    - [[#bashrc][Bashrc]]
+    - [[#minttyrc][Minttyrc]]
+    - [[#tidy-files][Tidy Files]]
+    - [[#hack][Hack]]
+    - [[#mamp-fix][MAMP Fix]]
+  - [[#wallpaper][Wallpaper]]
+    - [[#about-3][About]]
+    - [[#set-the-wallpaper][Set The Wallpaper]]
+    - [[#wallpaper-choice][Wallpaper Choice]]
+    - [[#sort-wallpaper-files][Sort Wallpaper Files]]
+  - [[#hours][Hours]]
+    - [[#about-4][About]]
+    - [[#argument-parsing][Argument Parsing]]
+    - [[#clocking-in--out][Clocking In / Out]]
+    - [[#checking-times][Checking Times]]
+  - [[#notes][Notes]]
+#+END_QUOTE
+
+** About
+
+This is a document explaining some of my (previously sprawling and unweildy) Windows 10 configuration files, that I store in =c:\cmd\=.
+
+In this way, I'll be able to explain what's going on with some of the methods I've used. I don't have administrator level access on my work machine, for example, so often use portable .exe's and other workarounds to get certain technologies working! Some of them are good, and some of them are ugly, but all of them, now, will be explained...
+
+** DOSBatch
+*** Prompt (=cmdrc.bat=)
+
+This is one of the first files I started to work on when I began my Windows configuration. Where I'd previously used =.bashrc= on *nix systems, I was shocked to find that this was as close as you could get with Windows CMD.
+
+#+begin_src bat :tangle c:/cmd/cmdrc.bat :mkdirp yes
+@echo off
+#+end_src 
+
+These get and set the components of the prompt. It looks something like this, when finished:
+
+#+begin_src bat
+  Time: 16:20:20     Git: hello@julianorchard.co.uk     Hours: 14/37.5
+    C:\Users\jorchard > echo "hello!"
+#+end_src
+
+So the elements we need to get are:
+- The time (which is just built in to the CMD prompts abilities)
+- The git email address (which is the first part)
+- +The number of hours I have done for the week ([[link:windows.org#hours][more on this later...]])+ It used to have the number of hours to do in a week, which drew from my =\hours\= scripts, but since I stopped needing that I've removed it. The prompt that included that was like this:
+
+#+begin_src bat
+  set PROMPT=$STime:$S$T$H$H$H$S$S$S$S$S$SGit:$S%email%$S$S$S$S$S$SHours:$S%hours%/37.5$_$S$S$P$S$G$S
+#+end_src
+
+The current version is below: 
+
+#+begin_src bat :tangle c:/cmd/cmdrc.bat :mkdirp yes
+for /f "tokens=* usebackq" %%f in (`git config user.email`) do (
+  set email=%%f
+)
+set /p hours=<C:\cmd\hours\log\cmdrc.txt
+set PROMPT=$STime:$S$T$H$H$H$S$S$S$S$S$SGit:$S%email%$_$S$S$P$S$G$S
+#+end_src
+
+Finally we start in the home directory, rather than the location of this file, and run CMD.exe.
+
+#+begin_src bat :tangle c:/cmd/cmdrc.bat :mkdirp yes
+cd %homepath%
+CMD
+#+end_src
+
+If we want to refresh the prompt at any point, we can use the following script to do so:
+
+#+begin_src bat :tangle c:/cmd/bin/refreshprompt.bat :mkdirp yes
+  @echo off
+  for /f "tokens=* usebackq" %%f in (`git config user.email`) do (
+  set email=%%f
+  )
+  set /p hours=<C:\cmd\hours\log\cmdrc.txt
+  set PROMPT=$STime:$S$T$H$H$H$S$S$S$S$S$SGit:$S%email%$_$S$S$P$S$G$S
+#+end_src
+
+Which is, of course, the exact same as the =cmdrc.bat= file, but we don't need to change the directory or start the CMD process.
+
+*** Windows Path Stuff
+
+Some of the content in here is redundant, some of it is a little outdated, but all of it has been useful at some point or another with regards to manipulating the Windows 10 =PATH= environment. 
+
+Possibly the most useful script here is one created as part of the [[https://chocolatey.org/][Chocolatey]] package manager for Windows (that sadly never used before). It refeshes your =PATH= (link to the original [[https://github.com/chocolatey/choco/blob/master/src/chocolatey.resources/redirects/RefreshEnv.cmd][here]], and the [[https://github.com/chocolatey/choco/][repo is here]]):
+
+#+begin_src bat :tangle c:/cmd/bin/refresh.bat :mkdirp yes
+
+@echo off
+
+::  Author:     https://github.com/chocolatey/choco/
+::              https://github.com/chocolatey/choco/blob/master/
+::              src/chocolatey.resources/redirects/RefreshEnv.cmd
+
+echo Run this with call refresh.bat for optimum results!!!
+echo | set /p dummy="Refreshing environment variables from registry for cmd.exe. Please wait..."
+goto main
+:SetFromReg
+    "%WinDir%\System32\Reg" QUERY "%~1" /v "%~2" > "%TEMP%\_envset.tmp" 2>NUL
+    for /f "usebackq skip=2 tokens=2,*" %%A IN ("%TEMP%\_envset.tmp") do (
+        echo/set "%~3=%%B"
+    )
+    goto :EOF
+
+:GetRegEnv
+    "%WinDir%\System32\Reg" QUERY "%~1" > "%TEMP%\_envget.tmp"
+    for /f "usebackq skip=2" %%A IN ("%TEMP%\_envget.tmp") do (
+        if /I not "%%~A"=="Path" (
+            call :SetFromReg "%~1" "%%~A" "%%~A"
+        )
+    )
+    goto :EOF
+
+:main
+    echo/@echo off >"%TEMP%\_env.cmd"
+
+    call :GetRegEnv "HKLM\System\CurrentControlSet\Control\Session Manager\Environment" >> "%TEMP%\_env.cmd"
+    call :GetRegEnv "HKCU\Environment">>"%TEMP%\_env.cmd" >> "%TEMP%\_env.cmd"
+
+    call :SetFromReg "HKLM\System\CurrentControlSet\Control\Session Manager\Environment" Path Path_HKLM >> "%TEMP%\_env.cmd"
+    call :SetFromReg "HKCU\Environment" Path Path_HKCU >> "%TEMP%\_env.cmd"
+
+    echo/set "Path=%%Path_HKLM%%;%%Path_HKCU%%" >> "%TEMP%\_env.cmd"
+
+    del /f /q "%TEMP%\_envset.tmp" 2>nul
+    del /f /q "%TEMP%\_envget.tmp" 2>nul
+
+    SET "OriginalUserName=%USERNAME%"
+    SET "OriginalArchitecture=%PROCESSOR_ARCHITECTURE%"
+
+    call "%TEMP%\_env.cmd"
+
+    del /f /q "%TEMP%\_env.cmd" 2>nul
+
+    SET "USERNAME=%OriginalUserName%"
+    SET "PROCESSOR_ARCHITECTURE=%OriginalArchitecture%"
+
+    echo | set /p dummy="Finished."
+    echo .
+
+#+end_src
+
+This is a script I wrote to add a current folder to the path:
+
+#+begin_src bat :tangle c:/cmd/bin/addpath.bat :mkdirp yes
+
+	@echo off
+    set add=%1
+    shift
+    if [%add%] == [] ( set add=%cd% )
+    if exist %add% (
+      set PATH="%PATH%;%add%"
+    ) else (
+      echo Error; the location %add% could not be found.
+      echo Please try again.
+    )
+  :: Refresh Env
+    C:\CMD\bin\refresh.bat
+
+#+end_src
+
+In the end, however, I got bored of adding the same files all the time to my =PATH=, so I decided to just put this ugly thing in a script to make it easier when swapping machines:
+
+#+begin_src bat :tangle c:/cmd/bin/setpath.bat :mkdirp yes
+  @echo off
+  reg add HKEY_CURRENT_USER\Environment /v PATH /d "%PATH%;C:\cmd;C:\cmd\ahk;C:\cmd\bin;C:\cmd\hours;C:\cmd\hours\bin;C:\cmd\shortcuts;C:\Users\%USERNAME%\Documents\Personal Admin\Vim\vim81;C:\Program Files\VideoLAN"
+  call C:\cmd\bin\refresh.bat
+#+end_src
+
+/TODO: Paths in this list need reviewing./
+
+*** Quick Navigation with CMD
+
+This script creates drive locations. It simply loops through lettered drives available and creates a shortcut (just a =.bat= file with the content =cd DRIVE:=) that's it. It allows you to type =j= in the CMD prompt and go to the =J:\= drive, for example:
+
+#+begin_src bat :tangle c:/cmd/bin/drives.bat :mkdirp yes
+
+@echo off
+
+	set shortcuts=C:\CMD\shortcuts
+	if not exist %shortcuts% ( mkdir %shortcuts% )
+
+	for %%a in (a,b,c,d,e,f,g,h,i,j,k,l,m,n,o,p,q,r,s,t,u,v,w,x,y,z) do (
+		if exist %%a:\ (
+			echo @echo off>%shortcuts%\%%a.bat
+			echo REM added automatically by script>>%shortcuts%\%%a.bat
+			echo %%a:>>%shortcuts%\%%a.bat
+			echo %%a:\ has been added as a shortcut
+		) else (
+			echo %%a:\ does not exist
+		)
+	)
+
+#+end_src
+
+Another script that allows for quick navigation around the CMD Prompt is this, which creates shortcuts to the directory you're currently in:
+
+#+begin_src bat :tangle c:/cmd/bin/shortcuts.bat :mkdirp yes
+
+@echo off
+
+:: Defaults
+  set shortdir=C:\CMD\shortcuts
+  if not exist %shortdir% mkdir %shortdir%
+	:: Home Dir
+	if not exist %shortdir%\home.bat (
+	  echo @echo off>%shortdir%\home.bat
+	  echo C:^>nul>>%shortdir%\home.bat
+	  echo cd %homepath%>>%shortdir%\home.bat
+	  echo C:%homepath% shortcut created!
+	) else (
+	  echo C:%homepath% shortcut is already established.
+	)
+	:: C:\CMD Dir
+	if not exist %shortdir%\dev.bat (
+	  echo @echo off>%shortdir%\dev.bat
+	  echo C:^>nul>>%shortdir%\dev.bat
+	  echo cd \CMD\>>%shortdir%\dev.bat
+	  echo C:\CMD shortcut created!
+	) else (
+	  echo C:\CMD shortcut is already established.
+	)
+	
+  set sname=%1
+  shift
+  if [%sname%] == [] (
+	echo. 
+	echo If you are looking to set up shortcuts to this folder, 
+	echo use this command like 'shortcut NAME'.
+	exit /b
+  )
+
+  set snameext=%sname:~-3%
+  if %snameext% == bat set sname=%sname:~0,-4%
+  if %snameext% == cmd set sname=%sname:~0,-4%
+
+  if exist "%shortdir%\%sname%.bat" (
+    echo Error; a shortcut of this name already exists.
+    exit /b
+  )
+
+  set drive=%cd:~0,1%
+
+  echo @echo off>%shortdir%\%sname%.bat
+  echo %drive%:^>nul>>%shortdir%\%sname%.bat
+  echo cd %cd%>>%shortdir%\%sname%.bat
+
+:: Feedback to the User
+  echo Shortcut should now be working!
+  echo Try it by typing "%sname%" from another dir.
+
+#+end_src
+
+It also sets up the following useful locations, when you first run it:
+
+| Shortcut | Path                      |
+|----------+---------------------------|
+| =dev=    | =c:/cmd/=                 |
+| =home=   | =c:/Users/<currentUser>/= |
+
+The shortcut files it creates follow this format:
+
+#+begin_src bat
+
+  @echo off
+  %drive%:>nul
+  cd %cd%
+
+#+end_src
+
+*** Ping-Based Scripts
+
+Some of my utilities work in tandem with a script designed to send GUI notifications with VBScript:
+
+#+begin_src VBScript :tangle c:/cmd/bin/msgBox.vbs :mkdirp yes
+	Set objArgs = WScript.Arguments
+	messageText = objArgs(0)
+	MsgBox messageText
+#+end_src
+
+One script that makes use of this, quite well in my opinion, is /amiconnected/. It simply tests whether you're connected to the internet (using =ping=), and notifies you when you go back online: 
+
+#+begin_src bat :tangle c:/cmd/bin/amiconnected.bat :mkdirp yes
+
+@echo off
+@setlocal enableextensions enabledelayedexpansion
+
+echo.
+echo Try running with 'notify' as an argument. It will
+echo notify you via a popup when your connection is re-established...
+echo.
+set oldstate=Error
+set notify=false
+if [%1]==[] (
+  set ipaddress=google.com
+) else (
+  if [%1]==[notify] (
+    set ipaddress=google.com
+    set notify=true
+  ) else (
+    set ipaddress=%1
+  )
+)
+
+:loop
+  set state=Down
+  for /f "tokens=5,7" %%a in ('ping -n 1 !ipaddress!') do (
+      if "x%%a"=="xReceived" if "x%%b"=="x1," set state=Up
+  )
+  if not !state!==!oldstate! (
+    echo    Pinging: !ipaddress!    State: !state!
+    set oldstate=!state!
+  )
+  pushd \CMD\bin
+  if [%2]==[notify] set notify=true
+  if [!notify!]==[true] (
+    if [!state!]==[Up] (
+    :: Use msgBox.vbs to notify
+      WScript msgBox.vbs Connected
+      goto :end
+    )
+  )
+  ping -n 2 127.0.0.1 >nul: 2>nul:
+goto :loop
+:end
+endlocal
+
+#+end_src
+
+This is a very specific tool created to find out how many instances of a domain, containing numbers, exist.  For example:
+
+| Command           | Result      |
+|-------------------+-------------|
+| =ping test1.com=  | Exists      |
+| =ping test2.com=  | Exists      |
+| =ping test3.com=  | Ping Failed |
+| =...=             | ...         |
+| =ping test99.com= | Ping Failed |
+
+#+begin_src bat :tangle c:/cmd/bin/numberddomainseach.bat :mkdirp yes
+  @echo off
+  echo Numbered Domain Search
+  echo.
+  echo Very specific tool used to find out how many instances of a domain with
+  echo numbers after e.g. test1.com, test2.com, test3.com, etc. are live/pingable.
+  echo.
+  set /p start="Enter the start (e.g. thisdomain, not thisdomain.com): "
+  set /p ender="Enter the end (e.g. .com, etc) if applicable: "
+  set /p no="Search to number... : "
+  echo Searching %start%X%ender%, to number %no%...
+  for /l %%x in (1, 1, %no%) do (
+  ping -n 1 %start%%%x%ender% | find "TTL=" >nul
+  if not errorlevel 1 (  echo %start%%%x%ender% is online )
+  )
+#+end_src
+
+*** Very Small and/or Unix-y
+
+Here's a painfully small script, but one I use very frequently. It just opens the directory you're in with /explorer.exe/:
+
+#+begin_src bat :tangle c:/cmd/bin/gui.bat :mkdirp yes
+  @echo off
+  explorer .
+#+end_src
+
+Here's a script that just adds the files in the current folder to a text-file:
+
+#+begin_src bat :tangle c:/cmd/bin/mklist.bat :mkdirp yes
+  @echo off
+  dir /b /a-d>>"folder-contents.txt"
+#+end_src
+
+The following are similar to a Unix counterpart. This is similar to =ls -a=:
+
+#+begin_src bat :tangle c:/cmd/bin/ll.bat :mkdirp yes
+
+  @echo off
+
+  set location=%1
+  shift
+
+  if [%location%] == [] (
+          echo. 
+          echo.Folders:
+          dir /b /o /a:d .
+          echo.
+          echo.Files:
+          dir /b /o /a:-d .
+  ) else (
+    echo. 
+    echo.Folders:
+    dir /b /o /a:d %location%
+    echo.
+    echo.Files:
+    dir /b /o /a:-d %location%
+  )
+
+#+end_src
+
+This is similar to =touch=:
+
+#+begin_src bat :tangle c:/cmd/bin/touch.bat :mkdirp yes
+
+@echo off
+
+for %%A in (%*) do (
+	if exist %%A (
+		echo %%A already exists, could not create file.
+	) else (
+		copy NUL %%A >NUL
+		echo %%A successfully created
+	)
+)
+
+#+end_src
+
+This is similar to =rm=:
+
+#+begin_src bat :tangle c:/cmd/bin/rm.bat :mkdirp yes
+@echo off
+
+for %%a in (%*) do (
+  if exist %%a\NUL (rmdir "%%a" /S /Q) else (del "%%a")
+)
+#+end_src
+
+This is similar to =cp=:
+
+#+begin_src bat :tangle c:/cmd/bin/cp.bat :mkdirp yes
+  @echo off
+  set in=%1
+  set out=%2
+  shift
+  shift
+  xcopy "%in%" "%out%"
+#+end_src
+
+Here's something... I'm hesitant to use the word /similar/ here... it's a very slow, very poorly written [[https://en.wikipedia.org/wiki/Shred_(Unix)][GNU Shred]]:
+
+#+begin_src bat
+
+  @echo off
+  set filename=%1
+  set extra=%2
+  shift
+  shift
+  if not [%extra%] == [] echo This command only accepts single arguments for the moment; one file at a time please!
+  if [%filename%] == [] set /p "filename=Please enter filename: "
+  if not exist %filename% (
+  echo This file does not exist!
+  exit /b
+  )
+  :: Number of chars in file...
+  for %%i in (%filename%) do @set chars=%%~zi
+  echo This file contains %chars% characters.
+  :: Empty file and set new chars
+  <nul set /p=>%filename%
+  set charstr=1234567890abcdefghijklmnopqrstuvwxyz
+  setlocal enabledelayedexpansion
+  for /l %%a in (1, 1, %chars%) do (
+  set /a randchar=!random! %%36
+  call set randomcharacter=%%charstr:~!randchar!,1%%
+  <nul set /p=!randomcharacter!>>!filename!
+  )
+
+#+end_src
+
+I would *not* recommend using this.
+
+** Powershell
+*** No Admin Powershell
+
+I can't use admin. As a result, I invoke Powershell from CMD, like this:
+
+#+begin_src bat :tangle c:/cmd/bin/ps.bat :mkdirp yes
+@echo off
+  set psdir="C:\%homepath%\Documents\WindowsPowerShell"
+  if not exist %psdir% mkdir %psdir%
+  if not exist %psdir%\Microsoft.PowerShell_profile.ps1 (
+    xcopy C:\CMD\psrc.ps1 %psdir%\Microsoft.Powershell_profile.ps1 
+  ) else (
+    xcopy C:\CMD\psrc.ps1 %psdir%\Microsoft.PowerShell_profile.ps1 /Y > nul
+  )
+  echo.
+  powershell.exe -ExecutionPolicy bypass -NoLogo
+#+end_src
+
+This copies the Powershell configuration to the correct directory, too; the key bit being:
+
+#+begin_src bat
+powershell.exe -ExecutionPolicy bypass -NoLogo
+#+end_src
+
+*** Config
+
+Powershell is far better at this, and can have a more complex configuration. However, on my machine at work, it's often easier to use CMD due to the lack of admin level access. Therefore my Powershell configuration isn't as mature as I'd like, in an ideal world. 
+
+This part styles the prompt minimally.
+
+#+begin_src powershell :tangle c:/cmd/psrc.ps1 :mkdirp yes
+  function prompt {
+      " $ $(Split-Path -Path (Get-Location) -Leaf) > "
+  }
+#+end_src
+
+This function is used to set a wallpaper (more on this later). It's basically taken from [[https://techexpert.tips/powershell/powershell-configure-wallpaper/][here]].
+
+#+begin_src powershell :tangle c:/cmd/psrc.ps1 :mkdirp yes
+  function Set-Wallpaper($MyWallpaper) {
+  $code = @' 
+  using System.Runtime.InteropServices; 
+  namespace Win32{ 
+    public class Wallpaper{ 
+      [DllImport("user32.dll", CharSet=CharSet.Auto)] 
+      static extern int SystemParametersInfo (int uAction , int uParam , string lpvParam , int fuWinIni) ; 
+      
+      public static void SetWallpaper(string thePath){ 
+        SystemParametersInfo(20,0,thePath,3); 
+      }
+    }
+  } 
+'@
+
+  add-type $code 
+  [Win32.Wallpaper]::SetWallpaper($MyWallpaper)
+  }
+
+#+end_src
+
+These functions are used to manipulate =.lnk='s, and specifically to add keyboard shortcuts to them; a useful and possibly little known way to avoid using AutoHotkey. It's also quite unreliable! 
+
+#+begin_src powershell :tangle c:/cmd/psrc.ps1 :mkdirp yes
+
+  function Get-Shortcut {
+    param(
+      $path = $null
+    )
+    $obj = New-Object -ComObject WScript.Shell
+    if ($path -eq $null) {
+      $pathUser = [System.Environment]::GetFolderPath('StartMenu')
+      $pathCommon = $obj.SpecialFolders.Item('AllUsersStartMenu')
+      $path = dir $pathUser, $pathCommon -Filter *.lnk -Recurse 
+    }
+    if ($path -is [string]) {
+      $path = dir $path -Filter *.lnk
+    }
+    $path | ForEach-Object { 
+      if ($_ -is [string]) {
+        $_ = dir $_ -Filter *.lnk
+      }
+      if ($_) {
+        $link = $obj.CreateShortcut($_.FullName)
+
+        $info = @{}
+        $info.Hotkey = $link.Hotkey
+        $info.TargetPath = $link.TargetPath
+        $info.LinkPath = $link.FullName
+        $info.Arguments = $link.Arguments
+        $info.Target = try {Split-Path $info.TargetPath -Leaf } catch { 'n/a'}
+        $info.Link = try { Split-Path $info.LinkPath -Leaf } catch { 'n/a'}
+        $info.WindowStyle = $link.WindowStyle
+        $info.IconLocation = $link.IconLocation
+
+        New-Object PSObject -Property $info
+      }
+    }
+  }
+  function Set-Shortcut {
+    param(
+    [Parameter(ValueFromPipelineByPropertyName=$true)]
+    $LinkPath,
+    $Hotkey,
+    $IconLocation,
+    $Arguments,
+    $TargetPath
+    )
+    begin {
+      $shell = New-Object -ComObject WScript.Shell
+    }
+    process {
+      $link = $shell.CreateShortcut($LinkPath)
+
+      $PSCmdlet.MyInvocation.BoundParameters.GetEnumerator() |
+        Where-Object { $_.key -ne 'LinkPath' } |
+        ForEach-Object { $link.$($_.key) = $_.value }
+      $link.Save()
+    }
+  }
+
+#+end_src
+
+We use it here to create a file that runs our AutoHotkey scripts on startup:
+
+#+begin_src powershell :tangle c:/cmd/ahk/ahk-startup.ps1 :mkdirp yes
+  $userEnv     = $ENV:UserProfile
+  $appData     = "\AppData\Roaming\Microsoft\Windows\Start Menu\Programs\Startup"
+  $startupPath = "$userEnv$appData"
+  Set-Shortcut -LinkPath "$startupPath\general.ahk.lnk" -TargetPath "C:\cmd\ahk\general.ahk"
+  Set-Shortcut -LinkPath "$startupPath\spooler.ahk.lnk" -TargetPath "C:\cmd\ahk\spooler.ahk"
+  Set-Shortcut -LinkPath "$startupPath\printer.ahk.lnk" -TargetPath "C:\cmd\ahk\printer.ahk"
+#+end_src
+
+This is a function that returns human readable numbers. This could almost certainly be refactored, but I just wanted to get something working quickly to get my background image script working nicely:
+
+#+begin_src powershell :tangle c:/cmd/psrc.ps1 :mkdirp yes
+
+  function Readable-Numbers($InputNumber,$NumberFormat) 
+  {
+      function One-Digit($in) 
+      {
+          switch ( $in.Substring($in.Length - 1) )
+          {
+              0 { 
+                  if ($in.Length -eq 1) 
+                  {
+                      $ReadableNumber = "Zero" 
+                  }
+                  else
+                  {
+                      $ReadableNumber = ""
+                  }
+              }
+              1 { $ReadableNumber = "One" }
+              2 { $ReadableNumber = "Two" }
+              3 { $ReadableNumber = "Three" }
+              4 { $ReadableNumber = "Four" }
+              5 { $ReadableNumber = "Five" }
+              6 { $ReadableNumber = "Six" }
+              7 { $ReadableNumber = "Seven" }
+              8 { $ReadableNumber = "Eight" }
+              9 { $ReadableNumber = "Nine" }
+          }
+          return $ReadableNumber
+      }
+      function Two-Digit($in) 
+      {
+          switch -Wildcard ( $in )
+          {
+              10 { $ReadableNumber = "Ten" }
+              11 { $ReadableNumber = "Eleven" }
+              12 { $ReadableNumber = "Twelve" }
+              13 { $ReadableNumber = "Thirteen" }
+              14 { $ReadableNumber = "Fourteen" }
+              15 { $ReadableNumber = "Fifteen" }
+              16 { $ReadableNumber = "Sixteen" }
+              17 { $ReadableNumber = "Seventeen" }
+              18 { $ReadableNumber = "Eighteen" }
+              19 { $ReadableNumber = "Nineteen" }
+              "[2-9][0-9]" 
+              { 
+                  $i = $_.ToCharArray()
+                  $i1 = $i[0]
+                  $i2 = $i[1]
+                  switch ( $i1 ) 
+                  {
+                      2 { $ReadableNumber = "Twenty" }
+                      3 { $ReadableNumber = "Thirty" }
+                      4 { $ReadableNumber = "Forty" }
+                      5 { $ReadableNumber = "Fifty" }
+                      6 { $ReadableNumber = "Sixty" }
+                      7 { $ReadableNumber = "Seventy" }
+                      8 { $ReadableNumber = "Eighty" }
+                      9 { $ReadableNumber = "Ninety" }
+                  }
+                  if ("$i2" -ne "0")
+                  {
+                      $ReadableNumber += "-"
+                  }
+                  $ReadableNumber += One-Digit($_)
+              }
+          }
+          return $ReadableNumber
+      }
+      $in = $InputNumber.ToString()
+      switch ( $in.Length )
+      {
+          1 {
+              One-Digit($in)
+          }
+          2 {
+              Two-Digit($in)
+          }
+          default {
+              return ""
+          }
+      }
+  }
+#+end_src
+
+And finally, we set some quick shortcuts to use whilst navigating folders in the terminal. After that, we make sure we start in the user home, otherwise Powershell will open up in the folder we're in now (=C:/cmd=). 
+
+#+begin_src powershell :tangle c:/cmd/psrc.ps1 :mkdirp yes
+
+  function dev { cd C:\CMD }
+  function home { cd ~ }
+  function ll { ls }
+  function uk { cd "~\Documents\Website\2) UK Site\" }
+  function us { cd "~\Documents\Website\3) Export\US Site" }
+  function ca { cd "~\Documents\Website\3) Export\CA Site" }
+  function eu { cd "~\Documents\Website\3) Export\EU Site" } 
+
+  cd $env:userprofile
+
+#+end_src
+
+The nasty thing about this is that the Powershell File needs to be in a diffent path to the one we specify in this script. I don't know exactly why I've done it like this.
+
+Use this to update the script:
+
+#+begin_src powershell :tangle c:/cmd/bin/load-config.ps1 :mkdirp yes
+cp C:\cmd\ps\psrc.ps1 $home\Documents\WindowsPowerShell\Microsoft.PowerShell_profile.ps1
+#+end_src
+
+*** Unfinished 'Email' Script
+
+I would have liked to use this, but I never got round to making full use of it.
+
+#+begin_src powershell :tangle c:/cmd/bin/email.ps1 :mkdirp yes
+  #!/c/Windows/System32/WindowsPowerShell/v1.0/powershell.exe -File
+
+  function Send-Outlook-Email {
+      param (
+          $Subject,
+          $Body
+      )
+      # Outlook ComObject
+      $outlook = New-Object -ComObject Outlook.Application
+      $outlookMail = $outlook.CreateItem(0)
+      # Mail Content
+      $outlookMail.To = "EMAIL@EMAIL.EMAIL" 
+      $outlookMail.Subject = "$Subject" 
+      $outlookMail.Body = "$Body"
+      $outlookMail.SentOnBehalfOf = "Test"
+      $outlookMail.Send()
+      Write-Host "Email Sent"
+      Start-Sleep 2
+      ## Don't Quit Outlook, I might be using it...
+  }
+
+  Send-Outlook-Email -Subject $args[0] -Body $args[1]
+
+#+end_src
+
+This could potentially be put in the Powershell configuration file too, I believe.
+
+*** Fonts
+
+I want to improve this part, at some point. The fonts I use are:
+
+- Anonymice NF (Nerd Font patched version)
+- ET Book Open Type
+- Fira Code
+
+This installs the [[https://github.com/ryanoasis/nerd-fonts/tree/master/patched-fonts/AnonymousPro][Anonymice]] patched [[https://github.com/ryanoasis/nerd-fonts][Nerd Font]]:
+
+#+begin_src powershell :tangle c:/cmd/bin/font-anonymice.ps1 :mkdirp yes
+
+  $fontName = "Anonymice Nerd Font Complete Windows Compatible.ttf"
+  (New-Object System.Net.WebClient).DownloadFile("https://github.com/ryanoasis/nerd-fonts/raw/master/patched-fonts/AnonymousPro/complete/Anonymice%20Nerd%20Font%20Complete%20Windows%20Compatible.ttf","C:\cmd\sh\$fontName")
+  (New-Object -comObject Shell.Application).Namespace(0x14).CopyHere("C:\cmd\sh\$fontName",0x10)
+  Remove-Item "C:\cmd\sh\$fontName" -Force
+
+#+end_src
+
+But at the moment, I haven't written this for the other fonts I want on my system; it would be very useful for my [[file:emacs.org][emacs config]] too, so this is a TODO.
+
+** AutoHotkey
+*** About
+
+It's nice to have a reminder like this, when writing these AutoHotkey scripts:
+
+| Char | Purpose           |
+|------+-------------------|
+| =#=  | windows key       |
+| =!=  | alt key           |
+| =^=  | ctrl key          |
+| =+=  | shift key         |
+| =*=  | wildcard          |
+| =~=  | pass-through char |
+
+*** Essentials
+
+These are my absolute essential AutoHotkey bindings for productivity on Windows 10: 
+
+#+begin_src ahk :tangle c:/cmd/ahk/general.ahk :mkdirp yes
+
+  ; "Alt + Spacebar", Toggles Window 'Always on top' status
+  ^SPACE::  Winset, Alwaysontop, , A
+
+  ; Add Sound to Volume Keys
+  ~Volume_Up::
+  ~Volume_Down::
+  SoundPlay, C:\cmd\ahk\res\bing-1.wav
+  Return
+
+  ; "Alt + q", to close current window
+  !q::
+  WinGetActiveTitle, OutputVar
+  WinKill, %OutputVar%
+  Return
+
+  ; "Alt + Enter", to run CMDrc
+  #IfWinNotActive, ahk_class Microsoft Excel
+  !Enter:: Run, "C:\cmd\cmdrc.bat"
+
+  ; "Win + Enter", to run Powershell
+  #Enter:: Run, "C:\Windows\System32\WindowsPowerShell\v1.0\powershell.exe"
+
+  ; "Win + Alt + Enter", to Run Git Bash
+  #!Enter:: Run, "C:\ProgramData\Microsoft\Windows\Start Menu\Programs\Git\Git Bash"
+
+  ; "Alt + F", to Run Firefox
+  !f::Run, "C:\Program Files\Mozilla Firefox\firefox.exe"
+
+#+end_src
+
+*** Snipping Tools
+
+I use snipping tool, and these two little hotkeys are very useful to annotate your snips. With =Alt + u=, you can click two locations on your screen and it'll draw a line between them, with snipping tool, and with =Alt + b=, it draws a square box between two points.
+
+#+begin_src ahk :tangle c:/cmd/ahk/general.ahk :mkdirp yes
+
+  ;; Snipping Tools
+  $PrintScreen::
+  Run, "C:\Windows\system32\SnippingTool.exe"
+  WinWait, Snipping Tool,, 10
+  If ErrorLevel
+  {
+          MsgBox, "Snipping tool did not open as expected."
+  }
+  Else
+  {
+          Send, {ctrl down}{n down}
+          Send, {ctrl up}{n up}
+  }
+  Return
+
+  ; Alt + U (U for Underline)
+  !u::
+  KeyWait, LButton, D
+  MouseGetPos, X1, Y1
+  KeyWait, LButton, U
+  KeyWait, LButton, D
+  MouseGetPos, X2, Y2
+  MouseClickDrag, left, X1, Y1, X2, Y2
+  Return
+
+  ; Alt + B (B for Box)
+  !b::
+  KeyWait, LButton, D
+  MouseGetPos, X1, Y1
+  KeyWait, LButton, U
+  KeyWait, LButton, D
+  MouseGetPos, X4, Y4
+  MouseClickDrag, left, X4, Y1, X1, Y1
+  Sleep, 200
+  MouseClickDrag, left, X1, Y1, X1, Y4
+  Sleep, 200
+  MouseClickDrag, left, X1, Y4, X4, Y4
+  Sleep, 200
+  MouseClickDrag, left, X4, Y1, X4, Y4
+  Return
+
+#+end_src
+
+*** Lines and Symbols
+
+This is a collection of pre-drawn linebreaks for any plaintext files I may be working on: 
+
+#+begin_src  ahk :tangle c:/cmd/ahk/general.ahk :mkdirp yes
+
+  ; Line Break / <hr>'s - - - - - - - - - - - - - - -
+
+  ; = Insert  -+-  -+-  -+-  -+-  -+-  -+-  -+-  -+-
+  !=::
+  Loop, 8
+  {
+          Send, {space}-{+}-{space}
+  }
+  Return
+
+  ; ~ Insert -~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-
+  !#::
+  Loop, 16
+  {
+          Send, -~
+  }
+  Send, -
+  Return
+
+  ; Indented non-markdown-ish "o - "
+  !-::
+  Send, {space}o{space}-{space}
+  Return
+
+#+end_src
+
+*** Instagram Hashtags
+
+This one inserts a series of hashtags for the Instagram business account I run: 
+
+#+begin_src ahk :tangle c:/cmd/ahk/general.ahk :mkdirp yes
+
+  #!i::
+  FileRead, Clipboard, C:\cmd\ahk\res\wt.txt
+  Clipwait, 1
+  Send, %clipboard%
+  Clipboard:=""
+  Return
+
+#+end_src
+
+And the hashtags are...
+
+#+begin_src text :tangle c:/cmd/ahk/res/wt.txt :mkdirp yes
+{#}mobility {#}accessibility {#}disability {#}independence {#}movement {#}company {#}office {#}career {#}living {#}decor {#}modern {#}interior {#}instadecor {#}architecture {#}cities {#}town {#}local {#}building {#}construction {#}house 
+#+end_src
+
+*** Timestamps
+  
+  Here are some timestamp keys, bound to =Alt + FX=:
+
+#+begin_src ahk :tangle c:/cmd/ahk/general.ahk :mkdirp yes
+
+  ; F5 Insert Timestamp
+  !F5::
+  FormatTime, time, A_now, ddd d-MMM-yy hh:mm tt
+  send %time%
+  Return
+
+  ; F6 Insert Time
+  !F6::
+  FormatTime, time, A_now, ddd d-MMM-yy hh:mm tt
+  Send %time% ~ JO : {Enter}
+  Return
+
+  #+end_src
+
+*** Email Sign-Offs
+  
+  Just wanted to make a note about these two as they're quite fun; they insert an email sign-off automatically; for example;
+
+#+begin_src text :tangle c:/cmd/ahk/res/serious.txt :mkdirp yes
+Kind regards,
+Warm regards,
+Best regards,
+Regards, 
+Cheers,
+All the best,
+Many thanks,
+Best wishes,
+#+end_src
+
+As it keeps my emails feeling fresh. I also added a more silly one, for internal emails between colleagues, which works by picking a random word before 'regards'. For example:
+
+#+begin_src text :tangle c:/cmd/ahk/res/silly.txt :mkdirp yes
+Confident
+Supurb 
+Interesting
+Odd
+Bemused
+Transient
+Obtuse 
+Thought-provoking
+Untested
+Unproven
+Unjust
+Wobbly
+Silly
+Regards
+Serious
+Stern
+Confusing
+Critical
+#+end_src
+
+#+begin_src ahk :tangle c:/cmd/ahk/general.ahk :mkdirp yes
+
+  ; Insert a random, serious sign off
+  !F7::
+  serious := []
+  lines := 0
+  Loop, Read, C:\cmd\ahk\res\serious.txt
+  {
+          serious.Push(A_LoopReadLine)
+          lines++
+  }
+  Random, randum, 0, %lines%
+  Send, % serious[randum]
+  Return
+
+  ; Insert a random, non-serious sign off - X regards,
+  !F8::
+  silly := []
+  lines := 0
+  Loop, Read, C:\cmd\ahk\res\silly.txt
+  {
+          silly.Push(A_LoopReadLine)
+          lines++
+  }
+  Random, randum, 0, %lines%
+  Send, % silly[randum]
+  Send, {space}regards,
+  Return
+
+#+end_src
+
+*** LinkedIn
+
+LinkedIn has very silly message suggestions, in the opinion of almost everyone I've ever discussed this with... so this picks some random messages I took from LinkedIn and sends them at random. The results of sending this are, funnily enough, very similar to how a LinkedIn auto-generated conversation seems...
+
+#+begin_src ahk :tangle c:/cmd/ahk/general.ahk :mkdirp yes
+
+  ; Insert a random, LinkedIn Style Message
+  !F9::
+  linkedin := []
+  lines := 0
+  Loop, Read, C:\cmd\ahk\res\linkedin.txt
+  {
+          linkedin.Push(A_LoopReadLine)
+          lines++
+  }
+  Random, randum, 0, %lines%
+  Send, % linkedin[randum]
+  Return
+
+#+end_src
+
+These are the random messages I download:
+
+#+begin_src text :tangle c:/cmd/ahk/res/linkedin.txt :mkdirp yes
+Indeed
+It is
+I think so
+I'm not sure
+Let me check
+Haven't received it yet
+I got it now
+Okay, great
+What about you? 
+What do you do?
+Working
+At the office
+In the office
+Aha! 
+Where? 
+What's the location?
+What is the location?
+Sent
+Please check
+I'll call you
+May I have your phone number
+Thanks for sharing
+Great news!
+Hmm
+Just kidding
+😂
+🙄
+🤩
+😛
+😜
+Right now?
+Experience?
+Best regards
+It's my pleasure
+Hello
+Are you there?
+Where are you?
+Okay
+No problem
+Take your time
+No rush
+Let me know how it goes
+You can check now
+What for?
+I'm just asking
+Nope
+Congratulations
+I'm fine
+How's work?
+How's life?
+Thanks for asking
+Please keep in touch
+#+end_src
+
+*** Lipsum 
+
+Okay, didn't think I'd annotate these quite as much here, but the last one that works similarly to the above (picking a piece of text out of a txt file) is this, to add some Lorem Ipsum text: 
+
+#+begin_src ahk :tangle c:/cmd/ahk/general.ahk :mkdirp yes
+
+  ; Insert Lipsum Text
+  !F10::
+  FileRead, Clipboard, res\lipsum.txt
+  Clipwait, 1
+  SendInput, %clipboard%
+  Clipboard:=""
+  Return
+
+#+end_src
+
+And here is said file:
+
+#+begin_src text :tangle c:/cmd/ahk/res/lipsum.txt :mkdirp yes
+Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+#+end_src
+
+*** Taskbar
+
+I like to basically work without the presence of the taskbar on Windows 10. *But*, I don't like the auto-hide mode particularly, especially because if you receive a notification on any window, the damn bar pops up until you've clicked the notification (it does for Signal Desktop, anyway). So this little snippet (activated with =Alt + F12=) hids the task bar /properly/. I should say I ammended this code from [[https://www.autohotkey.com/board/topic/83594-how-to-hide-taskbar-with-hotkey/][here]].
+
+#+begin_src ahk :tangle c:/cmd/ahk/general.ahk :mkdirp yes
+
+  ; Alt+F12 to hide the taskbar entirely
+  !F12::
+  WinExist("ahk_class Shell_TrayWnd")
+  Tog := !Tog
+  If (Tog = "1")
+  {
+          SetTimer, CheckForBar, 1000
+  CheckForBar:
+          If WinExist("ahk_class Shell_TrayWnd")
+          {
+                  WinHide, ahk_class Shell_TrayWnd
+                  WinHide, Start ahk_class Button
+          }
+          Return
+  }
+  Else
+  {
+          SetTimer, CheckForBar, Off
+          WinShow, ahk_class Shell_TrayWnd
+          WinShow, Start ahk_class Button
+  }
+  Return
+
+#+end_src
+
+*** Custom Start + E
+
+A pretty commonly known Windows Shortcut is =Win + e=, which opens a new /explorer.exe/ window. But it's a bit limited, in my opinion, being that you only open to your 'Recent Places' folder/view. This adds the functionality to be able to open a range of locations, with =Alt + e= instead. A GUI is created so that you can see the options: 
+
+#+begin_src ahk :tangle c:/cmd/ahk/general.ahk :mkdirp yes
+
+  emodeoff()
+  {
+          Hotkey, c, C, Off
+          Hotkey, w, W, Off
+          Hotkey, j, J, Off
+          Hotkey, p, P, Off
+          Hotkey, s, S, Off
+          Hotkey, Esc, EModeEscape, Off
+
+          Gui, Destroy
+  }
+  !e::
+  Gui, -Caption
+  Gui, Margin, 100, 30
+  Gui, Font, s12, Segoe UI
+  Gui, Add, Text,, Alt+E locations you can open (bindings below):
+  Gui, Font, s10, Consolas
+  Gui, Add, Text,, - binding:    C   =     C:\Users\%A_UserName%\
+  Gui, Add, Text,, - binding:    W   =     C:\Users\%A_UserName%\Documents\Website\
+  Gui, Add, Text,, - binding:    J   =     J:\TSD\
+  Gui, Add, Text,, - binding:    P   =     P:\Marketing Images\
+  Gui, Add, Text,, - binding:    S   =     S:\
+  Gui, Show
+  Hotkey, c, C, On
+  Hotkey, w, W, On
+  Hotkey, j, J, On
+  Hotkey, p, P, On
+  Hotkey, s, S, On
+  Hotkey, Esc, EModeEscape, On
+  Return
+  C:
+          Run, C:\Users\%A_UserName%\
+          emodeoff()
+          Return
+  W:
+          Run, C:\Users\%A_UserName%\Documents\Website
+          emodeoff()
+          Return
+  J:
+          Run, J:\TSD\
+          emodeoff()
+          Return
+  P:
+          Run, P:\
+          emodeoff()
+          Return
+  S:
+          Run, S:\
+          emodeoff()
+          Return
+  Esc:
+  EModeEscape:
+          emodeoff()
+          Return
+#+end_src
+
+*** Screen Refresher and Keyboard Locker
+
+This toggles a 'screen refresher'; a way to bypass policy enforced screensaver timeouts by sending RAlt every 15 seconds: 
+
+#+begin_src ahk :tangle c:/cmd/ahk/general.ahk :mkdirp yes
+
+  !i::
+  idltog := !idltog
+  If (idltog = "1")
+  {
+          TrayTip, Screen Refresher On, The screen refresher has been enabled.
+          SetTimer, KeepAlive, 15000
+  KeepAlive:
+          Send, {RAlt}
+          Return
+  }
+  Else
+  {
+          TrayTip, Screen Refresher Off, The screen refresher has been disabled.
+          SetTimer, KeepAlive, Off ; Turn off the timer
+  }
+  Return
+
+#+end_src
+
+And this useful idea, that I found [[https://www.autohotkey.com/boards/viewtopic.php?t=33925][here]], works in tandem with the screen refresher; you can seamlessly lock all of the keys with this (activated and deactivated with =Alt + l=, by default:
+
+#+begin_src ahk :tangle c:/cmd/ahk/general.ahk :mkdirp yes
+
+  lock(f=0, mouse=0, message:="🔒") {
+          static allkeys, ExcludeKeys:="LButton,RButton"
+          If !allkeys
+          {
+                  s:="||NumpadEnter|Home|End|PgUp|PgDn|Left|Right|Up|Down|Del|Ins|"
+                  Loop, 254
+                          k:=GetKeyName(Format("VK{:0X}",A_Index))
+                  , s.=InStr(s, "|" k "|") ? "" : k "|"
+                  For k,v in {Control:"Ctrl",Escape:"Esc"}
+                  s:=StrReplace(s, k, v)
+                  allkeys:=Trim(s, "|")
+          }
+          f:=f ? "On":"Off"
+          If mouse
+                  ExcludeKeys:=""
+          For k,v in StrSplit(allkeys,"|")
+          If v not in %ExcludeKeys%
+                  Hotkey, *%v%, Block_Input, %f% UseErrorLevel
+  Block_Input:
+          If message!=
+                  Progress, B1 M fs30 ZH0 W50 CTB57EB7 CW0d455e, %message%
+          If (f="off")
+                  Progress, Off
+          Return
+  }
+  !l::
+  locktog := !locktog
+  If (locktog = "1")
+  {
+          lock(1,1)
+  }
+  Else
+  {
+          lock(0)
+  }
+  Return
+
+#+end_src
+
+*** Printing
+
+I have two printing scripts, and one of them requires a VBScript file to work.
+
+The first one is this simple script, which I like to have active on my work machine. It detects the presence of a window called '', which is the name of the account picker on our work big printer, and it just navigates to the number of your account (in my case, [[https://www.youtube.com/watch?v=4RV3RXMNGVs&t=11s][I am also *not a number*]], but I am and I'm number 60). 
+
+#+begin_src ahk :tangle c:/cmd/ahk/printer.ahk :mkdirp yes
+  #Persistent
+  FileRead, print_no, %A_ScriptDir%\printer_number.txt
+  SetTimer, CheckWin, 500
+  CheckWin:
+          IfWinActive, Store Details 
+          {
+                  Send, {Tab}
+                  Sleep, 500
+                  Send, %print_no%
+                  Sleep, 500
+                  Send, {Enter}
+          }
+          Return
+#+end_src
+
+I wanted to make this so that other people can use it, so (to simplify the process) they put their number in a file, like this (to put this in this literate configuration, it's funny that the code to generate this is *a lot* longer than the file itself... not the case with most files, but this one is comically mismatched in length):
+
+#+begin_src text :tangle c:/cmd/ahk/printer_number.txt :mkdirp yes
+60
+#+end_src
+
+Another script it more complicated, and it requires VBScript as I previously mentioned.
+
+It adds files to a spool list file, and then calls a VBScript to the file location at each line. It requires an external AutoHotkey script by Joshua A. Kinnison, =Explorer_Get.ahk=, which you can see below. It serves to get file information from a specific Explorer.exe window.
+
+#+begin_src ahk :tangle c:/cmd/ahk/res/Explorer_Get.ahk :mkdirp yes
+/*
+	Library for getting info from a specific explorer window (if window handle not specified, the currently active
+	window will be used).  Requires AHK_L or similar.  Works with the desktop.  Does not currently work with save
+	dialogs and such.
+	
+	
+	Explorer_GetSelected(hwnd="")   - paths of target window's selected items
+	Explorer_GetAll(hwnd="")        - paths of all items in the target window's folder
+	Explorer_GetPath(hwnd="")       - path of target window's folder
+	
+	example:
+		F1::
+			path := Explorer_GetPath()
+			all := Explorer_GetAll()
+			sel := Explorer_GetSelected()
+			MsgBox % path
+			MsgBox % all
+			MsgBox % sel
+		return
+	
+	Joshua A. Kinnison
+	2011-04-27, 16:12
+*/
+
+Explorer_GetPath(hwnd="")
+{
+	if !(window := Explorer_GetWindow(hwnd))
+		return ErrorLevel := "ERROR"
+	if (window="desktop")
+		return A_Desktop
+	path := window.LocationURL
+	path := RegExReplace(path, "ftp://.*@","ftp://")
+	StringReplace, path, path, file:///
+	StringReplace, path, path, /, \, All 
+	
+	; thanks to polyethene
+	Loop
+		If RegExMatch(path, "i)(?<=%)[\da-f]{1,2}", hex)
+			StringReplace, path, path, `%%hex%, % Chr("0x" . hex), All
+		Else Break
+	return path
+}
+Explorer_GetAll(hwnd="")
+{
+	return Explorer_Get(hwnd)
+}
+Explorer_GetSelected(hwnd="")
+{
+	return Explorer_Get(hwnd,true)
+}
+
+Explorer_GetWindow(hwnd="")
+{
+	; thanks to jethrow for some pointers here
+    WinGet, process, processName, % "ahk_id" hwnd := hwnd? hwnd:WinExist("A")
+    WinGetClass class, ahk_id %hwnd%
+	
+	if (process!="explorer.exe")
+		return
+	if (class ~= "(Cabinet|Explore)WClass")
+	{
+		for window in ComObjCreate("Shell.Application").Windows
+			if (window.hwnd==hwnd)
+				return window
+	}
+	else if (class ~= "Progman|WorkerW") 
+		return "desktop" ; desktop found
+}
+Explorer_Get(hwnd="",selection=false)
+{
+	if !(window := Explorer_GetWindow(hwnd))
+		return ErrorLevel := "ERROR"
+	if (window="desktop")
+	{
+		ControlGet, hwWindow, HWND,, SysListView321, ahk_class Progman
+		if !hwWindow ; #D mode
+			ControlGet, hwWindow, HWND,, SysListView321, A
+		ControlGet, files, List, % ( selection ? "Selected":"") "Col1",,ahk_id %hwWindow%
+		base := SubStr(A_Desktop,0,1)=="\" ? SubStr(A_Desktop,1,-1) : A_Desktop
+		Loop, Parse, files, `n, `r
+		{
+			path := base "\" A_LoopField
+			IfExist %path% ; ignore special icons like Computer (at least for now)
+				ret .= path "`n"
+		}
+	}
+	else
+	{
+		if selection
+			collection := window.document.SelectedItems
+		else
+			collection := window.document.Folder.Items
+		for item in collection
+			ret .= item.path "`n"
+	}
+	return Trim(ret,"`n")
+}
+#+end_src
+
+Which is a beautiful script.
+
+I use it for my pretty crude (in comparison) script:
+
+#+begin_src ahk :tangle c:/cmd/ahk/spooler.ahk :mkdirp yes
+  #Include C:\cmd\ahk\res\Explorer_Get.ahk
+
+  ^p:: 
+  sel := Explorer_GetSelected()
+  FileAppend, %sel%`n, C:\cmd\ahk\res\printlist.txt
+  ; Let user know what's been added
+  FileRead, PLContent, C:\cmd\ahk\res\printlist.txt
+  selArray := StrSplit(sel, "\")
+  MsgBox % "Added '" selArray[selArray.Count()] "'.`n`nThe file printlist.txt currently contains:`n" PLContent
+  Return
+
+  ^o::
+  FileRead, PLContent, C:\cmd\ahk\res\printlist.txt
+  if (PLContent = "") 
+  {
+          MsgBox, 0,, There is no content to print.
+          Return
+  }
+  MsgBox, 4,, File Contents: `n%PLContent%`nWould you like to print?
+  IfMsgBox Yes 
+          Run, "C:\cmd\bin\spooler.vbs"
+  Return
+#+end_src
+
+As you can see, it ends by calling a file =spooler.vbs=. This is /that/ file: 
+
+#+begin_src vbscript :tangle c:/cmd/bin/spooler.vbs :mkdirp yes
+
+	Set printlistRead = CreateObject("Scripting.FileSystemObject").OpenTextFile("C:\CMD\ahk\res\printlist.txt", 1)
+	Do Until printlistRead.AtEndOfStream
+		item = printlistRead.ReadLine
+		Set oWsh = CreateObject("Wscript.Shell")
+		oWsh.Run """Acrobat.exe"" /p /h" &item,,true
+	Loop
+	printlistRead.Close
+	
+' There must be a better way
+	Set printlistClear = CreateObject("Scripting.FileSystemObject").OpenTextFile("C:\CMD\ahk\res\printlist.txt", 2)
+	printlistClear.Write ""
+	printlistClear.Close
+
+#+end_src
+
+TODO: My Emacs configuration doesn't currently know how to handle VBScript, and the snippet I've used to try and implement syntax highlighting isn't working:
+
+#+begin_src elisp
+(setq auto-mode-alist
+      (append '(("\\.\\(vbs\\|wsf\\)$" . vbscript-mode))
+              auto-mode-alist))
+#+end_src
+
+*** Fun Stuff
+
+This part is in a file of its own, because I only want it active on my home machine, and it /needs/ to be separate really. It 'detects' when [[https://www.rocketleague.com][Rocket League]] is open and runs [[https://bakkesplugins.com/][Bakkesmod]] when it is. 
+
+#+begin_src ahk :tangle c:/cmd/ahk/bakkesmod.ahk :mkdirp yes
+  #Persistent
+  SetTimer, CheckForRL, 30000
+  CheckForRL:
+          if WinExist("Rocket League") and !WinExist("ahk_exe BakkesMod.exe")
+          {
+                  Run, "D:\Programs\Bakkesmod"
+          }
+          Return
+#+end_src
+
+I use the word /'detect'/ quite liberally here...
+
+Back to the main =general.ahk= file; this next bit is quite pointless, but a little bit of fun! It basically just toggles the NumLock, CapsLock, and ScrollLock keys, rhythmically, to create visual patterns. This is an attempt at something akin to the [[https://www.youtube.com/watch?v=jXq23Tq9FeU][Black Mirror intro sound effect sequence]] (which is a bit of a reach, but it's a nice pattern, regardless): 
+
+#+begin_src ahk :tangle c:/cmd/ahk/general.ahk :mkdirp yes
+
+  $^#l::
+  SetStoreCapsLockMode, off
+  a := "{NumLock}"
+  b := "{CapsLock}"
+  c := "{ScrollLock}"
+  SetNumLockState, off
+  SetCapsLockState, off
+  SetScrollLockState, off
+  ql := 1000
+  Loop, 8
+  {
+    Send, %a%
+    Sleep, %ql%
+    Send, %a%
+    Send, %b%
+    Sleep, %ql%
+    Send, %b%
+    Send, %c%
+    Sleep, %ql%
+    Send, %c%
+    ql := ql/2
+  }
+  Sleep, 200
+  Send, %a%
+  Send, %b%
+  Send, %c%
+  Sleep, 50
+  Send, %a%
+  Send, %b%
+  Send, %c%
+  Sleep, 100
+  Send, %a%
+  Send, %b%
+  Send, %c%
+  Sleep, 50
+  Send, %a%
+  Send, %b%
+  Send, %c%
+  Return
+
+#+end_src
+
+And this was created to try and recreate the rhythm of the [[https://www.youtube.com/watch?v=c7O91GDWGPU][William Tell Overture, Final]]: 
+
+#+begin_src ahk :tangle c:/cmd/ahk/general.ahk :mkdirp yes
+  $^#w::
+  SetStoreCapsLockMode, off
+  a := "{NumLock}"
+  b := "{CapsLock}"
+  c := "{ScrollLock}"
+  SetNumLockState, off
+  SetCapsLockState, off
+  SetScrollLockState, off
+  count := 1
+  Loop, 3
+  {
+    Loop, 3
+    {
+      Sleep, 100
+      Send, %c%
+      Sleep, 60
+      Send, %c%
+      Send, %b%
+      Sleep, 60
+      Send, %b%
+      Send, %a%
+      Sleep, 60
+      Send, %a%
+    }
+    If (count == 1)
+    {
+      Sleep, 200
+      Send, %c%
+      Sleep, 200
+      Send, %c%
+      Send, %b%
+      Sleep, 200
+      Send, %b%
+    }
+    Else If (count == 2)
+    {
+      Sleep, 200
+      Send, %b%
+      Sleep, 200
+      Send, %b%
+      Send, %a%
+      Sleep, 200
+      Send, %a%
+    }
+    Else
+    {
+      Sleep, 200
+      Send, %a%
+      Sleep, 200
+      Send, %a%
+      Send, %b%
+      Sleep, 200
+      Send, %b%
+      Send, %a%
+      Sleep, 100
+      Send, %b%
+      Sleep, 100
+      Send, %c%
+      Sleep, 800
+      Send, %c%
+      Sleep, 200
+      Send, %b%
+      Sleep, 200
+      Send, %a%
+      Sleep, 400
+      Send, %a%
+      Send, %b%
+      Send, %c%
+      Sleep, 400
+      Send, %a%
+      Send, %b%
+      Send, %c%
+    }
+    count := count+1
+  }
+  Return
+#+end_src
+
+** Cygwin
+
+*** About
+
+I use the mintty Cygwin terminal emulator, through [[https://gitforwindows.org/][Git Bash]] for Windows. This usually means I miss out on the latest and greatest features, sadly, and I don't have the package management resources that would normally come with Cygwin.
+
+However, I do have a few files to set this up nicely. 
+
+*** Bashrc
+
+Here's a minimal =.bashrc= file that I use on my Windows machines:
+
+#+begin_src sh :tangle ~/.bashrc :mkdirp yes
+
+  # Aliases
+  alias cls="clear"
+  alias grep="grep --color=auto"
+  alias ls="ls --color=always"
+  alias ll='ls -alF'
+  alias la='ls -A'
+  alias l='ls -CF'
+
+  # PS1
+  export PS1="  森 @ \w > \[$(tput sgr0)\]"
+
+  # Shortcuts
+  alias backup="cp ~/.bashrc ~/.minttyrc /c/cmd/sh/."
+  alias ga="git pull --recurse-submodules; git add ."
+  alias gui="explorer ."
+  alias dev="cd /c/cmd/"
+  alias home="cd ~"
+  alias uk="cd ~/Documents/Website/2\)\ UK\ Site/"
+  alias us="cd ~/Documents/Website/3\)\ Export/US\ Site/"
+  alias eu="cd ~/Documents/Website/3\)\ Export/EU\ Site/"
+  alias ca="cd ~/Documents/Website/3\)\ Export/CA\ Site/"
+  alias wip="cd ~/Documents/Website/6\)\ Wordpressify/wp-content/themes/wessex/"
+  alias gitwc="~/gitwc.sh"
+  alias php="/c/MAMP/bin/php/php7.2.10/php.exe"
+  alias ruby="/c/MAMP/bin/ruby/bin/ruby.exe"
+
+  # Path 0_0
+  export PATH=$PATH:"/c/cmd/sh/"
+  export PATH=$PATH:"$HOME/clock/bin/"
+  export PATH=$PATH:"/c/cmd/bin/"
+  export PATH=$PATH:"/c/cmd/bin/nvim/bin/"
+
+#+end_src
+
+*** Minttyrc
+
+Here's my =.minttyrc= file:
+
+#+begin_src text :tangle ~/.minttyrc :mkdirp yes
+
+  # General
+  Transparency=low
+  CursorType=block
+  CursorBlinks=yes
+  Font=Anonymice NF
+  FontHeight=11
+  FontSmoothing=full
+  AllowBlinking=yes
+  BoldAsFont=yes
+  Printer=
+  Columns=166
+  Rows=45
+  Scrollbar=none
+  Padding=20
+  RowSpacing=5
+  FontWeight=400
+
+  # Dracula Colour Scheme
+  ForegroundColour=248,248,242
+  BackgroundColour=40,42,54
+  Black=0,0,0
+  BoldBlack=104,104,104
+  Red=255,85,85
+  BoldRed=255,110,103
+  Green=80,250,123
+  BoldGreen=90,247,142
+  Yellow=241,250,140
+  BoldYellow=244,249,157
+  Blue=202,169,250
+  BoldBlue=202,169,250
+  Magenta=255,121,198
+  BoldMagenta=255,146,208
+  Cyan=139,233,253
+  BoldCyan=154,237,254
+  White=191,191,191
+  BoldWhite=230,230,230
+
+  # Colour Scheme
+  # BackgroundColour=234,234,234
+  # ForegroundColour=41,41,41
+  # CursorColour=41,41,41
+  # Black=41,41,41
+  # BoldBlack=128,128,128
+  # Red=178,97,77
+  # BoldRed=211,164,152
+  # Green=77,178,97
+  # BoldGreen=152,211,164
+  # Yellow=158,178,77
+  # BoldYellow=199,211,152
+  # Blue=97,77,178
+  # BoldBlue=164,152,211
+  # Magenta=178,77,158
+  # BoldMagenta=211,152,199
+  # Cyan=77,158,178
+  # BoldCyan=152,199,211
+  # White=234,234,234
+  # BoldWhite=255,255,255
+
+#+end_src
+
+I either use the commented out custom theme, which is light, or I use the dark Dracula theme to match my Emacs config and save my eyesight.
+
+*** Tidy Files
+
+I wrote this script in Ruby to tidy up some file names, after they've been mauled by Windows explorer.exe bulk renaming (e.g. =File (1).jpg=, =File (2).jpg=, etc.):
+
+#+begin_src ruby :tangle c:/cmd/bin/tidy :mkdirp yes
+
+  #!/c/MAMP/bin/ruby/bin/ruby.exe
+
+  def usage
+    puts
+    puts "---------------------------------------------"
+    puts "Tidy: Makes Windows File Bulk Renaming Neater"
+    puts "---------------------------------------------"
+    puts
+    puts "Designed to be used after bulk renaming files using"
+    puts "the Windows Explorer prompt."
+    puts
+    puts "Arguments: "
+    puts
+    puts "    -d         default; everything other than r"
+    puts "    -b         remove brackets from filename"
+    puts "    -e         normalize file extension"
+    puts "    -s         replace spaces with dashes"
+    puts "    -l         to lowercase"
+    puts "    -r         act recursively"
+    puts
+    exit
+  end
+
+  def tidy
+    current_dir = Dir.pwd
+    b_flag = s_flag = l_flag = e_flag = false
+
+    # Help
+    usage if ARGV.include? "h" or ARGV.empty?
+
+    # Opts
+    puts
+    puts "Changing files in " + current_dir + ": "
+    if ARGV.include? "d"
+      b_flag = s_flag = l_flag = e_flag = true
+      working_dir =  "*"
+    else
+      b_flag = true if ARGV.include? "b" # Brackets
+      s_flag = true if ARGV.include? "s" # Dashes
+      l_flag = true if ARGV.include? "l" # Lowercase
+      e_flag = true if ARGV.include? "e" # Extension
+      if ARGV.include? "r"
+        working_dir = "**/*" # Recursive
+      else
+        working_dir = "*"
+      end
+    end
+    puts
+
+    Dir.glob(working_dir) do |current_file|
+      next if current_file == "." or current_file == ".." or File.directory?(current_file)
+      file_rename = current_file
+
+      # Brackets
+      file_rename = file_rename.gsub("(", "").gsub(")", "") if b_flag == true
+
+      # Spaces
+      file_rename = file_rename.gsub(" ", "-") if s_flag == true
+
+      # Lowercase
+      file_rename = file_rename.downcase
+
+      # Normalise File Extension
+      if e_flag == true
+        case file_rename
+        when /\.jpeg/
+          file_rename = file_rename.gsub(".jpeg", ".jpg")
+        when /\.cmd/
+          file_rename = file_rename.gsub(".cmd", ".bat")
+        end
+      end
+
+      # Rename, Output
+      File.rename(current_file, current_dir + "/" + file_rename)
+      puts "    ->  " + current_file + "  =>  " + file_rename
+    end
+    puts
+  end
+
+  tidy
+  # vi: ft=ruby
+#+end_src
+
+The shebang is weird, I mention this later on.
+
+*** Hack
+
+A fun script to make it look like you're hacking:
+
+#+begin_src ruby :tangle c:/cmd/bin/hack :mkdirp yes
+
+  #!/c/MAMP/bin/ruby/bin/ruby.exe
+  def finish_hack
+    puts "\nHack progress at 100%."
+    puts "\n\n   --->>   HACK OF '" + ARGV.join(" ").upcase + "' COMPLETE.\n"
+    exit
+  end
+
+  def main
+    na = ["5","11","19","30","36","41","52","69","74","88","96","99","100"]
+    c = 0
+    loop do
+      begin
+        # Having problems with running Ruby sleep on Cygwin
+        sleep(1.0/5.0)
+        # This seems to work... but not very well at all.
+        case rand(8)
+        when 0..5
+          lc = rand(5..12)
+          i = 0
+          puts "\n"
+          loop do
+            i = i + 1
+            puts ('!'..'~').to_a.shuffle[0,rand(7..200)].join
+            break if i == lc
+          end
+        when 6
+          puts "\nGenerating hack string...\n"
+        when 7
+          finish_hack if na[c] == "100"
+          puts "\nThe Hack Is Currently Ongoing."
+          puts "Please do not touch the keyboard until the time is right."
+          puts "\nHack progress at " + na[c] + "%.\n\n"
+          c = c + 1
+        end
+      # Handle Ctrl + C
+      rescue Interrupt => e
+        finish_hack
+      end
+    end
+  end
+
+  main
+
+  # vi: ft=ruby
+#+end_src
+
+And this one is a lot better, but works on remote servers only (I have to use the Ruby stdlib on this machine):
+
+#+begin_src ruby :tangle c:/cmd/bin/hack-remote-only :mkdirp yes
+
+  #!/usr/bin/env ruby
+
+  require 'colorize'
+
+  def finish_hack
+    puts "\nHack progress at 100%.".red.underline
+    if ARGV.empty?
+      puts "\n\n   --->>   HACK COMPLETE.\n".green.bold
+    else
+      puts "\n\n   --->>   HACK OF ".green.bold + ARGV.join(" ").upcase.light_green.italic + " COMPLETE.\n".green.bold
+    end
+    exit
+  end
+
+  def main
+    na = ["5","11","19","30","36","41","52","69","74","88","96","99","100"]
+    colors = ["green","cyan","light_blue","light_cyan","light_green"]
+    c = 0
+    loop do
+      begin
+        sleep(1.0/5.0)
+        case rand(0..7)
+        when 0..5
+          lc = rand(5..12)
+          i = 0
+          puts "\n"
+          loop do
+            i = i + 1
+            quickvar = ('!'..'~').to_a.shuffle[0,rand(7..200)].join
+            puts quickvar.to_s.send(colors.sample)
+            break if i == lc
+          end
+        when 6
+          puts "\nGenerating hack string...\n"
+        when 7
+          finish_hack if na[c] == "100"
+          puts "\nThe Hack Is Currently Ongoing.".bold
+          puts "Please do not touch the keyboard until the time is right.".bold
+          puts "\nHack progress at ".bold + na[c].red.bold + "%.\n\n".bold
+          c = c + 1
+        end
+      rescue Interrupt
+        finish_hack
+      end
+    end
+  end
+
+  main
+
+#+end_src
+
+*** MAMP Fix
+
+My work machine has issues. One of them is with [[https://www.mamp.info/en/mamp/windows/][MAMP]], my web dev stack for Windows:
+
+#+begin_src sh :tangle c:/cmd/bin/mamp-fix.sh :mkdirp yes
+  #!/bin/sh
+  rm /c/MAMP/db/mysql/mysql-bin*
+#+end_src
+
+The issues I have occasionally seem to be fixed by resetting the MySQL-bin files.
+
+** Wallpaper
+*** About
+
+I'm very happy with my Wallpaper handling scripts (a component of which you've already seen in [[windows.org#psrcps1---powershell-config][this document]]). One thing that I /don't/ like is that I've written them in a few different programming languages. This was because I was torn on exactly how they should work, initially.
+
+Previously I needed a Git Submodule to link to my wallpaper files... but thanks to this literate config, all I need now is to clone my wallpaper repo to the =c:\cmd\wallpapers\= folder! The command for Cygwin will be: 
+
+#+begin_src sh
+git clone git@github.com:julianorchard/wallpapers.git /c/cmd/wallpaper/files/
+#+end_src
+
+*** Set The Wallpaper
+
+This Powershell file *sets* the wallpaper that has been chosen to live in the =\wallpapers= directory:
+
+#+begin_src powershell :tangle c:/cmd/wallpapers/pape-set.ps1 :mkdirp yes
+
+    function String-Line-One() 
+    {
+      # Minutes To/Past
+        $minsInt = Get-Date -Format "mm"
+        $hourInt = Get-Date -Format "h."
+    
+      # Remove Trailing (.) in Hour
+        $hourInt = $hourInt.Substring(0, $hourInt.Length - 1)
+      # Fixing Zero-Leading Minute
+        $m = $minsInt.ToCharArray()
+        $m1 = $m[0]
+        $m2 = $m[1]
+        if ( $m1 -eq "0" ) { $minsInt = $m2.ToString() }
+
+      # Past/To The Hour/Next
+        if ([int]$minsInt -lt 35) 
+        {
+          $toOrPast = "Past"
+        }
+        else 
+        {
+          $toOrPast = "To"
+          $minsInt = 60 - $minsInt
+          $hourInt = [int]$hourInt + 1
+        }
+
+      # Make It Readable
+        $currentMinutes = Readable-Numbers($minsInt)
+        $currentHour = Readable-Numbers($hourInt)
+        switch ( $currentMinutes )
+        {
+          "One" { $minType = " Minute" }
+          default { $minType = " Minutes" }
+        }
+        switch ( $currentMinutes ) 
+        {
+          "Fifteen" { 
+            $currentMinutes = "Quarter" 
+            $minType = ""
+          }
+          "Thirty" { 
+            $currentMinutes = "Half" 
+            $minType = ""
+          }
+        }
+        if ( $currentHour -eq "Thirteen" )
+        {
+          $currentHour = "One"
+        }
+        if ( $currentMinutes -eq "Zero" ) 
+        {
+          return "It's $currentHour O'Clock"
+        } 
+        else 
+        {
+          return "It's $currentMinutes$minType $toOrPast $currentHour"
+        }
+    }
+
+    function String-Line-Two
+    {
+    # Morning/Afternoon/Evening
+      if ((Get-Date -Format "tt") -eq "AM") 
+      {
+        $amOrPm = "morning"
+      }
+      else 
+      {
+        $amOrPm = "afternoon"
+      }
+    # Day (getting 'th/nd/etc')
+      $dayAndMonth = (Get-Date -Format "M").ToString() -Split " "
+      $day = $dayAndMonth[0]
+      $dayEnd = switch -Regex ($day) 
+      {
+        {@("3", "23") -contains $_} { "rd" }
+        {@("2", "22") -contains $_} { "nd" }
+        {@("1", "21", "31") -contains $_} { "st" }
+        default { "th" }
+      }
+    # Month
+      $month = $dayAndMonth[1]
+    # Day of the Week
+      $dayOfTheWeek = Get-Date -Format "dddd"
+    # Year 
+      $year = Get-Date -Format "yyyy"
+
+      return "in the $amOrPm on $dayOfTheWeek the $day$dayEnd of $month, $year"
+    }
+
+
+  while ($true)
+  {
+  # Wallpaper Location (Could Be Randomized Eventually...)
+    $paperIn = "C:\cmd\wallpapers\current.jpg"
+    $paperOut = "C:\cmd\wallpapers\current.bmp"
+
+  # -~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-
+  # CALL/CATCH STRING 1
+    try
+    {
+      $strLineOne = String-Line-One
+    }
+    catch 
+    {
+      $strLineOne = "Have a good day"
+    }
+  # -~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-
+  # CALL/CATCH STRING 2
+    try 
+    {
+      $strLineTwo = String-Line-Two
+    }
+    catch 
+    {
+      $strLineTwo = "... and try to remember to fix this background at some point."
+    }
+  # -~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~- 
+  # COLOURS
+    try 
+    {
+    # Get Current and Saved Colours
+      $currentColor = Get-Content -Path "C:\cmd\wallpapers\bin\colours.txt" -TotalCount 1
+      $savedColor   = Get-Content -Path "C:\cmd\wallpapers\bin\colours-saved.txt" -TotalCount 1
+    # Copy Current Colour to Saved Colour
+      Copy-Item "C:\cmd\wallpapers\bin\colours.txt" -Destination "C:\cmd\wallpapers\bin\colours-saved.txt"
+    }
+    catch 
+    { 
+      $currentColor = "#FFF" 
+    }
+  # -~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-
+  # ImageMagick Set Wallpaper
+  # if ($currentcolor -ne $savedcolor) # -and (check text) TESTING
+      $arguments = 'convert',"$paperIn",'-pointsize','60','-stroke','#222','-strokewidth','1.5','-fill',$currentColor,'-gravity','Center','-font','Times-New-Roman-Bold','-annotate','+0-260',"$strLineOne",'-pointsize','30','-font','Times-New-Roman','-strokewidth','0.8','-annotate','+0-200',"$strLineTwo",$paperOut
+      & magick $arguments
+  
+  # Set the Wallpaper
+    Set-Wallpaper($paperOut)
+    Start-Sleep -Seconds 15
+  }
+
+#+end_src
+
+*** Wallpaper Choice
+
+This Shell script works at work, with my work screen resolution, to pick the file to use in the =\wallpaper= folder:
+
+#+begin_src sh :tangle c:/cmd/wallpapers/mkcurrent-work.sh :mkdirp yes
+  #!/bin/bash
+
+  colourstr=$(magick convert $1 +dither -colors 1 -unique-colors txt:)
+
+  [[ "$colourstr" =~ (\#[0-9,a-f,A-F]{3,6}) ]] && echo "${BASH_REMATCH[1]}" >/c/cmd/wallpapers/bin/colours.txt || echo "#000">/c/cmd/wallpapers/bin/colours.txt
+
+  # Normalize Current.jpg to 1920x1080, 16:9, output to current.jpg
+  magick convert $1 -gravity South -crop 16:9 -resize 1920x1080 +repage current.jpg 
+
+#+end_src
+
+And this does the same at my home screen resolution: 
+
+#+begin_src sh :tangle c:/cmd/wallpapers/mkcurrent-home.sh :mkdirp yes
+  #!/bin/bash
+
+  colourstr=$(magick convert $1 +dither -colors 1 -unique-colors txt:)
+  [[ "$colourstr" =~ (\#[0-9,a-f,A-F]{3,6}) ]] && echo "${BASH_REMATCH[1]}" >/c/cmd/wallpapers/bin/colours.txt || echo "#000">/c/cmd/wallpapers/bin/colours.txt
+  magick convert $1 -gravity South -crop 16:9 -resize 3440x1440 +repage current.jpg 
+
+#+end_src
+
+*** Sort Wallpaper Files
+
+Finally, this one is a Ruby script that *sorts* the wallpapers by name of the folder they're in:
+
+#+begin_src ruby :tangle c:/cmd/wallpapers/pape-sort.rb :mkdirp yes
+  #!/c/MAMP/bin/ruby/bin/ruby.exe
+#+end_src
+
+Right, weirdness to mention at the shebang here: I am basically forced to use this weird shebang because I've not got Ruby in my PATH on my work machine; obviously this should really be:
+
+#+begin_src ruby
+  #!/usr/bin/env ruby
+#+end_src
+
+But it's not: sad.
+
+#+begin_src ruby :tangle c:/cmd/wallpapers/pape-sort.rb :mkdirp yes
+
+  def main
+    done_renaming = true
+    Dir.glob("files/*") do |d|
+      next if File.file?(d)
+      dir_name = d.split("/")[1]
+      Dir.glob(d + "/*") do |f|
+        # Skip if it's already an appropriate name
+        # or if it's a folder
+        next\
+          if File.basename(f, "-*").include? dir_name\
+        or File.directory?(f)
+        # Do the file renaming
+        print "\nRenaming:    '" + f + "'   "
+        # Gets the number of files in the directory
+        f_num = Dir[File.join(d, '*')].count { |file| File.file?(file) }
+        # Paths and rename
+        original_path = Dir.pwd + "/" + f
+        rename_path =  Dir.pwd + "/" + d + "/" + dir_name + "-" + f_num.to_s + File.extname(f)
+        # Show Renamed Name
+        print "'" + d + "/" + dir_name + "-" + f_num.to_s + File.extname(f) + "'\n"
+        File.rename(original_path, rename_path)
+        done_renaming = false # We renamed something
+      end
+    end
+    # Feedback if no renaming done
+    puts "Nothing to rename." if done_renaming
+  end
+
+  main
+
+#+end_src
+
+** Hours
+*** About
+
+I don't use this anymore; it's retired, sadly.
+
+I enjoyed working on it when I did, and I got a nice version working with VBScript, which was no small task in my opinion. But I use org-mode now, so it's fallen into obsolescence.
+
+I'm not sure if this even works. It's quite nice to see how far I've come though.  Here's a screenshot of it in action:
+
+[[./src/windows-hours.png]]
+
+*** Argument Parsing
+
+I wrote the argument parsing bit with Batch, for some reason:
+
+#+begin_src bat :tangle c:/cmd/hours/cl.bat :mkdirp yes
+  @echo off
+
+  set inOut=%1
+  set inputTime=%2
+  set inputDate=%3
+  shift
+
+
+  if [%inputTime%] == [] ( 
+  set inputTime=empty
+  )
+  if [%inputDate%] == [] (
+  set inputDate=empty
+  )
+
+  :: No Args
+  if [%inOut%] == [] (
+  CScript C:\cmd\hours\bin\check.vbs normal //nologo 
+  exit /b
+  )
+  :: Verbose
+  if %inOut% == v ( 
+  CScript C:\cmd\hours\bin\check.vbs verbose //nologo 
+  exit /b
+  )
+  :: Quiet
+  if %inOut% == q (
+  CScript C:\cmd\hours\bin\check.vbs quiet //nologo
+  )
+
+  :: Call clock.vbs ; in / out
+  if %inOut% == in ( 
+  CScript C:\cmd\hours\bin\clock.vbs in %inputTime% %inputDate% //nologo 
+  exit /b
+  )
+  if %inOut% == out ( 
+  CScript C:\cmd\hours\bin\clock.vbs out %inputTime% %inputDate% //nologo 
+  exit /b
+  )    
+
+  :: Call 'Fill'
+  if %inOut% == fill (
+  CScript C:\cmd\hours\bin\fill.vbs %inputTime% //nologo
+  exit /b
+  :: Although I'm passing 'input time' through, 
+  :: this is really the 'date' that'll be put through
+  )
+#+end_src
+
+I believe I used a Batch file so I wouldn't have to deal with any CScript weirdness with VBScript, but I think if I were to redo it I'd probably just use a VBScript to do this, too.
+
+*** Clocking In / Out
+
+I'm keeping this in its messy glory; it's a little bit nostalgic.
+
+#+begin_src vbscript :tangle c:/cmd/hours/bin/clock.vbs :mkdirp yes
+
+' Clock.vbs         ~~ Julian Orchard [hello@julianorchard.co.uk]
+'   This file handles the bulk of the writing
+'   content to the file, check.vbs handles the
+'   reading more than this.
+
+' Loop through the log file, copying each line
+' of the file, unless it's the line we want to change
+' in which case we just replace that line with the new
+' content and move on; then replace the file at the end
+	Function AddTime(ByVal inOut, ByVal currentTime, ByVal searchDate)
+
+	' Get File Objects
+ 	  Set fso      = CreateObject("Scripting.FileSystemObject")
+	  Set editFile = fso.OpenTextFile("C:\CMD\hours\log\log-temp.csv",2,True)
+    Set readFile = fso.OpenTextFile("C:\CMD\hours\log\log.csv",1)
+
+	' Loop Through File
+	  Do While readFile.AtEndOfStream <> True
+
+    ' Current Line To Array
+      lineFull = readFile.ReadLine
+	    lineArray = Split(lineFull, ",")
+	    lineDate  = DateValue(lineArray(0))
+
+    ' Found The Input Date (seachDate)
+	    If lineDate = searchDate Then
+        If inOut = "in" Then
+      ' For Replacing In
+          WScript.Echo "Replacing 'in' time " & lineArray (1) & " with " & currentTime & "."
+          editFile.WriteLine lineArray(0) & "," & _
+                             currentTime      & "," & _
+                             lineArray(2)
+        Else
+      ' For Replacing Out
+          If lineArray(2) = "" Then
+            WScript.Echo "Adding 'out' time " & currentTime & "."
+          Else
+            WScript.Echo "Replacing 'out' time " & lineArray (2) & " with " & currentTime & "."
+          End If  
+          editFile.WriteLine lineArray(0) & "," & _
+                             lineArray(1) & "," & _
+                             currentTime
+        End If
+      Else
+      ' If The Input Date Not Found, Just Copy The
+      ' Line To The New File Without Changing It
+        editFile.WriteLine lineFull
+	    End If
+	  Loop
+	  editFile.Close
+    readFile.Close
+
+    ' Replace Log With Log-Temp
+      fso.DeleteFile "C:\CMD\hours\log\log.csv", True
+      fso.MoveFile   "C:\CMD\hours\log\log-temp.csv", "C:\CMD\hours\log\log.csv"
+	End Function
+
+' Call if Row not found by Find-Row; makes new row
+  Function NewRow(ByVal inOut, ByVal currentTime, ByVal searchDate)
+  ' 8 == Append File
+    Set fso  = CreateObject("Scripting.FileSystemObject").OpenTextFile("C:\CMD\hours\log\log.csv",8,True)
+
+  ' Write YYYY/mm/dd,hh:mm,hh:mm
+    fso.WriteLine searchDate & "," & currentTime & ","
+    fso.close
+    Set fso = Nothing
+    WScript.Echo "New entry added, " & searchDate & " at " & currentTime
+  End Function
+
+' This function finds whether the row is there
+' or not... I think this could be combined with 
+' the FindRow function, might improve this at some point
+  Function FindRow(ByVal inOut, ByVal currentTime, ByVal searchDate)
+    found = False
+
+    Set fso  = CreateObject("Scripting.FileSystemObject")
+	  Set logFile = fso.OpenTextFile("C:\CMD\hours\log\log.csv", 1)
+
+  ' Get each line of file
+	  Do While logFile.AtEndOfStream <> True
+
+    ' Split line into array, comma delim
+	    lineArray = Split(logFile.ReadLine, ",")
+    ' Current date is the first of the array
+	    lineDate  = DateValue(lineArray(0))
+
+		' SEARCH --------------------------------------------------------
+	    If lineDate = searchDate Then
+        found = True
+      ' IN -------------------------------------------------
+        If inOut = "in" Then
+          ' Check if 'In' is populated
+          If lineArray(1) = "" Then
+             Call AddTime(inOut,currentTime,searchDate)
+						 Exit Do
+          Else
+            ' Check if overWrite is requested
+              If OverWriteConfirmation(inOut) = "y" Then
+                  Call AddTime(inOut,currentTime,searchDate)
+									Exit Do
+              Else
+									Exit Do
+              End If
+          End If
+      ' OUT ------------------------------------------------
+        Else
+          If lineArray(1) = "" Then
+          ' Error, trying to clock out when there is no clock in data
+            WScript.Echo "You cannot clock out when you haven't yet clocked in for the day."
+            WScript.Echo "Please enter a clock in time."
+						Exit Do
+          ElseIf lineArray(2) = "" Then
+            Call AddTime(inOut,currentTime,searchDate)
+						Exit Do
+          Else
+            ' Check if overwrite is requested
+              If OverWriteConfirmation(inOut) = "y" Then
+                  Call AddTime(inOut,currentTime,searchDate)
+									Exit Do
+              Else
+                  WScript.Echo "Exiting..."
+									Exit Do
+              End If
+          End If
+        End If
+	    End If
+	  Loop
+
+	  logFile.Close
+    Set logFile = Nothing
+
+    ' Row wasn't found
+    If found = False And inOut = "in" Then
+      WScript.Echo "Attempting to record a new day..."
+      Call NewRow(inOut,currentTime,searchDate)
+    Else
+      WScript.Echo "Error, not clocked in for this date. You need to clock in before you clock out!"
+    End If
+
+	End Function
+
+  Function OverWriteConfirmation(ByVal inOut)
+    If inOut = "in" Then
+      WScript.Echo "You have already clocked in today."
+    Else
+      WScript.Echo "You have already clocked out today."
+    End If
+    WScript.StdOut.Write "Would you like to overwrite your current time? (y/n) : "
+  ' Return confirmation
+    OverWriteConfirmation = WScript.StdIn.ReadLine
+  End Function
+
+' Handle arguments from cl.bat
+      Set args = WScript.Arguments
+  ' In/Out = args(0)
+      If args(0) = "in" Then
+        inOut = "in"
+      Else 
+        inOut = "out"
+      End If
+  ' Time = args(1)
+      If Not args(1) = "empty" Then
+        currentTime = args(1)
+      Else 
+        currentTime = FormatDateTime(Now,4)
+      End If
+  ' Date = args(2)
+      If Not args(2) = "empty" Then
+        searchDate = DateValue(args(2))
+      Else 
+        searchDate = Date
+      End If
+
+    Call FindRow(inOut,currentTime,searchDate)
+		WScript.Echo "huh?"
+		Set pog = WScript.CreateObject("WScript.Shell")
+		pog.Run "cl.vbs quiet"
+		Set pog = Nothing
+		WScript.Echo "Lol?"
+
+#+end_src
+
+*** Checking Times
+
+Again, I'm going to leave this pretty much as is.
+
+#+begin_src vbscript :tangle c:/cmd/hours/bin/check.vbs :mkdirp yes
+' Check.vbs    ~~ Julian Orchard [hello@julianorchard.co.uk]
+
+'   Read log file and show how many
+'   hours have been logged this current week
+
+' Checks the log file to get the basic values to be
+' used in all other outputs
+  Function Initial
+    Set logFile = CreateObject("Scripting.FileSystemObject").OpenTextFile("C:\CMD\hours\log\log.csv", 1)
+    ' Start of this week: https://stackoverflow.com/questions/8884098/find-this-weeks-monday
+        startOfThisWeek = DateAdd("d", -((Weekday(Date) + 7 - 2) Mod 7), Date)
+        daysOfTheWeekCount = 0
+
+			' Get each line of file
+				Do While logFile.AtEndOfStream <> True
+
+				' Split line into array, comma delim
+						lineArray = Split(logFile.ReadLine, ",")
+' Current date is the first of the array
+						lineDate = DateValue(lineArray(0))
+						If lineDate = startOfThisWeek Then
+								daysOfTheWeekCount = 5
+						End If
+
+						If daysOfTheWeekCount <> 0 Then
+							startTime = lineArray(1)
+
+						' Check an end time exists, do not try and count day if not
+							If lineArray(2) = "" Then
+								WScript.Echo "Warning, you have not clocked out for " & lineDate
+							Else 
+								endTime = lineArray(2)
+								minutesWorked = DateDiff("n",TimeValue(startTime),TimeValue(endTime))
+								minutesTotal = minutesTotal + minutesWorked
+							End If
+							daysOfTheWeekCount = daysOfTheWeekCount - 1
+						End If
+				Loop
+			' Return Initial (Raw)
+				Initial = minutesTotal
+	' Close Log File
+    logFile.Close
+    Set logFile = Nothing
+	End Function
+
+	Function Simple(ByRef raw)
+	' Progress Bar and Nice Output
+			hoursTotal = raw/60
+			barProgress = Round(hoursTotal)
+			barFill = 40 - barProgress
+
+		' Add spaces before the number to make it prettier
+		' hoursTotal        of         39.5 hours, complete!
+			If Len(Round(hoursTotal,1)) = 1 Then
+				WScript.StdOut.Write vbNewLine & "   "
+			ElseIf Len(Round(hoursTotal,1)) = 2 Then
+				WScript.StdOut.Write vbNewLine & "  "
+			ElseIf Len(Round(hoursTotal,1)) = 3 Then
+				WScript.StdOut.Write vbNewLine & " "
+			Else
+				WScript.StdOut.Write vbNewLine & ""
+			End If
+			WScript.StdOut.Write vbNewLine & Round(hoursTotal,1) & "        of       39.5 hours, complete!"
+
+		' Progress Bar Generation!
+		' [###################-------]
+			WScript.StdOut.Write vbNewLine & "["
+		' Pound symbol content
+				For i = 1 To barProgress
+					WScript.StdOut.Write "#"
+				Next 
+		' Dash symbol content
+				For j = 1 To barFill
+					WScript.StdOut.Write "-"
+				Next
+			WScript.StdOut.Write "]" & vbNewLine
+			Simple = hoursTotal
+  End Function
+
+	Function UpdateCMDRC(raw)
+		hoursTotal = raw/60
+	' Open
+		Set cmdrcFile = CreateObject("Scripting.FileSystemObject").OpenTextFile("C:\cmd\hours\log\cmdrc.txt", 2, true)
+	' Output
+		cmdrcFile.WriteLine(Round(hoursTotal,1))
+	' Close
+		cmdrcFile.Close
+		Set cmdrcFile = Nothing
+	End Function
+
+' Verbose feature not implemented yet
+  Function Verbose
+      WScript.Echo "The Verbose output feature is not yet working. Please try again later."
+  End Function
+
+Set args = WScript.Arguments
+raw = Initial ' This is the total minutes worked
+If args(0) = "normal" Then
+	Call Simple(raw)
+	Call UpdateCMDRC(raw)
+ElseIf args(0) = "quiet" Then
+' To be called by clock.vbs
+' as a default, eventually
+	Call UpdateCMDRC(raw)
+Else
+' Not doing anything, at the moment...
+	Call UpdateCMDRC(raw)
+End If
+
+#+end_src
+
+** Notes
+
+There are some bits of code that I don't /need/ in files. I never call them individually in any of the above scripts. Previously, I /did/ need them in file form, but with this document, I can just note them down quickly here.
+
+Get the Windows 10 user's full name, [[https://community.spiceworks.com/topic/949313-what-is-the-windows-variable-for-a-users-full-name-not-just-the-username][from here]]:
+
+#+begin_src bat
+  @echo off
+  for /f "tokens=2*" %%a in ('net user "%Username%" /domain ^| find /i "Full Name"') do set DisplayName=%%b
+  echo %DisplayName%
+#+end_src
+
+At one point, I used this to change all my folder icons. All the other icons, were treated as second class citizens and changed through the GUI, but the folders needed this script, for some reason (I can't remember why):
+
+#+begin_src bat
+  @echo off
+  if [%1] == [] goto:eof
+  echo [.ShellClassInfo] >%1\desktop.in
+  echo IconResource="c:/FOLDER ICON PATH.ico",0 >>%1\desktop.in
+  move %1\desktop.in %1\desktop.ini
+  attrib +S +H %1\desktop.ini
+  attrib +R %1
+#+end_src

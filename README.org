@@ -1,0 +1,53 @@
+#+author: Julian Orchard <git@julianorchard.co.uk>
+#+title: /config/ - All My Configuration Files
+
+#+begin_quote
+We do not think ourselves into new ways of living, we live ourselves into new ways of thinking.
+-- Richard Rohr
+#+end_quote
+
+** Background
+
+For the longest time, I struggled to best organise my configuration files.
+
+The problem was that I had fairly extensive configuration files for Windows and *nix systems which were best kept separate, as well as some platform agnostic files; for example, my Vim configs and Emacs configs.
+
+This has required me to have 4 separate repos... until now.
+
+** What is this? 
+
+This is a series of [[https://orgmode.org/][Org documents]] which contain *all the code for all my configurations*.
+
+To make use of it, open each file in Emacs. Then compile it with:
+
+#+begin_src elisp
+M-x org-babel-tangle
+#+end_src
+
+Org-mode then tangles (as the name of the command implies) all the code blocks together to their destination files. 
+
+** What's actually here?
+
+As I mentioned, I basically have two system specific collections of code, and two system agnostic ones. But because this is such a flexible solution, I've added one more to this, splitting Desktop *nix and Server *nix configurations: 
+
+- My [[file:windows.org][Windows 10 Config]], containing AutoHotkey, CMD, Powershell, and VBScript code for Windows, as well as a little Shell and Ruby which I run using Git Bash 
+- My serverside, pretty minimal, /needs adding.../
+- My desktop, more fully featured, /again, needs adding.../
+- My [[file:vim.org][Vim Config]]
+- My [[file:emacs.org][Emacs Config]]
+
+Feel free to use any part of this config.
+
+** See Also
+
+There's a lot of credits to random snippets of code here, within the Org documents. But some of the big inspirations of large portions go to:
+
+- [[https://github.com/daviwil/dotfiles][Daviwil's literate dotfiles]], and [[https://github.com/daviwil/emacs-from-scratch][his Emacs From Scratch series]] 
+- [[https://tecosaur.github.io/emacs-config/config.html][Tecosaur's config]], AKA /the most beautiful literate configuration I've ever seen/
+
+For my Emacs configuration, specifically: 
+
+- [[https://github.com/doomemacs/doomemacs][Doom]], of course; it's so useful even for a non-doomemacs config like this
+- [[https://github.com/redguardtoo/emacs.d][RedGuardToo's]] dotfiles, and also his [[https://github.com/redguardtoo/mastering-emacs-in-one-year-guide][Mastering Emacs in One Year]] Guide 
+- [[https://github.com/MatthewZMD/.emacs.d][MatthewZMD's M-Emacs]]
+
