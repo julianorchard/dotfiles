@@ -1,56 +1,199 @@
 #+author: Julian Orchard <git@julianorchard.co.uk>
-#+title: /emacs.org/ - Literate Emacs Configuration
+#+title: /emacs.org/
 
-Here we go...
+I'm still learning all about Emacs, and I probably always will be. So these are my current settings, semi-documented, semi-copied from other configurations, fully-useful to me at the moment. 
 
-#+begin_src elisp :tangle init.el
-;;;; -*- lexical-binding: t; -*- 
+** Content                                                     :toc_3:quote:
+#+BEGIN_QUOTE
+  - [[#meta][Meta]]
+  - [[#improve-start-up-time][Improve Start-Up Time]]
+  - [[#the-basics][The Basics]]
+    - [[#scratch-buffer-and-startup-info][Scratch Buffer and Startup Info]]
+    - [[#my-details][My Details]]
+    - [[#escape-actually-escapes][Escape Actually Escapes]]
+    - [[#mouse][Mouse]]
+    - [[#parenthesis-mode][Parenthesis Mode]]
+    - [[#minimizing-lockfiles-and-tempfiles][Minimizing Lockfiles and Tempfiles]]
+    - [[#utf-8][UTF-8]]
+    - [[#dialogue-boxes][Dialogue Boxes]]
+    - [[#yesno-or-yn][Yes/No, or Y/N]]
+    - [[#load-path][Load Path]]
+  - [[#package-setup][Package Setup]]
+  - [[#aesthetics][Aesthetics]]
+  - [[#completion][Completion]]
+    - [[#ivy-completion][Ivy Completion]]
+    - [[#company][Company]]
+  - [[#evil][Evil]]
+    - [[#the-evil-mode][The Evil Mode]]
+    - [[#the-evil-collection][The Evil Collection]]
+    - [[#evil-commentary][Evil Commentary]]
+    - [[#notes][Notes]]
+  - [[#org][Org]]
+    - [[#about][About]]
+    - [[#font-setup][Font Setup]]
+    - [[#main-org][Main Org]]
+    - [[#ligatures][Ligatures]]
+    - [[#some-org-setup][Some Org Setup]]
+    - [[#visual-column-mode][Visual Column Mode]]
+    - [[#org-bullets][Org Bullets]]
+    - [[#evil-org][Evil Org]]
+    - [[#org-prettier-tables][Org Prettier Tables]]
+    - [[#org-tempo][Org Tempo]]
+    - [[#tables-of-content][Tables Of Content]]
+  - [[#helpful][Helpful]]
+  - [[#todo][Todo]]
+#+END_QUOTE
+
+** Meta
+
+This isn't just another one of my config files, it's the config files to manage all others.
+
+I'm going to try and implement something similar to the [[https://github.com/daviwil/dotcrafter.el][dotcrafter.el]] example package by David Wilson.
+
+#+begin_src elisp
+  (defun org-babel-tangle-config ()
+    (when (or (string-equal (buffer-file-name)
+                            (expand-file-name "~/config/tester.org"))
+              (string-equal (buffer-file-name)
+                            (expand-file-name "~/config/test2.org")))
+              (let ((org-config-babel-evaluate nil))
+                (org-babel-tangle))))
+
+    (add-hook 'org-mode-hook
+              (lambda ()
+                (add-hook 'after-save-hook #'org-babel-tangle-config)))
 #+end_src
 
 ** Improve Start-Up Time
 
-This is meant to improve the start-up time by not garbage collecting; need to check if this actually works, do some more testing (as is the case with a lot of this config:
+This! What is /this/?
 
-#+begin_src elisp :tangle init.el
-  (unless (bound-and-true-p my-computer-has-smaller-memory-p)
-    (setq gc-cons-percentage 0.6)
-    (setq gc-cons-threshold most-positive-fixnum))
+#+begin_src elisp :tangle ~/.emacs.d/init.el
+;;;; -*- lexical-binding: t; -*- 
 #+end_src
 
-** Sensible Default Bits
+Delay garbage collection.
+
+=most-positive-fixnum= is an elegant way of avoiding just having a large number there, like I've seen a lot when looking at this. 
+
+#+begin_src elisp :tangle ~/.emacs.d/init.el
+  (setq gc-cons-percentage 0.6)
+  (setq gc-cons-threshold most-positive-fixnum)
+#+end_src
+
+** The Basics
 
 Including a few nice bindings that I can't live without, and my name and stuff: 
 
-#+begin_src elisp :tangle init.el
+*** Scratch Buffer and Startup Info
 
+This adds a message like:
+
+#+begin_src elisp
+;; Emacs loaded in X.XXXX seconds, just for you to waste time reading this in the scratch buffer
+#+end_src
+
+It's quite simple:
+
+#+begin_src elisp :tangle ~/.emacs.d/init.el
   (setq inhibit-startup-message t)
+  (setq initial-scratch-message (concat ";;  Emacs loaded in " (emacs-init-time) ", just for you to waste time reading this in the scratch buffer"))
+#+end_src
+
+*** My Details
+
+Added because it's sometimes nice to have these around (although I've not really needed them here in my Emacs journey, thus far...).
+
+#+begin_src elisp :tangle ~/.emacs.d/init.el
   (setq user-full-name "Julian Orchard")
   (setq user-mail-address "hello@julianorchard.co.uk")
+#+end_src
+
+*** Escape Actually Escapes
+
+One of the most initially frustrating things about Emacs was escaping the minibuffer for any reason would yeild terrible results.
+
+#+begin_src elisp :tangle ~/.emacs.d/init.el
   (global-set-key (kbd "<escape>") 'keyboard-escape-quit)
+#+end_src
+
+*** Mouse
+
+Scrolling amount. 
+
+#+begin_src elisp :tangle ~/.emacs.d/init.el
   (setq mouse-wheel-scroll-amount '(1 ((shift) . 1))) 
   (setq mouse-wheel-progressive-speed nil)
   (setq mouse-wheel-follow-mouse 't)
   (setq scroll-step 1)
+#+end_src
+
+*** Parenthesis Mode
+
+Spending any longer than 5 seconds in a buffer of lisp will require this, and it's nice to have generally: 
+
+#+begin_src elisp :tangle ~/.emacs.d/init.el
   (show-paren-mode t)
-  (setq backup-directory-alist '(("C:/$Recycle.Bin/Recycle Bin/")))
+#+end_src
+
+*** Minimizing Lockfiles and Tempfiles
+
+One of the wost things I found about initially using Emacs was how quickly simply opening files cluttered up everything. Get rid of the temporary files, as much as possible. Backup files to =~/Documents/Emacs-backup-dir/= too, out of the way as much as is reasonable...
+
+#+begin_src elisp :tangle ~/.emacs.d/init.el
+  (setq backup-directory-alist '(("~/Documents/Emacs-backup-dir/")))
   (setq create-lockfiles nil)
+#+end_src
+
+*** UTF-8
+
+Yes, thank you.
+
+#+begin_src elisp :tangle ~/.emacs.d/init.el
   (prefer-coding-system 'utf-8)
   (set-default-coding-systems 'utf-8)
   (set-terminal-coding-system 'utf-8)
   (set-keyboard-coding-system 'utf-8)
   (setq default-buffer-file-coding-system 'utf-8)
+#+end_src
+
+*** Dialogue Boxes
+
+No, thank you.
+
+#+begin_src elisp :tangle ~/.emacs.d/init.el
   (setq use-dialog-box nil)
+#+end_src
+
+*** Yes/No, or Y/N
+
+Y/N, thank you.
+
+#+begin_src elisp :tangle ~/.emacs.d/init.el
   (defalias 'yes-or-no-p 'y-or-n-p)
+#+end_src
+
+*** Load Path
+
+Paths to load, for Elisp by me or others.
+
+|-------------------------+------------------------------------------------------------|
+| Path                    | Purpose                                                    |
+|-------------------------+------------------------------------------------------------|
+| =~/.emacs.d/lisp/=      | Custom stuff, eventually, everything will be split up here |
+| =~/.emacs.d/site-lisp/= | Non-MELPA / ELPA Packages, cloned from Github or E-wiki    |
+|-------------------------+------------------------------------------------------------|
+
+#+begin_src elisp :tangle ~/.emacs.d/init.el
   (add-to-list 'load-path
                (concat (getenv "HOMEPATH") "/.emacs.d/lisp/"))
 #+end_src
 
-** Use-Package and Package /Stuff/
+** Package Setup
 
 Now *THIS* needs review. Is this the right place for it, and is this good /stuff at all/? I don't know, at the moment, so I need to find out...
 
-#+begin_src elisp :tangle init.el
-
+#+begin_src elisp :tangle ~/.emacs.d/init.el
   (require 'package)
   (setq package-archives '(("melpa" . "https://melpa.org/packages/")
                            ("org" . "https://orgmode.org/elpa/")
@@ -70,13 +213,14 @@ Now *THIS* needs review. Is this the right place for it, and is this good /stuff
    '(show-paren-mode t))
   (custom-set-faces)
 #+end_src
+
 ** Aesthetics
 
 Generally, this bit is about the looks of Emacs; the /whole/ look and feel is spread around the configuration a fair bit (especially concerning org-mode), but this is a lot of the inital, most important setup (thank you again, Doom Emacs).
 
 But first, get rid of the more useless stuff, and mess with the line-numbers (needs work):
 
-#+begin_src elisp :tangle init.el
+#+begin_src elisp :tangle ~/.emacs.d/init.el
   (scroll-bar-mode -1)
   (tool-bar-mode -1)
   (tooltip-mode -1)
@@ -95,7 +239,7 @@ But first, get rid of the more useless stuff, and mess with the line-numbers (ne
 
 I use [[https://github.com/edwardtufte/et-book][ETBookOT]] as my Serif font of choice, and [[https://github.com/tonsky/FiraCode][Fira Code]] for the codes: 
 
-#+begin_src elisp :tangle init.el
+#+begin_src elisp :tangle ~/.emacs.d/init.el
   (set-face-attribute 'default nil :font "Fira Code Retina" :height 110)
   (set-face-attribute 'fixed-pitch nil :font "Fira Code Retina" :height 110)
   (set-face-attribute 'variable-pitch nil :font "ETBookOT" :height 160 :weight 'regular)
@@ -112,54 +256,58 @@ I use [[https://github.com/edwardtufte/et-book][ETBookOT]] as my Serif font of c
     :init (solaire-global-mode +1))
 #+end_src
 
-** Needs Annotating
+** Completion
 
-#+begin_src elisp :tangle init.el
+*** Ivy Completion
 
-  ;; Command Log Mode
-  (use-package command-log-mode)
+Completion in the minibuffer.
 
-  ;; Ivy Package
-  (use-package ivy
-    :diminish
-    :bind (("C-s" . swiper)
-           :map ivy-minibuffer-map
-           ("TAB" . ivy-alt-done)	
-           ("C-l" . ivy-alt-done)
-           ("C-j" . ivy-next-line)
-           ("C-k" . ivy-previous-line)
-           :map ivy-switch-buffer-map
-           ("C-k" . ivy-previous-line)
-           ("C-l" . ivy-done)
-           ("C-d" . ivy-switch-buffer-kill)
-           :map ivy-reverse-i-search-map
-           ("C-k" . ivy-previous-line)
-           ("C-d" . ivy-reverse-i-search-kill))
-    :config
-    (ivy-mode 1))
-  (global-set-key (kbd "C-x C-b") 'ivy-switch-buffer)
-  (global-set-key (kbd "C-x C-k") 'kill-this-buffer)
+#+begin_src elisp :tangle ~/.emacs.d/init.el
+    (use-package ivy
+      :diminish
+      :bind (("C-s" . swiper)
+             :map ivy-minibuffer-map
+             ("TAB" . ivy-alt-done)	
+             ("C-l" . ivy-alt-done)
+             ("C-j" . ivy-next-line)
+             ("C-k" . ivy-previous-line)
+             :map ivy-switch-buffer-map
+             ("C-k" . ivy-previous-line)
+             ("C-l" . ivy-done)
+             ("C-d" . ivy-switch-buffer-kill)
+             :map ivy-reverse-i-search-map
+             ("C-k" . ivy-previous-line)
+             ("C-d" . ivy-reverse-i-search-kill))
+      :config
+      (ivy-mode 1))
+    (global-set-key (kbd "C-x C-b") 'ivy-switch-buffer)
+    (global-set-key (kbd "C-x C-k") 'kill-this-buffer)
+#+end_src
 
-  ;; Company Completion
+*** Company
+
+For completion /outside/ the minibuffer.
+
+#+begin_src elisp :tangle ~/.emacs.d/init.el
   (use-package company
     :custom
     (company-global-modes '(not shell-mode eaf-mode))
     :config
     (global-company-mode 1))
+#+end_src
 
-  ;; Helpful Package
-  (use-package helpful
-    :custom
-    (counsel-describe-function-function #'helpful-callable)
-    (counsel-describe-variable-function #'helpful-variable)
-    :bind
-    ([remap describe-function] . counsel-describe-function)
-    ([remap describe-command] . helpful-command)
-    ([remap describe-variable] . counsel-describe-variable)
-    ([remap describe-key] . helpful-key))
+** Evil
 
-  ;; Evil!
+Evil allows vim users (like me) to join the church of Emacs... but we'll always be heretics, to some degree... 
+
+*** The Evil Mode
+
+We go with =use-package= to get Evil mode configured, and installed. 
+
+#+begin_src elisp :tangle ~/.emacs.d/init.el :mkdirp yes
   (use-package evil
+    :ensure t
+    :demand 
     :init
     (setq evil-want-integration t)
     (setq evil-want-keybinding nil)
@@ -168,25 +316,48 @@ I use [[https://github.com/edwardtufte/et-book][ETBookOT]] as my Serif font of c
     :config
     (evil-mode 1)
     (define-key evil-insert-state-map (kbd "C-g") 'evil-normal-state)
-    (define-key evil-insert-state-map (kbd "C-h") 'evil-delete-backward-char-and-join)
-    ;; (evil-global-set-key 'motion "j" 'evil-next-visual-line)
-    ;; (evil-global-set-key 'motion "k" 'evil-previous-visual-line)
-    (evil-set-initial-state 'messages-buffer-mode 'normal)
-    (evil-set-initial-state 'dashboard-mode 'normal)
+    (evil-global-set-key 'motion "j" 'evil-next-visual-line)
+    (evil-global-set-key 'motion "k" 'evil-previous-visual-line)
     (define-key evil-normal-state-map (kbd "C-l") 'evil-window-next)
-    (define-key evil-normal-state-map (kbd "C-h") 'evil-window-next))
-  ;; Evil Collection
+    (define-key evil-normal-state-map (kbd "C-h") 'evil-window-next)
+    (evil-set-initial-state 'messages-buffer-mode 'normal)
+    (evil-set-initial-state 'dashboard-mode 'normal))
+#+end_src
+
+*** The Evil Collection
+
+The the evil collection! 
+
+#+begin_src elisp :tangle ~/.emacs.d/init.el :mkdirp yes
   (use-package evil-collection
     :after evil
     :config
     (evil-collection-init))
-  ;; Vim Commentary In Evil!
+#+end_src
+
+*** Evil Commentary
+
+Like Tim Pope's incredible 'vim commentary', but it's in Emacs!
+
+#+begin_src elisp :tangle ~/.emacs.d/init.el :mkdirp yes
   (use-package evil-commentary
     :after evil
     :diminish
     :config (evil-commentary-mode +1))
+#+end_src
 
-  ;; Org
+*** Notes
+
+I'd like to work on my Evil config a lot more, get to know it, and get to know how I should best make bindings using it. I feel like I'm lost with it at the moment, but that's fine! It's a journey...
+
+** Org
+*** About
+
+One of the biggest draws to Emacs, for me, has become Org-mode. It's incredible. 
+
+*** Font Setup
+
+#+begin_src elisp :tangle ~/.emacs.d/init.el :mkdirp yes
   (defun efs/org-font-setup ()
     ;; Replace list hyphen with dot
     (font-lock-add-keywords 'org-mode
@@ -204,8 +375,8 @@ I use [[https://github.com/edwardtufte/et-book][ETBookOT]] as my Serif font of c
                     (org-level-8 . 1.0)))
       (set-face-attribute (car face) nil :font "ETBookOT" :weight 'Light :height (cdr face)))
 
-  ;; Ensure that anything that should be fixed-pitch in Org files appears that way
-  ;;  (set-face-attribute 'org-block nil :foreground nil :inherit 'fixed-pitch)
+    ;; Ensure that anything that should be fixed-pitch in Org files appears that way
+    (set-face-attribute 'org-block nil :foreground nil :inherit 'fixed-pitch)
     (set-face-attribute 'org-table nil :inherit 'fixed-pitch)
     (set-face-attribute 'org-formula nil :inherit 'fixed-pitch)
     (set-face-attribute 'org-code nil :inherit 'fixed-pitch)
@@ -216,10 +387,15 @@ I use [[https://github.com/edwardtufte/et-book][ETBookOT]] as my Serif font of c
     (set-face-attribute 'org-checkbox nil :inherit 'fixed-pitch)
     (set-face-attribute 'line-number nil :inherit 'fixed-pitch)
     (set-face-attribute 'line-number-current-line nil :inherit 'fixed-pitch)
-    (set-face-attribute 'org-quote nil :inherit 'variable-pitch :slant 'italic)
-    )
+    (set-face-attribute 'org-quote nil :inherit 'variable-pitch :slant 'italic))
 
-  ;; Org Package / Main Config
+#+end_src
+
+*** Main Org
+
+This is the main org-mode block.
+
+#+begin_src elisp :tangle ~/.emacs.d/init.el :mkdirp yes
   (use-package org
     :pin org
     :commands (org-capture org-agenda)
@@ -233,6 +409,14 @@ I use [[https://github.com/edwardtufte/et-book][ETBookOT]] as my Serif font of c
     (setq org-todo-keywords
           '((sequence "TODO" "PENDING" "|" "DONE" "CANCELLED")))
     (efs/org-font-setup)
+
+#+end_src
+
+*** Ligatures
+
+I'd like to be able to replace the '#+begin_quote' blocks and code blocks of Org with symbols in the end, and I've not got it working yet. This is mainly a reminder, copied from [[https://github.com/tecosaur/emacs-config][Tecosaur's]] dotfiles. 
+
+#+begin_src elisp :tangle ~/.emacs.d/init.el :mkdirp yes
 
     ;; ;; Get this working...
     ;; (appendq! +ligatures-extra-symbols
@@ -318,24 +502,50 @@ I use [[https://github.com/edwardtufte/et-book][ETBookOT]] as my Serif font of c
     ;; 		  :priority_e    "[#E]")
     ;; (plist-put +ligatures-extra-symbols :name "⁍")
     )
-  (defun efs/org-mode-setup ()
+ #+end_src
+
+*** Some Org Setup
+
+Some random bits
+
+#+begin_src elisp :tangle ~/.emacs.d/init.el :mkdirp yes
+ (defun efs/org-mode-setup ()
     (org-indent-mode)
     (variable-pitch-mode 1)
     (visual-line-mode 1)
     (line-spacing 9))
+ #+end_src
+
+*** Visual Column Mode
+
+Centre it.
+
+#+begin_src elisp :tangle ~/.emacs.d/init.el :mkdirp yes
   (defun efs/org-mode-visual-fill ()
     (setq visual-fill-column-width 100
           visual-fill-column-center-text t)
     (visual-fill-column-mode 1))
-  (use-package visual-fill-column
+ (use-package visual-fill-column
     :hook (org-mode . efs/org-mode-visual-fill))
-  ;; Bullets Org
+ #+end_src
+
+*** Org Bullets
+
+Better bullet points and indentation.
+
+#+begin_src elisp :tangle ~/.emacs.d/init.el :mkdirp yes
   (use-package org-bullets
     :hook (org-mode . org-bullets-mode)
     :custom
     ;; (org-bullets-bullet-list '("◉" "○" "●" "○" "●" "○" "●")))
     (org-bullets-bullet-list '("\u200b" " " "◉" "-")))
-  ;; Evil Bindings For Org
+ #+end_src
+
+*** Evil Org
+
+Hmm... should this be in Evil, or Org subsection...
+
+#+begin_src elisp :tangle ~/.emacs.d/init.el :mkdirp yes
   (use-package evil-org
     :ensure t
     :after org
@@ -352,11 +562,25 @@ I use [[https://github.com/edwardtufte/et-book][ETBookOT]] as my Serif font of c
           ("j" "Journal" entry (file+datetree "~/OneDrive/org/journal.org")
            "* %?\nEntered on %U\n  %i\n  %a")))
   ;; Org-Pretty-Table-Mode
+ #+end_src
+
+*** Org Prettier Tables
+
+Prettier Org tables, please (they're lovely by default, but this makes them even nicer.
+
+#+begin_src elisp :tangle ~/.emacs.d/init.el :mkdirp yes
   (progn
     (add-to-list 'load-path "~/.emacs.d/site-lisp")
     (require 'org-pretty-table)
     (add-hook 'org-mode-hook (lambda () (org-pretty-table-mode))))
   ;; Org-Tempo
+ #+end_src
+
+*** Org Tempo
+
+This allows you to use =<s= to quickly insert a block of script, or =<q= to quickly insert a quote.
+
+#+begin_src elisp :tangle ~/.emacs.d/init.el :mkdirp yes
   (require 'org-tempo)
   ;; Org Padding
   ;;(require 'org-padding)
@@ -366,9 +590,43 @@ I use [[https://github.com/edwardtufte/et-book][ETBookOT]] as my Serif font of c
               (push '("[X]" . "x" ) prettify-symbols-alist)
               (push '("[-]" . "~" ) prettify-symbols-alist)
               (prettify-symbols-mode)))
+#+end_src
 
+*** Tables Of Content
+
+This is a really nice plugin (that I mainly use for /this very project/) that generates a nice table of contents on the saving of the document. The following is /basically/ taken from the [[https://github.com/snosov1/toc-org][repo]], but it works so I'm happy (and I don't want/need to use it with Markdown).
+
+#+begin_src elisp :tangle ~/.emacs.d/init.el :mkdirp yes
+  (use-package toc-org
+    :config
+    (add-hook 'org-mode-hook 'toc-org-mode))
+#+end_src
+
+** Helpful
+
+This is a todo, really. Taken from Daviwils dotfiles.
+
+#+begin_src elisp :tangle ~/.emacs.d/init.el
+  (use-package helpful
+    :custom
+    (counsel-describe-function-function #'helpful-callable)
+    (counsel-describe-variable-function #'helpful-variable)
+    :bind
+    ([remap describe-function] . counsel-describe-function)
+    ([remap describe-command] . helpful-command)
+    ([remap describe-variable] . counsel-describe-variable)
+    ([remap describe-key] . helpful-key))
+  #+end_src
+
+** Todo
+
+This needs annotation/better formatting/reviewing:
+
+#+begin_src elisp :tangle ~/.emacs.d/init.el :mkdirp yes
   ;; Magit
   (use-package magit
+    :ensure t
+    :defer 5
     :commands magit-status
     :custom
     (magit-display-buffer-function #'magit-display-buffer-same-window-except-diff-v1))
@@ -382,9 +640,9 @@ I use [[https://github.com/edwardtufte/et-book][ETBookOT]] as my Serif font of c
 
   ;; Ruby
   (add-to-list 'auto-mode-alist
-                 '("\\.\\(?:cap\\|gemspec\\|irbrc\\|gemrc\\|rake\\|rb\\|ru\\|thor\\)\\'" . ruby-mode))
+               '("\\.\\(?:cap\\|gemspec\\|irbrc\\|gemrc\\|rake\\|rb\\|ru\\|thor\\)\\'" . ruby-mode))
   (add-to-list 'auto-mode-alist
-                 '("\\(?:Brewfile\\|Capfile\\|Gemfile\\(?:\\.[a-zA-Z0-9._-]+\\)?\\|[rR]akefile\\)\\'" . ruby-mode))
+               '("\\(?:Brewfile\\|Capfile\\|Gemfile\\(?:\\.[a-zA-Z0-9._-]+\\)?\\|[rR]akefile\\)\\'" . ruby-mode))
 
   ;; Web Mode
   (use-package web-mode
@@ -396,7 +654,7 @@ I use [[https://github.com/edwardtufte/et-book][ETBookOT]] as my Serif font of c
   (use-package ahk-mode
     :config
     (add-to-list 'auto-mode-alist
-               '("\\.ahk" . ahk-mode)))
+                 '("\\.ahk" . ahk-mode)))
 
   ;; Powershell
   (use-package powershell
@@ -404,7 +662,7 @@ I use [[https://github.com/edwardtufte/et-book][ETBookOT]] as my Serif font of c
     (add-to-list 'auto-mode-alist
                  '("\\.ps1" . powershell)))
 
-  ; VBScript
+                                          ; VBScript
   (setq auto-mode-alist
         (append '(("\\.\\(vbs\\|wsf\\)$" . vbscript-mode))
                 auto-mode-alist))

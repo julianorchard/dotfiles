@@ -804,6 +804,7 @@ But at the moment, I haven't written this for the other fonts I want on my syste
 
 It's nice to have a reminder like this, when writing these AutoHotkey scripts:
 
+|------+-------------------|
 | Char | Purpose           |
 |------+-------------------|
 | =#=  | windows key       |
@@ -812,6 +813,7 @@ It's nice to have a reminder like this, when writing these AutoHotkey scripts:
 | =+=  | shift key         |
 | =*=  | wildcard          |
 | =~=  | pass-through char |
+|------+-------------------|
 
 *** Essentials
 
@@ -1634,7 +1636,6 @@ And this was created to try and recreate the rhythm of the [[https://www.youtube
 #+end_src
 
 ** Cygwin
-
 *** About
 
 I use the mintty Cygwin terminal emulator, through [[https://gitforwindows.org/][Git Bash]] for Windows. This usually means I miss out on the latest and greatest features, sadly, and I don't have the package management resources that would normally come with Cygwin.
