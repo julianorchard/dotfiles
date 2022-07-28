@@ -8,6 +8,8 @@ I'm still learning all about Emacs, and I probably always will be. So these are 
   - [[#meta][Meta]]
   - [[#improve-start-up-time][Improve Start-Up Time]]
   - [[#the-basics][The Basics]]
+    - [[#about][About]]
+    - [[#maximise-window][Maximise Window]]
     - [[#scratch-buffer-and-startup-info][Scratch Buffer and Startup Info]]
     - [[#my-details][My Details]]
     - [[#escape-actually-escapes][Escape Actually Escapes]]
@@ -19,17 +21,23 @@ I'm still learning all about Emacs, and I probably always will be. So these are 
     - [[#yesno-or-yn][Yes/No, or Y/N]]
     - [[#load-path][Load Path]]
   - [[#package-setup][Package Setup]]
+    - [[#needs-reviewing][Needs Reviewing!]]
   - [[#aesthetics][Aesthetics]]
+    - [[#about-1][About]]
+    - [[#remove-pointless-gui][Remove Pointless GUI]]
+    - [[#line-numbers-stuff][Line Numbers Stuff]]
+    - [[#general-fonts][General Fonts]]
+    - [[#dashboard][Dashboard]]
   - [[#completion][Completion]]
     - [[#ivy-completion][Ivy Completion]]
     - [[#company][Company]]
   - [[#evil][Evil]]
+    - [[#about-2][About]]
     - [[#the-evil-mode][The Evil Mode]]
     - [[#the-evil-collection][The Evil Collection]]
     - [[#evil-commentary][Evil Commentary]]
-    - [[#notes][Notes]]
   - [[#org][Org]]
-    - [[#about][About]]
+    - [[#about-3][About]]
     - [[#font-setup][Font Setup]]
     - [[#main-org][Main Org]]
     - [[#ligatures][Ligatures]]
@@ -40,8 +48,23 @@ I'm still learning all about Emacs, and I probably always will be. So these are 
     - [[#org-prettier-tables][Org Prettier Tables]]
     - [[#org-tempo][Org Tempo]]
     - [[#tables-of-content][Tables Of Content]]
-  - [[#helpful][Helpful]]
   - [[#todo][Todo]]
+    - [[#about-4][About]]
+    - [[#helpful][Helpful]]
+    - [[#magit][Magit]]
+    - [[#snippets][Snippets]]
+  - [[#language-modes][Language Modes]]
+    - [[#about-5][About]]
+    - [[#ruby][Ruby]]
+    - [[#web][Web]]
+    - [[#autohotkey][AutoHotkey]]
+    - [[#powershell][Powershell]]
+    - [[#vbscript][VBScript]]
+    - [[#yaml][YAML]]
+    - [[#latex][LaTeX]]
+  - [[#fun][Fun]]
+    - [[#about-6][About]]
+    - [[#discord][Discord]]
 #+END_QUOTE
 
 ** Meta
@@ -82,8 +105,17 @@ Delay garbage collection.
 #+end_src
 
 ** The Basics
+*** About
 
 Including a few nice bindings that I can't live without, and my name and stuff: 
+
+*** Maximise Window
+
+Upon starting Emacs (on Windows 10, at least), it's annoying that it's not full screen:
+
+#+begin_src elisp :tangle ~/.emacs.d/init.el :mkdirp yes
+(add-hook 'emacs-startup-hook 'toggle-frame-maximized)
+#+end_src
 
 *** Scratch Buffer and Startup Info
 
@@ -97,8 +129,12 @@ It's quite simple:
 
 #+begin_src elisp :tangle ~/.emacs.d/init.el
   (setq inhibit-startup-message t)
-  (setq initial-scratch-message (concat ";;  Emacs loaded in " (emacs-init-time) ", just for you to waste time reading this in the scratch buffer"))
+  (setq initial-scratch-message (concat ";;  Emacs loaded in " (emacs-init-time) ", just for you to waste time reading this in the scratch buffer\ 
+
+"))
 #+end_src
+
+But I've started using Dashboard instead (configuration further in this file...).
 
 *** My Details
 
@@ -190,6 +226,7 @@ Paths to load, for Elisp by me or others.
 #+end_src
 
 ** Package Setup
+*** Needs Reviewing!
 
 Now *THIS* needs review. Is this the right place for it, and is this good /stuff at all/? I don't know, at the moment, so I need to find out...
 
@@ -215,8 +252,11 @@ Now *THIS* needs review. Is this the right place for it, and is this good /stuff
 #+end_src
 
 ** Aesthetics
+*** About
 
 Generally, this bit is about the looks of Emacs; the /whole/ look and feel is spread around the configuration a fair bit (especially concerning org-mode), but this is a lot of the inital, most important setup (thank you again, Doom Emacs).
+
+*** Remove Pointless GUI
 
 But first, get rid of the more useless stuff, and mess with the line-numbers (needs work):
 
@@ -226,6 +266,14 @@ But first, get rid of the more useless stuff, and mess with the line-numbers (ne
   (tooltip-mode -1)
   (set-fringe-mode 5)
   (menu-bar-mode -1)
+  (setq visible-bell t)
+#+end_src
+
+*** Line Numbers Stuff
+
+This needs reviewing.
+
+#+begin_src elisp :tangle ~/.emacs.d/init.el
   (column-number-mode)
   (setq display-line-numbers 'relative)
   (dolist (rm-ln-hook '(org-mode-hook
@@ -234,8 +282,9 @@ But first, get rid of the more useless stuff, and mess with the line-numbers (ne
                         treemacs-mode-hook
                         eshell-mode-hook))
     (add-hook rm-ln-hook (lambda () (display-line-numbers-mode))))
-  (setq visible-bell t)
 #+end_src
+
+*** General Fonts
 
 I use [[https://github.com/edwardtufte/et-book][ETBookOT]] as my Serif font of choice, and [[https://github.com/tonsky/FiraCode][Fira Code]] for the codes: 
 
@@ -256,8 +305,29 @@ I use [[https://github.com/edwardtufte/et-book][ETBookOT]] as my Serif font of c
     :init (solaire-global-mode +1))
 #+end_src
 
-** Completion
+*** Dashboard
 
+Playing with dashboard. I did actually write the below Elisp, but I realise it's /identical/ to what's on the Github Repo; I'm proud to have 'got it right'... maybe some of this basic stuff is going in.
+
+I'd like to change the =dashboard-startup-banner= to something, maybe.
+
+#+begin_src elisp :tangle ~/.emacs.d/init.el
+    (use-package dashboard
+      :ensure t
+      :config 
+      (dashboard-setup-startup-hook)
+      (setq dashboard-banner-logo-title (concat "Emacs startup took " (emacs-init-time) "!"))
+      (setq dashboard-startup-banner "~/config/src/dash.png")
+      (setq dashboard-center-content t)
+      (add-to-list 'dashboard-items '(agenda) t))
+      ;; (setq dashboard-items '((recents  . 5)
+      ;;                         (bookmarks . 5)
+      ;;                         (projects . 5)
+      ;;                         (agenda . 5)
+      ;;                         (registers . 5)))
+#+end_src
+
+** Completion
 *** Ivy Completion
 
 Completion in the minibuffer.
@@ -297,8 +367,11 @@ For completion /outside/ the minibuffer.
 #+end_src
 
 ** Evil
+*** About
 
 Evil allows vim users (like me) to join the church of Emacs... but we'll always be heretics, to some degree... 
+
+I'd like to work on my Evil config a lot more, get to know it, and get to know how I should best make bindings using it. I feel like I'm lost with it at the moment, but that's fine! It's a journey...
 
 *** The Evil Mode
 
@@ -345,10 +418,6 @@ Like Tim Pope's incredible 'vim commentary', but it's in Emacs!
     :diminish
     :config (evil-commentary-mode +1))
 #+end_src
-
-*** Notes
-
-I'd like to work on my Evil config a lot more, get to know it, and get to know how I should best make bindings using it. I feel like I'm lost with it at the moment, but that's fine! It's a journey...
 
 ** Org
 *** About
@@ -602,7 +671,12 @@ This is a really nice plugin (that I mainly use for /this very project/) that ge
     (add-hook 'org-mode-hook 'toc-org-mode))
 #+end_src
 
-** Helpful
+** Todo
+*** About
+
+This needs annotation/better formatting/reviewing.
+
+*** Helpful
 
 This is a todo, really. Taken from Daviwils dotfiles.
 
@@ -618,72 +692,115 @@ This is a todo, really. Taken from Daviwils dotfiles.
     ([remap describe-key] . helpful-key))
   #+end_src
 
-** Todo
+*** Magit
 
-This needs annotation/better formatting/reviewing:
+Need to get this working with my Github SSH key; it's not authorized or working for some reason.
 
 #+begin_src elisp :tangle ~/.emacs.d/init.el :mkdirp yes
-  ;; Magit
   (use-package magit
     :ensure t
     :defer 5
     :commands magit-status
     :custom
     (magit-display-buffer-function #'magit-display-buffer-same-window-except-diff-v1))
+#+end_src
 
-  ;; YAS
+*** Snippets
+
+This is one of the things I'd like to get working most of all.
+
+#+begin_src elisp :tangle ~/.emacs.d/init.el :mkdirp yes
   (use-package yasnippet
     :custom
     (setq yas-snippet-dirs)
     :init
     (use-package yasnippet-snippets :after yasnippet))
+#+end_src
 
-  ;; Ruby
-  (add-to-list 'auto-mode-alist
-               '("\\.\\(?:cap\\|gemspec\\|irbrc\\|gemrc\\|rake\\|rb\\|ru\\|thor\\)\\'" . ruby-mode))
-  (add-to-list 'auto-mode-alist
-               '("\\(?:Brewfile\\|Capfile\\|Gemfile\\(?:\\.[a-zA-Z0-9._-]+\\)?\\|[rR]akefile\\)\\'" . ruby-mode))
+** Language Modes
 
-  ;; Web Mode
+*** About
+
+Some language-specific stuff, which modes to pick, etc.
+
+*** Ruby
+
+#+begin_src elisp :tangle ~/.emacs.d/init.el :mkdirp yes
+    (add-to-list 'auto-mode-alist
+                 '("\\.\\(?:cap\\|gemspec\\|irbrc\\|gemrc\\|rake\\|rb\\|ru\\|thor\\)\\'" . ruby-mode))
+    (add-to-list 'auto-mode-alist
+                 '("\\(?:Brewfile\\|Capfile\\|Gemfile\\(?:\\.[a-zA-Z0-9._-]+\\)?\\|[rR]akefile\\)\\'" . ruby-mode))
+#+end_src
+
+*** Web
+
+A general mode for web-development stuff.
+
+#+begin_src elisp :tangle ~/.emacs.d/init.el :mkdirp yes
   (use-package web-mode
     :mode
     (("\\.tpl\\.php\\'" . web-mode)
      ("\\.erb\\'" . web-mode)))
+#+end_src
 
-  ;; AutoHotkey
+*** AutoHotkey
+
+#+begin_src elisp :tangle ~/.emacs.d/init.el :mkdirp yes
   (use-package ahk-mode
     :config
     (add-to-list 'auto-mode-alist
                  '("\\.ahk" . ahk-mode)))
+#+end_src
 
-  ;; Powershell
+*** Powershell
+
+#+begin_src elisp :tangle ~/.emacs.d/init.el :mkdirp yes
   (use-package powershell
     :config
     (add-to-list 'auto-mode-alist
                  '("\\.ps1" . powershell)))
+#+end_src
 
-                                          ; VBScript
+*** VBScript
+
+TODO, or not to bother... potentially not worth looking at.
+
+#+begin_src elisp :tangle ~/.emacs.d/init.el :mkdirp yes
   (setq auto-mode-alist
         (append '(("\\.\\(vbs\\|wsf\\)$" . vbscript-mode))
                 auto-mode-alist))
+#+end_src
 
-  ;; Connect Remote
-  (defun connect-remote ()
-    (interactive)
-    (dired "/ssh:o@01001010.ml:/home/o/"))
-  (setq tramp-default-method "sshx")
+*** YAML
 
-  ;; TODO: Check if Discord is installed for this one!
-  ;; Discord Emacs 
-  ;; (use-package elcord
-  ;;   :config
-  ;;   (elcord-mode 1))
-
-  ;; XeLaTeX as Default
-  (setq latex-run-command "xelatex")
-
-  ;; YAML Mode
+#+begin_src elisp :tangle ~/.emacs.d/init.el :mkdirp yes
   (use-package yaml-mode)
+#+end_src
 
+*** LaTeX
+
+Or should I say XeLaTeX!? (Use XeLaTeX by default export.
+
+#+begin_src elisp :tangle ~/.emacs.d/init.el :mkdirp yes
+  (setq latex-run-command "xelatex")
+#+end_src
+
+
+
+** Fun
+*** About
+
+This is stuff that I didn't think fit in anywhere other than a category of 'fun'. It's either trivial or recreational stuff.
+
+*** Discord
+
+What's the point of using Emacs if you can't obnoxiously tell everyone constantly by having it listed as a game/application you're active in on Discord?! (In all seriousness, it's a fun package and the results are really nice looking).
+
+#+begin_src elisp :tangle ~/.emacs.d/init.el :mkdirp yes
+;; Testing This If Statement
+  (if (executable-find "discord")
+      (use-package elcord
+        :config
+        (elcord-mode 1)))
 #+end_src
 

@@ -198,11 +198,11 @@ In the end, however, I got bored of adding the same files all the time to my =PA
 
 #+begin_src bat :tangle c:/cmd/bin/setpath.bat :mkdirp yes
   @echo off
-  reg add HKEY_CURRENT_USER\Environment /v PATH /d "%PATH%;C:\cmd;C:\cmd\ahk;C:\cmd\bin;C:\cmd\hours;C:\cmd\hours\bin;C:\cmd\shortcuts;C:\Users\%USERNAME%\Documents\Personal Admin\Vim\vim81;C:\Program Files\VideoLAN"
+  reg add HKEY_CURRENT_USER\Environment /v PATH /d "%PATH%;C:\cmd;C:\cmd\ahk;C:\cmd\bin;C:\cmd\hours;C:\cmd\hours\bin;C:\cmd\shortcuts;C:\Users\%USERNAME%\Documents\Personal Admin\Vim\vim81;C:\Program Files\VideoLAN;C:\cmd\exe\;C:\MAMP\bin\ruby\bin\;C:\MAMP\bin\python\bin\"
   call C:\cmd\bin\refresh.bat
 #+end_src
 
-/TODO: Paths in this list need reviewing./
+Which doesn't work properly, because it needs to be set with =/M= I believe, which requires admin... might need to be always done through the GUI, for some reason, to be persistent. Or might require a restart. Not sure. Needs testing.
 
 *** Quick Navigation with CMD
 
