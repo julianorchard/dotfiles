@@ -35,7 +35,7 @@ I'm still learning all about Emacs, and I probably always will be. So these are 
     - [[#about-2][About]]
     - [[#the-evil-mode][The Evil Mode]]
     - [[#the-evil-collection][The Evil Collection]]
-    - [[#evil-commentary][Evil Commentary]]
+    - [[#the-evil-commentary][The Evil Commentary]]
   - [[#org][Org]]
     - [[#about-3][About]]
     - [[#font-setup][Font Setup]]
@@ -55,13 +55,13 @@ I'm still learning all about Emacs, and I probably always will be. So these are 
     - [[#snippets][Snippets]]
   - [[#language-modes][Language Modes]]
     - [[#about-5][About]]
-    - [[#ruby][Ruby]]
-    - [[#web][Web]]
     - [[#autohotkey][AutoHotkey]]
-    - [[#powershell][Powershell]]
-    - [[#vbscript][VBScript]]
-    - [[#yaml][YAML]]
     - [[#latex][LaTeX]]
+    - [[#powershell][Powershell]]
+    - [[#ruby][Ruby]]
+    - [[#vbscript][VBScript]]
+    - [[#web][Web]]
+    - [[#yaml][YAML]]
   - [[#fun][Fun]]
     - [[#about-6][About]]
     - [[#discord][Discord]]
@@ -91,7 +91,7 @@ I'm going to try and implement something similar to the [[https://github.com/dav
 
 This! What is /this/?
 
-#+begin_src elisp :tangle ~/.emacs.d/init.el
+#+begin_src elisp :tangle ~/.emacs.d/init.el :mkdirp yes
 ;;;; -*- lexical-binding: t; -*- 
 #+end_src
 
@@ -99,7 +99,7 @@ Delay garbage collection.
 
 =most-positive-fixnum= is an elegant way of avoiding just having a large number there, like I've seen a lot when looking at this. 
 
-#+begin_src elisp :tangle ~/.emacs.d/init.el
+#+begin_src elisp :tangle ~/.emacs.d/init.el :mkdirp yes
   (setq gc-cons-percentage 0.6)
   (setq gc-cons-threshold most-positive-fixnum)
 #+end_src
@@ -127,7 +127,7 @@ This adds a message like:
 
 It's quite simple:
 
-#+begin_src elisp :tangle ~/.emacs.d/init.el
+#+begin_src elisp :tangle ~/.emacs.d/init.el :mkdirp yes
   (setq inhibit-startup-message t)
   (setq initial-scratch-message (concat ";;  Emacs loaded in " (emacs-init-time) ", just for you to waste time reading this in the scratch buffer\ 
 
@@ -140,7 +140,7 @@ But I've started using Dashboard instead (configuration further in this file...)
 
 Added because it's sometimes nice to have these around (although I've not really needed them here in my Emacs journey, thus far...).
 
-#+begin_src elisp :tangle ~/.emacs.d/init.el
+#+begin_src elisp :tangle ~/.emacs.d/init.el :mkdirp yes
   (setq user-full-name "Julian Orchard")
   (setq user-mail-address "hello@julianorchard.co.uk")
 #+end_src
@@ -149,7 +149,7 @@ Added because it's sometimes nice to have these around (although I've not really
 
 One of the most initially frustrating things about Emacs was escaping the minibuffer for any reason would yeild terrible results.
 
-#+begin_src elisp :tangle ~/.emacs.d/init.el
+#+begin_src elisp :tangle ~/.emacs.d/init.el :mkdirp yes
   (global-set-key (kbd "<escape>") 'keyboard-escape-quit)
 #+end_src
 
@@ -157,7 +157,7 @@ One of the most initially frustrating things about Emacs was escaping the minibu
 
 Scrolling amount. 
 
-#+begin_src elisp :tangle ~/.emacs.d/init.el
+#+begin_src elisp :tangle ~/.emacs.d/init.el :mkdirp yes
   (setq mouse-wheel-scroll-amount '(1 ((shift) . 1))) 
   (setq mouse-wheel-progressive-speed nil)
   (setq mouse-wheel-follow-mouse 't)
@@ -168,7 +168,7 @@ Scrolling amount.
 
 Spending any longer than 5 seconds in a buffer of lisp will require this, and it's nice to have generally: 
 
-#+begin_src elisp :tangle ~/.emacs.d/init.el
+#+begin_src elisp :tangle ~/.emacs.d/init.el :mkdirp yes
   (show-paren-mode t)
 #+end_src
 
@@ -176,7 +176,7 @@ Spending any longer than 5 seconds in a buffer of lisp will require this, and it
 
 One of the wost things I found about initially using Emacs was how quickly simply opening files cluttered up everything. Get rid of the temporary files, as much as possible. Backup files to =~/Documents/Emacs-backup-dir/= too, out of the way as much as is reasonable...
 
-#+begin_src elisp :tangle ~/.emacs.d/init.el
+#+begin_src elisp :tangle ~/.emacs.d/init.el :mkdirp yes
   (setq backup-directory-alist '(("~/Documents/Emacs-backup-dir/")))
   (setq create-lockfiles nil)
 #+end_src
@@ -185,7 +185,7 @@ One of the wost things I found about initially using Emacs was how quickly simpl
 
 Yes, thank you.
 
-#+begin_src elisp :tangle ~/.emacs.d/init.el
+#+begin_src elisp :tangle ~/.emacs.d/init.el :mkdirp yes
   (prefer-coding-system 'utf-8)
   (set-default-coding-systems 'utf-8)
   (set-terminal-coding-system 'utf-8)
@@ -197,7 +197,7 @@ Yes, thank you.
 
 No, thank you.
 
-#+begin_src elisp :tangle ~/.emacs.d/init.el
+#+begin_src elisp :tangle ~/.emacs.d/init.el :mkdirp yes
   (setq use-dialog-box nil)
 #+end_src
 
@@ -205,7 +205,7 @@ No, thank you.
 
 Y/N, thank you.
 
-#+begin_src elisp :tangle ~/.emacs.d/init.el
+#+begin_src elisp :tangle ~/.emacs.d/init.el :mkdirp yes
   (defalias 'yes-or-no-p 'y-or-n-p)
 #+end_src
 
@@ -220,7 +220,7 @@ Paths to load, for Elisp by me or others.
 | =~/.emacs.d/site-lisp/= | Non-MELPA / ELPA Packages, cloned from Github or E-wiki    |
 |-------------------------+------------------------------------------------------------|
 
-#+begin_src elisp :tangle ~/.emacs.d/init.el
+#+begin_src elisp :tangle ~/.emacs.d/init.el :mkdirp yes
   (add-to-list 'load-path
                (concat (getenv "HOMEPATH") "/.emacs.d/lisp/"))
 #+end_src
@@ -230,7 +230,7 @@ Paths to load, for Elisp by me or others.
 
 Now *THIS* needs review. Is this the right place for it, and is this good /stuff at all/? I don't know, at the moment, so I need to find out...
 
-#+begin_src elisp :tangle ~/.emacs.d/init.el
+#+begin_src elisp :tangle ~/.emacs.d/init.el :mkdirp yes
   (require 'package)
   (setq package-archives '(("melpa" . "https://melpa.org/packages/")
                            ("org" . "https://orgmode.org/elpa/")
@@ -260,7 +260,7 @@ Generally, this bit is about the looks of Emacs; the /whole/ look and feel is sp
 
 But first, get rid of the more useless stuff, and mess with the line-numbers (needs work):
 
-#+begin_src elisp :tangle ~/.emacs.d/init.el
+#+begin_src elisp :tangle ~/.emacs.d/init.el :mkdirp yes
   (scroll-bar-mode -1)
   (tool-bar-mode -1)
   (tooltip-mode -1)
@@ -273,7 +273,7 @@ But first, get rid of the more useless stuff, and mess with the line-numbers (ne
 
 This needs reviewing.
 
-#+begin_src elisp :tangle ~/.emacs.d/init.el
+#+begin_src elisp :tangle ~/.emacs.d/init.el :mkdirp yes
   (column-number-mode)
   (setq display-line-numbers 'relative)
   (dolist (rm-ln-hook '(org-mode-hook
@@ -288,7 +288,7 @@ This needs reviewing.
 
 I use [[https://github.com/edwardtufte/et-book][ETBookOT]] as my Serif font of choice, and [[https://github.com/tonsky/FiraCode][Fira Code]] for the codes: 
 
-#+begin_src elisp :tangle ~/.emacs.d/init.el
+#+begin_src elisp :tangle ~/.emacs.d/init.el :mkdirp yes
   (set-face-attribute 'default nil :font "Fira Code Retina" :height 110)
   (set-face-attribute 'fixed-pitch nil :font "Fira Code Retina" :height 110)
   (set-face-attribute 'variable-pitch nil :font "ETBookOT" :height 160 :weight 'regular)
@@ -311,7 +311,7 @@ Playing with dashboard. I did actually write the below Elisp, but I realise it's
 
 I'd like to change the =dashboard-startup-banner= to something, maybe.
 
-#+begin_src elisp :tangle ~/.emacs.d/init.el
+#+begin_src elisp :tangle ~/.emacs.d/init.el :mkdirp yes
     (use-package dashboard
       :ensure t
       :config 
@@ -332,7 +332,7 @@ I'd like to change the =dashboard-startup-banner= to something, maybe.
 
 Completion in the minibuffer.
 
-#+begin_src elisp :tangle ~/.emacs.d/init.el
+#+begin_src elisp :tangle ~/.emacs.d/init.el :mkdirp yes
     (use-package ivy
       :diminish
       :bind (("C-s" . swiper)
@@ -358,7 +358,7 @@ Completion in the minibuffer.
 
 For completion /outside/ the minibuffer.
 
-#+begin_src elisp :tangle ~/.emacs.d/init.el
+#+begin_src elisp :tangle ~/.emacs.d/init.el :mkdirp yes
   (use-package company
     :custom
     (company-global-modes '(not shell-mode eaf-mode))
@@ -408,7 +408,7 @@ The the evil collection!
     (evil-collection-init))
 #+end_src
 
-*** Evil Commentary
+*** The Evil Commentary
 
 Like Tim Pope's incredible 'vim commentary', but it's in Emacs!
 
@@ -680,7 +680,7 @@ This needs annotation/better formatting/reviewing.
 
 This is a todo, really. Taken from Daviwils dotfiles.
 
-#+begin_src elisp :tangle ~/.emacs.d/init.el
+#+begin_src elisp :tangle ~/.emacs.d/init.el :mkdirp yes
   (use-package helpful
     :custom
     (counsel-describe-function-function #'helpful-callable)
@@ -718,10 +718,35 @@ This is one of the things I'd like to get working most of all.
 #+end_src
 
 ** Language Modes
-
 *** About
 
 Some language-specific stuff, which modes to pick, etc.
+
+*** AutoHotkey
+
+#+begin_src elisp :tangle ~/.emacs.d/init.el :mkdirp yes
+  (use-package ahk-mode
+    :config
+    (add-to-list 'auto-mode-alist
+                 '("\\.ahk" . ahk-mode)))
+#+end_src
+
+*** LaTeX
+
+Or should I say XeLaTeX!? (Use XeLaTeX by default export.
+
+#+begin_src elisp :tangle ~/.emacs.d/init.el :mkdirp yes
+  (setq latex-run-command "xelatex")
+#+end_src
+
+*** Powershell
+
+#+begin_src elisp :tangle ~/.emacs.d/init.el :mkdirp yes
+  (use-package powershell
+    :config
+    (add-to-list 'auto-mode-alist
+                 '("\\.ps1" . powershell)))
+#+end_src
 
 *** Ruby
 
@@ -730,6 +755,16 @@ Some language-specific stuff, which modes to pick, etc.
                  '("\\.\\(?:cap\\|gemspec\\|irbrc\\|gemrc\\|rake\\|rb\\|ru\\|thor\\)\\'" . ruby-mode))
     (add-to-list 'auto-mode-alist
                  '("\\(?:Brewfile\\|Capfile\\|Gemfile\\(?:\\.[a-zA-Z0-9._-]+\\)?\\|[rR]akefile\\)\\'" . ruby-mode))
+#+end_src
+
+*** VBScript
+
+TODO, or not to bother... potentially not worth looking at.
+
+#+begin_src elisp :tangle ~/.emacs.d/init.el :mkdirp yes
+  (setq auto-mode-alist
+        (append '(("\\.\\(vbs\\|wsf\\)$" . vbscript-mode))
+                auto-mode-alist))
 #+end_src
 
 *** Web
@@ -743,49 +778,11 @@ A general mode for web-development stuff.
      ("\\.erb\\'" . web-mode)))
 #+end_src
 
-*** AutoHotkey
-
-#+begin_src elisp :tangle ~/.emacs.d/init.el :mkdirp yes
-  (use-package ahk-mode
-    :config
-    (add-to-list 'auto-mode-alist
-                 '("\\.ahk" . ahk-mode)))
-#+end_src
-
-*** Powershell
-
-#+begin_src elisp :tangle ~/.emacs.d/init.el :mkdirp yes
-  (use-package powershell
-    :config
-    (add-to-list 'auto-mode-alist
-                 '("\\.ps1" . powershell)))
-#+end_src
-
-*** VBScript
-
-TODO, or not to bother... potentially not worth looking at.
-
-#+begin_src elisp :tangle ~/.emacs.d/init.el :mkdirp yes
-  (setq auto-mode-alist
-        (append '(("\\.\\(vbs\\|wsf\\)$" . vbscript-mode))
-                auto-mode-alist))
-#+end_src
-
 *** YAML
 
 #+begin_src elisp :tangle ~/.emacs.d/init.el :mkdirp yes
   (use-package yaml-mode)
 #+end_src
-
-*** LaTeX
-
-Or should I say XeLaTeX!? (Use XeLaTeX by default export.
-
-#+begin_src elisp :tangle ~/.emacs.d/init.el :mkdirp yes
-  (setq latex-run-command "xelatex")
-#+end_src
-
-
 
 ** Fun
 *** About
