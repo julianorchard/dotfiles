@@ -1,5 +1,5 @@
 #+author: Julian Orchard <git@julianorchard.co.uk>
-#+title: //config//
+#+title: /config/
 
 #+begin_quote
 
@@ -21,9 +21,9 @@ I will eventually make this easier.
 
 ** What's actually here?
 
-- [X] An [[file:emacs.org][Emacs Config]]
-- [X] A [[file:windows.org][Windows 10 Config]]
-- [X] My [[file:vim.org][Vim Config]]
+- [x] An [[file:emacs.org][Emacs Config]]
+- [x] A [[file:windows.org][Windows 10 Config]]
+- [x] My [[file:vim.org][Vim Config]]
 - [ ] An [[file:arch.org][Arch Linux (btw) Config]] /(literate transfer work in progress)/
 - [ ] Remote Server Config /(literate transfer yet to be made!)/
 
