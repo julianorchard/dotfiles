@@ -25,7 +25,7 @@ We do not think ourselves into new ways of living, we live ourselves into new wa
 
 ** What is this? 
 
-This is a series of [[https://orgmode.org/][Org documents]] which contain *all the code for **all my configurations**. To make use of it, open each file in Emacs. Then tangle all the code to the right places with:
+This is a series of [[https://orgmode.org/][Org documents]] which contain all the code for *all my configurations*. To make use of it, open each file in Emacs. Then tangle all the code to the right places with:
 
 #+begin_src elisp
 M-x org-babel-tangle

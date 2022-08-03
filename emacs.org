@@ -823,10 +823,11 @@ This is stuff that I didn't think fit in anywhere other than a category of 'fun'
 What's the point of using Emacs if you can't obnoxiously tell everyone constantly by having it listed as a game/application you're active in on Discord?! (In all seriousness, it's a fun package and the results are really nice looking).
 
 #+begin_src elisp :tangle ~/.emacs.d/init.el :mkdirp yes
-  (if (executable-find "discord")
-      (use-package elcord
-        :config
-        (elcord-mode 1)))
+    (if (and (eq system-type 'windows-nt)
+             (equal user-login-name "julia"))
+        (use-package elcord
+          :config
+          (elcord-mode 1)))
 #+end_src
 
 *** Meme
