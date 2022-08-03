@@ -1299,9 +1299,7 @@ And this useful idea, that I found [[https://www.autohotkey.com/boards/viewtopic
 
 *** Printing
 
-I have two printing scripts, and one of them requires a VBScript file to work.
-
-The first one is this simple script, which I like to have active on my work machine. It detects the presence of a window called '', which is the name of the account picker on our work big printer, and it just navigates to the number of your account (in my case, [[https://www.youtube.com/watch?v=4RV3RXMNGVs&t=11s][I am also *not a number*]], but I am and I'm number 60). 
+I have two printing scripts. The first one is this simple (but extremely useful) script, which I like to have active on my work machine. It detects the presence of a window called /Store Details/, which is the name of the account picker on our big printer at work. It then just navigates to the number listed by your account (in my case, [[https://www.youtube.com/watch?v=4RV3RXMNGVs&t=11s][I am also *not a number*]], but I am and I'm number 60). 
 
 #+begin_src ahk :tangle c:/cmd/ahk/printer.ahk :mkdirp yes
   #Persistent
@@ -1319,15 +1317,20 @@ The first one is this simple script, which I like to have active on my work mach
           Return
 #+end_src
 
-I wanted to make this so that other people can use it, so (to simplify the process) they put their number in a file, like this (to put this in this literate configuration, it's funny that the code to generate this is *a lot* longer than the file itself... not the case with most files, but this one is comically mismatched in length):
+So that other people can use it easily at work, they can just put their number in a text file, like this:
 
 #+begin_src text :tangle c:/cmd/ahk/printer_number.txt :mkdirp yes
 60
 #+end_src
 
-Another script it more complicated, and it requires VBScript as I previously mentioned.
+The other printing script, =spooler=, is more complicated:
 
-It adds files to a spool list file, and then calls a VBScript to the file location at each line. It requires an external AutoHotkey script by Joshua A. Kinnison, =Explorer_Get.ahk=, which you can see below. It serves to get file information from a specific Explorer.exe window.
+- An AutoHotkey script (using a dependency called =Explorer_Get.ahk=) adds files from /Windows File Explorer/ to a =printlist.txt= file
+- +A VBScript then prints the files, but this part doesn't work very well+
+- The AutoHotkey script calls a tiny =spooler.bat= one line Batch file, because running /Powershell/ with arguments (required by this script, and because I don't have admin we need the =-ExecutionPolicy bypass= flag) doesn't seem to work directly from AutoHotkey
+- Finally, the Powershell script =spooler.ps1= runs and it prints the files and empties the print list
+
+So firstly, here's the brilliant AutoHotkey script by Joshua A. Kinnison, =Explorer_Get.ahk=, which serves to get file information from a specific /Windows File Explorer/ window.
 
 #+begin_src ahk :tangle c:/cmd/ahk/res/Explorer_Get.ahk :mkdirp yes
 /*
@@ -1429,9 +1432,7 @@ Explorer_Get(hwnd="",selection=false)
 }
 #+end_src
 
-Which is a beautiful script.
-
-I use it for my pretty crude (in comparison) script:
+Next, here's my simple AutoHotkey script to add file paths to the =printlist.txt= file (=Ctrl + Shift + p=) and print the print list by calling =spooler.bat= (=Ctrl + Shift + o=).
 
 #+begin_src ahk :tangle c:/cmd/ahk/spooler.ahk :mkdirp yes
   #Include C:\cmd\ahk\res\Explorer_Get.ahk
@@ -1458,23 +1459,21 @@ I use it for my pretty crude (in comparison) script:
   Return
 #+end_src
 
-As you can see, it ends by calling a file =spooler.ps1=. I am testing this at the moment...
-
-#+begin_src powershell :tangle c:/cmd/bin/spooler.ps1 :mkdirp yes
-  $print_path = "C:\cmd\ahk\res\printlist.txt"
-  ForEach($print_line in Get-Content $print_path) {
-    # This won't print PDF's correctly
-    # Get-Content -Path $print_line | Out-Printer
-    Start-Process -FilePath $print_line -Verb Print -PassThru | %{sleep 10;$_} | kill
-  }
-  Clear-Content -Path $print_path
-#+end_src
-
-And to complete the trifecta of incomplete solutions, here's a Batch script that gets called by AutoHotkey and calls the above Powershell Script...
+Here's the one like Batch file to work around the problem of correctly calling the /Powershell/ script directly from AutoHotkey.
 
 #+begin_src bat :tangle c:/cmd/bin/spooler.bat :mkdirp yes
 @echo off
 powershell.exe -ExecutionPolicy bypass -NoLogo -File "C:\cmd\bin\spooler.ps1"
+#+end_src
+
+Finally, this is the Powershell script that sends the =printlist.txt= to the default printer through the default PDF viewer (because =Out-Printer= doesn't understand PDF files). It then kills the window and finishes by clearing the =printlist.txt= file.
+
+#+begin_src powershell :tangle c:/cmd/bin/spooler.ps1 :mkdirp yes
+  $print_path = "C:\cmd\ahk\res\printlist.txt"
+  ForEach($print_line in Get-Content $print_path) {
+    Start-Process -FilePath $print_line -Verb Print -PassThru | %{sleep 10;$_} | kill
+  }
+  Clear-Content -Path $print_path
 #+end_src
 
 *** Fun Stuff
