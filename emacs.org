@@ -3,12 +3,14 @@
 
 I'm still learning all about Emacs, and I probably always will be. So these are my current settings, semi-documented, semi-copied from other configurations, fully-useful to me at the moment. 
 
+This all tangles to =~/.emacs.d/init.el=; I don't know if this is optimal, or if there's a big downside to doing it like this, yet, but I'll find out and change it if necessary.
+
 ** Content                                                     :toc_3:quote:
 #+BEGIN_QUOTE
   - [[#meta][Meta]]
-  - [[#improve-start-up-time][Improve Start-Up Time]]
   - [[#the-basics][The Basics]]
     - [[#about][About]]
+    - [[#improve-start-up-time][Improve Start-Up Time]]
     - [[#maximise-window][Maximise Window]]
     - [[#scratch-buffer-and-startup-info][Scratch Buffer and Startup Info]]
     - [[#my-details][My Details]]
@@ -48,6 +50,7 @@ I'm still learning all about Emacs, and I probably always will be. So these are 
     - [[#org-prettier-tables][Org Prettier Tables]]
     - [[#org-tempo][Org Tempo]]
     - [[#tables-of-content][Tables Of Content]]
+    - [[#super-agenda][Super Agenda]]
   - [[#todo][Todo]]
     - [[#about-4][About]]
     - [[#helpful][Helpful]]
@@ -65,6 +68,7 @@ I'm still learning all about Emacs, and I probably always will be. So these are 
   - [[#fun][Fun]]
     - [[#about-6][About]]
     - [[#discord][Discord]]
+    - [[#meme][Meme]]
 #+END_QUOTE
 
 ** Meta
@@ -87,7 +91,12 @@ I'm going to try and implement something similar to the [[https://github.com/dav
                 (add-hook 'after-save-hook #'org-babel-tangle-config)))
 #+end_src
 
-** Improve Start-Up Time
+** The Basics
+*** About
+
+Including a few nice bindings that I can't live without, and my name and stuff: 
+
+*** Improve Start-Up Time
 
 This! What is /this/?
 
@@ -103,11 +112,6 @@ Delay garbage collection.
   (setq gc-cons-percentage 0.6)
   (setq gc-cons-threshold most-positive-fixnum)
 #+end_src
-
-** The Basics
-*** About
-
-Including a few nice bindings that I can't live without, and my name and stuff: 
 
 *** Maximise Window
 
@@ -671,6 +675,30 @@ This is a really nice plugin (that I mainly use for /this very project/) that ge
     (add-hook 'org-mode-hook 'toc-org-mode))
 #+end_src
 
+*** Super Agenda
+
+I have started to use Org for planning a lot of things, and it gets busy. The standard Org Agenda is nice, but I think this makes things more clear.
+
+If =:order= isn't specified, =:order 0= is the default. At the moment, this is all the information I need for this, I think. 
+
+#+begin_src elisp :tangle ~/.emacs.d/init.el :mkdirp yes
+  (use-package org-super-agenda
+    :config
+    (let ((org-super-agenda-groups
+           '((:name "Today"
+                    :time-grid t
+                    :todo "TODAY")
+             (:name "This Week"
+                    :time-grid t
+                    :todo "THIS WEEK")
+             (:name "Important"
+                    ;; Don't need this yet, but:
+                    ;; :and (:tag "bills" :tag "another_important_tag")
+                    :priority "A")
+             (:todo "PENDING" :order 8))))
+      (org-agenda nil "a")))
+#+end_src
+
 ** Todo
 *** About
 
@@ -794,10 +822,15 @@ This is stuff that I didn't think fit in anywhere other than a category of 'fun'
 What's the point of using Emacs if you can't obnoxiously tell everyone constantly by having it listed as a game/application you're active in on Discord?! (In all seriousness, it's a fun package and the results are really nice looking).
 
 #+begin_src elisp :tangle ~/.emacs.d/init.el :mkdirp yes
-;; Testing This If Statement
   (if (executable-find "discord")
       (use-package elcord
         :config
         (elcord-mode 1)))
 #+end_src
 
+*** Meme
+
+#+begin_src elisp :tangle ~/.emacs.d/init.el :mkdirp yes
+  ;; (use-package imgur)
+  ;; (use-package meme)
+#+end_src

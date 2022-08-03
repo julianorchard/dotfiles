@@ -1460,11 +1460,39 @@ I use it for my pretty crude (in comparison) script:
   }
   MsgBox, 4,, File Contents: `n%PLContent%`nWould you like to print?
   IfMsgBox Yes 
-          Run, "C:\cmd\bin\spooler.vbs"
+          Run, "C:\cmd\bin\spooler.bat"
+          ; C:\Windows\System32\WindowsPowerShell\v1.0\powershell.exe
+          ; Run, "C:\cmd\bin\spooler.bat"
+          ; Run, "powershell.exe -ExecutionPolicy bypass" -noexit -command "-NoLogo C:\cmd\bin\spooler.ps1"
+          ; Run, "C:\cmd\bin\spooler.ps1 -ExecutionPolicy bypass -NoLogo "
+          ; Run, "C:\cmd\bin\spooler.vbs"
   Return
 #+end_src
 
-As you can see, it ends by calling a file =spooler.vbs=. This is /that/ file: 
+As you can see, it ends by calling a file =spooler.ps1=. I am testing this at the moment...
+
+#+begin_src powershell :tangle c:/cmd/bin/spooler.ps1 :mkdirp yes
+  $print_path = "C:\cmd\ahk\res\printlist.txt"
+  ForEach($print_line in Get-Content $print_path) {
+    # This won't print PDF's correctly
+    # Get-Content -Path $print_line | Out-Printer
+    Start-Process -FilePath $print_line -Verb Print -PassThru | %{sleep 10;$_} | kill
+  }
+  Clear-Content -Path $print_path
+#+end_src
+
+And to complete the trifecta of incomplete solutions, here's a Batch script that gets called by AutoHotkey and calls the above Powershell Script...
+
+#+begin_src bat :tangle c:/cmd/bin/spooler.bat :mkdirp yes
+@echo off
+powershell.exe -ExecutionPolicy bypass -NoLogo -File "C:\cmd\bin\spooler.ps1"
+#+end_src
+
+**** Archived Solution
+
+/Potentially get rid of this./
+
+Otherwise I previously used this /VBScript/:
 
 #+begin_src vbscript :tangle c:/cmd/bin/spooler.vbs :mkdirp yes
 
