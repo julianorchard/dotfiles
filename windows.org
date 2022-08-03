@@ -178,7 +178,6 @@ goto main
 This is a script I wrote to add a current folder to the path:
 
 #+begin_src bat :tangle c:/cmd/bin/addpath.bat :mkdirp yes
-
 	@echo off
     set add=%1
     shift
@@ -191,7 +190,6 @@ This is a script I wrote to add a current folder to the path:
     )
   :: Refresh Env
     C:\CMD\bin\refresh.bat
-
 #+end_src
 
 In the end, however, I got bored of adding the same files all the time to my =PATH=, so I decided to just put this ugly thing in a script to make it easier when swapping machines:
@@ -209,7 +207,6 @@ Which doesn't work properly, because it needs to be set with =/M= I believe, whi
 This script creates drive locations. It simply loops through lettered drives available and creates a shortcut (just a =.bat= file with the content =cd DRIVE:=) that's it. It allows you to type =j= in the CMD prompt and go to the =J:\= drive, for example:
 
 #+begin_src bat :tangle c:/cmd/bin/drives.bat :mkdirp yes
-
 @echo off
 
 	set shortcuts=C:\CMD\shortcuts
@@ -225,13 +222,11 @@ This script creates drive locations. It simply loops through lettered drives ava
 			echo %%a:\ does not exist
 		)
 	)
-
 #+end_src
 
 Another script that allows for quick navigation around the CMD Prompt is this, which creates shortcuts to the directory you're currently in:
 
 #+begin_src bat :tangle c:/cmd/bin/shortcuts.bat :mkdirp yes
-
 @echo off
 
 :: Defaults
@@ -283,7 +278,6 @@ Another script that allows for quick navigation around the CMD Prompt is this, w
 :: Feedback to the User
   echo Shortcut should now be working!
   echo Try it by typing "%sname%" from another dir.
-
 #+end_src
 
 It also sets up the following useful locations, when you first run it:
@@ -1442,7 +1436,7 @@ I use it for my pretty crude (in comparison) script:
 #+begin_src ahk :tangle c:/cmd/ahk/spooler.ahk :mkdirp yes
   #Include C:\cmd\ahk\res\Explorer_Get.ahk
 
-  ^p:: 
+  ^+p:: 
   sel := Explorer_GetSelected()
   FileAppend, %sel%`n, C:\cmd\ahk\res\printlist.txt
   ; Let user know what's been added
@@ -1451,7 +1445,7 @@ I use it for my pretty crude (in comparison) script:
   MsgBox % "Added '" selArray[selArray.Count()] "'.`n`nThe file printlist.txt currently contains:`n" PLContent
   Return
 
-  ^o::
+  ^+o::
   FileRead, PLContent, C:\cmd\ahk\res\printlist.txt
   if (PLContent = "") 
   {
@@ -1461,11 +1455,6 @@ I use it for my pretty crude (in comparison) script:
   MsgBox, 4,, File Contents: `n%PLContent%`nWould you like to print?
   IfMsgBox Yes 
           Run, "C:\cmd\bin\spooler.bat"
-          ; C:\Windows\System32\WindowsPowerShell\v1.0\powershell.exe
-          ; Run, "C:\cmd\bin\spooler.bat"
-          ; Run, "powershell.exe -ExecutionPolicy bypass" -noexit -command "-NoLogo C:\cmd\bin\spooler.ps1"
-          ; Run, "C:\cmd\bin\spooler.ps1 -ExecutionPolicy bypass -NoLogo "
-          ; Run, "C:\cmd\bin\spooler.vbs"
   Return
 #+end_src
 
@@ -1486,37 +1475,6 @@ And to complete the trifecta of incomplete solutions, here's a Batch script that
 #+begin_src bat :tangle c:/cmd/bin/spooler.bat :mkdirp yes
 @echo off
 powershell.exe -ExecutionPolicy bypass -NoLogo -File "C:\cmd\bin\spooler.ps1"
-#+end_src
-
-**** Archived Solution
-
-/Potentially get rid of this./
-
-Otherwise I previously used this /VBScript/:
-
-#+begin_src vbscript :tangle c:/cmd/bin/spooler.vbs :mkdirp yes
-
-	Set printlistRead = CreateObject("Scripting.FileSystemObject").OpenTextFile("C:\CMD\ahk\res\printlist.txt", 1)
-	Do Until printlistRead.AtEndOfStream
-		item = printlistRead.ReadLine
-		Set oWsh = CreateObject("Wscript.Shell")
-		oWsh.Run """Acrobat.exe"" /p /h" &item,,true
-	Loop
-	printlistRead.Close
-	
-' There must be a better way
-	Set printlistClear = CreateObject("Scripting.FileSystemObject").OpenTextFile("C:\CMD\ahk\res\printlist.txt", 2)
-	printlistClear.Write ""
-	printlistClear.Close
-
-#+end_src
-
-TODO: My Emacs configuration doesn't currently know how to handle VBScript, and the snippet I've used to try and implement syntax highlighting isn't working:
-
-#+begin_src elisp
-(setq auto-mode-alist
-      (append '(("\\.\\(vbs\\|wsf\\)$" . vbscript-mode))
-              auto-mode-alist))
 #+end_src
 
 *** Fun Stuff
