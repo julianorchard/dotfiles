@@ -479,6 +479,7 @@ This is the main org-mode block.
     (setq org-agenda-files
           '("~/OneDrive/org/weekly.org" "~/OneDrive/org/todo.org"))
     (setq org-duration-format (quote h:mm))
+    (setq org-hide-emphasis-markers t)
     (setq org-todo-keywords
           '((sequence "TODO" "PENDING" "|" "DONE" "CANCELLED")))
     (efs/org-font-setup)
