@@ -858,6 +858,13 @@ Here's a rough-and-ready script that makes use of it:
   }
 #+end_src
 
+Used like this, at the moment: 
+
+#+begin_src powershell
+  # Usage;
+  countdown.ps1 "16:50" "30" "email@email.email" "Countdown Event Description!"
+#+end_src
+
 **** TODO Should use argument flags instead of by order
 **** TODO General cleanup of this script
 
