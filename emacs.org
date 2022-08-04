@@ -306,7 +306,7 @@ I use a dark theme (by default) of /Tomorrow Night/, and /Solarized/ as a light 
 
 =Ctrl+F1= (for /Tomorrow Night/) and =Ctrl+F2= (for /Solarized/) are used to switch between them (found [[https://emacs.stackexchange.com/questions/45799/keyboard-shortcuts-for-applying-a-theme][here]]).
 
-#+begin_src :tangle ~/.emacs.d/init.el mkdirp yes
+#+begin_src elisp :tangle ~/.emacs.d/init.el mkdirp yes
   (use-package doom-themes
     :init (load-theme 'doom-tomorrow-night t)
     :config
@@ -510,90 +510,100 @@ I'd like to be able to replace the '#+begin_quote' blocks and code blocks of Org
 
 #+begin_src elisp :tangle ~/.emacs.d/init.el :mkdirp yes
 
-    ;; ;; Get this working...
-    ;; (appendq! +ligatures-extra-symbols
-    ;;           `(:checkbox      "☐"
-    ;; 			     :pending       "◼"
-    ;; 			     :checkedbox    "☑"
-    ;; 			     :list_property "∷"
-    ;; 			     :em_dash       "—"
-    ;; 			     :ellipses      "…"
-    ;; 			     :arrow_right   "→"
-    ;; 			     :arrow_left    "←"
-    ;; 			     :title         "𝙏"
-    ;; 			     :subtitle      "𝙩"
-    ;; 			     :author        "𝘼"
-    ;; 			     :date          "𝘿"
-    ;; 			     :property      "☸"
-    ;; 			     :options       "⌥"
-    ;; 			     :startup       "⏻"
-    ;; 			     :macro         "𝓜"
-    ;; 			     :html_head     "🅷"
-    ;; 			     :html          "🅗"
-    ;; 			     :latex_class   "🄻"
-    ;; 			     :latex_header  "🅻"
-    ;; 			     :beamer_header "🅑"
-    ;; 			     :latex         "🅛"
-    ;; 			     :attr_latex    "🄛"
-    ;; 			     :attr_html     "🄗"
-    ;; 			     :attr_org      "⒪"
-    ;; 			     :begin_quote   "❝"
-    ;; 			     :end_quote     "❞"
-    ;; 			     :caption       "☰"
-    ;; 			     :header        "›"
-    ;; 			     :results       "🠶"
-    ;; 			     :begin_export  "⏩"
-    ;; 			     :end_export    "⏪"
-    ;; 			     :properties    "⚙"
-    ;; 			     :end           "∎"
-    ;; 			     :priority_a   ,(propertize "⚑" 'face 'all-the-icons-red)
-    ;; 			     :priority_b   ,(propertize "⬆" 'face 'all-the-icons-orange)
-    ;; 			     :priority_c   ,(propertize "■" 'face 'all-the-icons-yellow)
-    ;; 			     :priority_d   ,(propertize "⬇" 'face 'all-the-icons-green)
-    ;; 			     :priority_e   ,(propertize "❓" 'face 'all-the-icons-blue)))
-    ;; (set-ligatures! 'org-mode
-    ;; 		  :merge t
-    ;; 		  :checkbox      "[ ]"
-    ;; 		  :pending       "[-]"
-    ;; 		  :checkedbox    "[X]"
-    ;; 		  :list_property "::"
-    ;; 		  :em_dash       "---"
-    ;; 		  :ellipsis      "..."
-    ;; 		  :arrow_right   "->"
-    ;; 		  :arrow_left    "<-"
-    ;; 		  :title         "#+title:"
-    ;; 		  :subtitle      "#+subtitle:"
-    ;; 		  :author        "#+author:"
-    ;; 		  :date          "#+date:"
-    ;; 		  :property      "#+property:"
-    ;; 		  :options       "#+options:"
-    ;; 		  :startup       "#+startup:"
-    ;; 		  :macro         "#+macro:"
-    ;; 		  :html_head     "#+html_head:"
-    ;; 		  :html          "#+html:"
-    ;; 		  :latex_class   "#+latex_class:"
-    ;; 		  :latex_header  "#+latex_header:"
-    ;; 		  :beamer_header "#+beamer_header:"
-    ;; 		  :latex         "#+latex:"
-    ;; 		  :attr_latex    "#+attr_latex:"
-    ;; 		  :attr_html     "#+attr_html:"
-    ;; 		  :attr_org      "#+attr_org:"
-    ;; 		  :begin_quote   "#+begin_quote"
-    ;; 		  :end_quote     "#+end_quote"
-    ;; 		  :caption       "#+caption:"
-    ;; 		  :header        "#+header:"
-    ;; 		  :begin_export  "#+begin_export"
-    ;; 		  :end_export    "#+end_export"
-    ;; 		  :results       "#+RESULTS:"
-    ;; 		  :property      ":PROPERTIES:"
-    ;; 		  :end           ":END:"
-    ;; 		  :priority_a    "[#A]"
-    ;; 		  :priority_b    "[#B]"
-    ;; 		  :priority_c    "[#C]"
-    ;; 		  :priority_d    "[#D]"
-    ;; 		  :priority_e    "[#E]")
-    ;; (plist-put +ligatures-extra-symbols :name "⁍")
-    )
+      (use-package ligature
+        :config
+        (require 'fira-code-mode)
+        (ligature-set-ligatures 't '("www"))
+        (ligature-set-ligatures 'eww-mode '("ff" "fi" "ffi"))
+        ;; Edit this: 
+        ;; Enable all Cascadia Code ligatures in programming modes
+        (ligature-set-ligatures 'prog-mode '("|||>" "<|||" "<==>" "<!--" "####" "~~>" "***" "||=" "||>" ":::" "::=" "=:=" "===" "==>" "=!=" "=>>" "=<<" "=/=" "!==" "!!." ">=>" ">>=" ">>>" ">>-" ">->" "->>" "-->" "---" "-<<" "<~~" "<~>" "<*>" "<||" "<|>" "<$>" "<==" "<=>" "<=<" "<->" "<--" "<-<" "<<=" "<<-" "<<<" "<+>" "</>" "###" "#_(" "..<" "..." "+++" "/==" "///" "_|_" "www" "&&" "^=" "~~" "~@" "~=" "~>" "~-" "**" "*>" "*/" "||" "|}" "|]" "|=" "|>" "|-" "{|" "[|" "]#" "::" ":=" ":>" ":<" "$>" "==" "=>" "!=" "!!" ">:" ">=" ">>" ">-" "-~" "-|" "->" "--" "-<" "<~" "<*" "<|" "<:" "<$" "<=" "<>" "<-" "<<" "<+" "</" "#{" "#[" "#:" "#=" "#!" "##" "#(" "#?" "#_" "%%" ".=" ".-" ".." ".?" "+>" "++" "?:" "?=" "?." "??" ";;" "/*" "/=" "/>" "//" "__" "~~" "(*" "*)" "\\\\" "://"))
+        (global-ligature-mode t))
+
+  ;; ;; Get this working...
+      ;; (appendq! +ligatures-extra-symbols
+      ;;           `(:checkbox      "☐"
+      ;; 			     :pending       "◼"
+      ;; 			     :checkedbox    "☑"
+      ;; 			     :list_property "∷"
+      ;; 			     :em_dash       "—"
+      ;; 			     :ellipses      "…"
+      ;; 			     :arrow_right   "→"
+      ;; 			     :arrow_left    "←"
+      ;; 			     :title         "𝙏"
+      ;; 			     :subtitle      "𝙩"
+      ;; 			     :author        "𝘼"
+      ;; 			     :date          "𝘿"
+      ;; 			     :property      "☸"
+      ;; 			     :options       "⌥"
+      ;; 			     :startup       "⏻"
+      ;; 			     :macro         "𝓜"
+      ;; 			     :html_head     "🅷"
+      ;; 			     :html          "🅗"
+      ;; 			     :latex_class   "🄻"
+      ;; 			     :latex_header  "🅻"
+      ;; 			     :beamer_header "🅑"
+      ;; 			     :latex         "🅛"
+      ;; 			     :attr_latex    "🄛"
+      ;; 			     :attr_html     "🄗"
+      ;; 			     :attr_org      "⒪"
+      ;; 			     :begin_quote   "❝"
+      ;; 			     :end_quote     "❞"
+      ;; 			     :caption       "☰"
+      ;; 			     :header        "›"
+      ;; 			     :results       "🠶"
+      ;; 			     :begin_export  "⏩"
+      ;; 			     :end_export    "⏪"
+      ;; 			     :properties    "⚙"
+      ;; 			     :end           "∎"
+      ;; 			     :priority_a   ,(propertize "⚑" 'face 'all-the-icons-red)
+      ;; 			     :priority_b   ,(propertize "⬆" 'face 'all-the-icons-orange)
+      ;; 			     :priority_c   ,(propertize "■" 'face 'all-the-icons-yellow)
+      ;; 			     :priority_d   ,(propertize "⬇" 'face 'all-the-icons-green)
+      ;; 			     :priority_e   ,(propertize "❓" 'face 'all-the-icons-blue)))
+      ;; (set-ligatures! 'org-mode
+      ;; 		  :merge t
+      ;; 		  :checkbox      "[ ]"
+      ;; 		  :pending       "[-]"
+      ;; 		  :checkedbox    "[X]"
+      ;; 		  :list_property "::"
+      ;; 		  :em_dash       "---"
+      ;; 		  :ellipsis      "..."
+      ;; 		  :arrow_right   "->"
+      ;; 		  :arrow_left    "<-"
+      ;; 		  :title         "#+title:"
+      ;; 		  :subtitle      "#+subtitle:"
+      ;; 		  :author        "#+author:"
+      ;; 		  :date          "#+date:"
+      ;; 		  :property      "#+property:"
+      ;; 		  :options       "#+options:"
+      ;; 		  :startup       "#+startup:"
+      ;; 		  :macro         "#+macro:"
+      ;; 		  :html_head     "#+html_head:"
+      ;; 		  :html          "#+html:"
+      ;; 		  :latex_class   "#+latex_class:"
+      ;; 		  :latex_header  "#+latex_header:"
+      ;; 		  :beamer_header "#+beamer_header:"
+      ;; 		  :latex         "#+latex:"
+      ;; 		  :attr_latex    "#+attr_latex:"
+      ;; 		  :attr_html     "#+attr_html:"
+      ;; 		  :attr_org      "#+attr_org:"
+      ;; 		  :begin_quote   "#+begin_quote"
+      ;; 		  :end_quote     "#+end_quote"
+      ;; 		  :caption       "#+caption:"
+      ;; 		  :header        "#+header:"
+      ;; 		  :begin_export  "#+begin_export"
+      ;; 		  :end_export    "#+end_export"
+      ;; 		  :results       "#+RESULTS:"
+      ;; 		  :property      ":PROPERTIES:"
+      ;; 		  :end           ":END:"
+      ;; 		  :priority_a    "[#A]"
+      ;; 		  :priority_b    "[#B]"
+      ;; 		  :priority_c    "[#C]"
+      ;; 		  :priority_d    "[#D]"
+      ;; 		  :priority_e    "[#E]")
+      ;; (plist-put +ligatures-extra-symbols :name "⁍")
+      )
  #+end_src
 
 *** Some Org Setup

@@ -15,7 +15,7 @@ A literate Windows 10 configuration, set up in the folder =C:/cmd=.
   - [[#powershell][Powershell]]
     - [[#no-admin-powershell][No Admin Powershell]]
     - [[#config][Config]]
-    - [[#unfinished-email-script][Unfinished 'Email' Script]]
+    - [[#email-scripts]['Email' Scripts]]
     - [[#fonts][Fonts]]
   - [[#autohotkey][AutoHotkey]]
     - [[#about-1][About]]
@@ -740,9 +740,9 @@ Use this to update the script:
 cp C:\cmd\ps\psrc.ps1 $home\Documents\WindowsPowerShell\Microsoft.PowerShell_profile.ps1
 #+end_src
 
-*** Unfinished 'Email' Script
+*** 'Email' Scripts
 
-I would have liked to use this, but I never got round to making full use of it.
+This is a Powershell function for sending outlook mail objects.
 
 #+begin_src powershell :tangle c:/cmd/bin/email.ps1 :mkdirp yes
   #!/c/Windows/System32/WindowsPowerShell/v1.0/powershell.exe -File
@@ -770,7 +770,96 @@ I would have liked to use this, but I never got round to making full use of it.
 
 #+end_src
 
-This could potentially be put in the Powershell configuration file too, I believe.
+This could /probably/ be put in the Powershell configuration file too, but I'm keeping it round mainly as a helper script when writing stuff.
+
+Here's a rough-and-ready script that makes use of it:
+
+#+begin_src powershell :tangle c:/cmd/bin/countdown.ps1 :mkdirp yes
+  #!/c/Windows/System32/WindowsPowerShell/v1.0/powershell.exe -File
+
+  Function Send-Outlook-Email {
+      Param (
+          $To,
+          $Subject,
+          $Body
+      )
+      $outlook = New-Object -ComObject Outlook.Application
+      $outlookMail = $outlook.CreateItem(0)
+      $outlookMail.To = "$To" 
+      $outlookMail.Subject = "$Subject" 
+      $outlookMail.Body = "$Body"
+      $outlookMail.Send()
+      $timestamp = Get-Date -Format HH:mm
+      Write-Host "Sent email to $To at $timestamp."
+      Start-Sleep 2
+  }
+
+  Function Script-Usage {
+      Write-Host "This script requires the following arguments:"
+      Write-Host "  Argument 1        =>         Time-till-countdown-end"
+      Write-Host "  Argument 2        =>         Countdown interval, in seconds"
+      Write-Host "  Argument 3        =>         Recipient(s), semi-colon for multiple`r`n"
+      Write-Host "Optional:"
+      Write-Host "  Optional Arg 1    =>         Countdown description (default, 'Counting down 'till x-time')"
+      Exit
+  }
+
+  If (($args[0] -eq "help") -or ($args[0] -eq "-h" ) -or ($args[0] -eq "--help") -or ($args.Length -lt 3)) {
+      Script-Usage
+  } Else {
+      $endTime = $args[0]
+      $endTimeFormatted = (Get-Date $endTime -Format HH:mm:ss)
+      $interval = $args[1]
+      $recipient = $args[2]
+
+      $description = $args[3]
+      If ($description -ne "")
+      {
+          $description = ": $description"
+          $descriptionBody = "This reminder is about$description"
+      }
+
+      While ($true) 
+      {
+          $currentTime = Get-Date -Format HH:mm:ss
+          $timeRemaining = [math]::Round((New-TimeSpan -Start $currentTime -End $endTimeFormatted).TotalMinutes)
+          # $timeRemaining = Get-Date $timeRemaining -Format HH:mm
+          $timeRemaining = "$timeRemaining minutes to go"
+          # $timeRemaining = "$timeRemaining minutes to go"
+          $subject = "Upcoming ($timeRemaining) Reminder$description"
+          $body = @"
+  Hello there,
+
+  You have $timeRemaining! $descriptionBody
+
+  This message is due to send every $interval seconds...
+
+  Kind regards,
+  "@
+          Try
+          {
+              Send-Outlook-Email -To $recipient -Subject $subject -Body $body
+          }
+          Catch
+          {
+              Write-Host "Unable to send email (for some reason), to $recipient. Please try again."
+              Exit
+          }
+          If ((Get-Date) -gt (Get-Date $endTime))
+          {
+              Write-Host "Script has finished notifying its victi- ...recipient!"
+              Break
+          }
+          Else
+          {
+              Start-Sleep -Seconds $interval
+          }
+      }
+  }
+#+end_src
+
+**** TODO Should use argument flags instead of by order
+**** TODO General cleanup of this script
 
 *** Fonts
 
