@@ -777,14 +777,24 @@ Here's a rough-and-ready script that makes use of it:
 #+begin_src powershell :tangle c:/cmd/bin/countdown.ps1 :mkdirp yes
   #!/c/Windows/System32/WindowsPowerShell/v1.0/powershell.exe -File
 
+  # Could use [mandatory]?
+  Param (
+      $EndTime,
+      $Interval,
+      $Recipient,
+      $Description
+  ) 
+
   Function Send-Outlook-Email {
       Param (
           $To,
           $Subject,
           $Body
       )
+
       $outlook = New-Object -ComObject Outlook.Application
       $outlookMail = $outlook.CreateItem(0)
+
       $outlookMail.To = "$To" 
       $outlookMail.Subject = "$Subject" 
       $outlookMail.Body = "$Body"
@@ -796,77 +806,73 @@ Here's a rough-and-ready script that makes use of it:
 
   Function Script-Usage {
       Write-Host "This script requires the following arguments:"
-      Write-Host "  Argument 1        =>         Time-till-countdown-end"
-      Write-Host "  Argument 2        =>         Countdown interval, in seconds"
-      Write-Host "  Argument 3        =>         Recipient(s), semi-colon for multiple`r`n"
+      Write-Host "  -EndTime     =>  Time till countdown end"
+      Write-Host "  -Interval    =>  Countdown interval (seconds)"
+      Write-Host "  -Recipient   =>  Recipient(s), semi-colon for multiple`r`n"
       Write-Host "Optional:"
-      Write-Host "  Optional Arg 1    =>         Countdown description (default, 'Counting down 'till x-time')"
+      Write-Host "  -Description =>  Event description string"
       Exit
   }
 
-  If (($args[0] -eq "help") -or ($args[0] -eq "-h" ) -or ($args[0] -eq "--help") -or ($args.Length -lt 3)) {
-      Script-Usage
-  } Else {
-      $endTime = $args[0]
-      $endTimeFormatted = (Get-Date $endTime -Format HH:mm:ss)
-      $interval = $args[1]
-      $recipient = $args[2]
+  #########################
 
-      $description = $args[3]
-      If ($description -ne "")
-      {
-          $description = ": $description"
-          $descriptionBody = "This reminder is about$description"
-      }
+  If (-Not ($EndTime))   { Throw "`r`nError: EndTime is required`r`n" }
+  If (-Not ($Interval))  { Throw "`r`nError: Interval is required`r`n" }
+  If (-Not ($Recipient)) { Throw "`r`nError: Recipient is required`r`n" }
 
-      While ($true) 
-      {
-          $currentTime = Get-Date -Format HH:mm:ss
-          $timeRemaining = [math]::Round((New-TimeSpan -Start $currentTime -End $endTimeFormatted).TotalMinutes)
-          # $timeRemaining = Get-Date $timeRemaining -Format HH:mm
-          $timeRemaining = "$timeRemaining minutes to go"
-          # $timeRemaining = "$timeRemaining minutes to go"
-          $subject = "Upcoming ($timeRemaining) Reminder$description"
-          $body = @"
+  If ($Description -ne "")
+  {
+      $Description = ": $Description"
+      $descriptionBody = "This reminder is about$Description"
+  }
+
+  $endTimeFormatted = (Get-Date $EndTime -Format HH:mm:ss)
+
+  While ($true) 
+  {
+      $currentTime = Get-Date -Format HH:mm:ss
+
+      $timeRemaining = [math]::Round((New-TimeSpan -Start $currentTime -End $endTimeFormatted).TotalMinutes)
+      $timeRemaining = "$timeRemaining minutes to go"
+
+      $subject = "Upcoming ($timeRemaining) Reminder$Description"
+      $body = @"
   Hello there,
 
   You have $timeRemaining! $descriptionBody
 
-  This message is due to send every $interval seconds...
+  This message is due to send every $Interval seconds...
 
   Kind regards,
   "@
-          Try
-          {
-              Send-Outlook-Email -To $recipient -Subject $subject -Body $body
-          }
-          Catch
-          {
-              Write-Host "Unable to send email (for some reason), to $recipient. Please try again."
-              Exit
-          }
-          If ((Get-Date) -gt (Get-Date $endTime))
-          {
-              Write-Host "Script has finished notifying its victi- ...recipient!"
-              Break
-          }
-          Else
-          {
-              Start-Sleep -Seconds $interval
-          }
+
+      # Mail Sending Call
+      Try
+      {
+          Send-Outlook-Email -To $Recipient -Subject $subject -Body $body
+      }
+      Catch
+      {
+          Write-Host "Unable to send email (for some reason), to $Recipient. Please try again."
+          Exit
+      }
+      If ((Get-Date) -gt (Get-Date $EndTime))
+      {
+          Write-Host "Script has finished notifying its victi- ...recipient!"
+          Break
+      }
+      Else
+      {
+          Start-Sleep -Seconds $Interval
       }
   }
 #+end_src
 
-Used like this, at the moment: 
-
-#+begin_src powershell
-  # Usage;
-  countdown.ps1 "16:50" "30" "email@email.email" "Countdown Event Description!"
-#+end_src
-
-**** TODO Should use argument flags instead of by order
+**** DONE Should use argument flags instead of by order
 **** TODO General cleanup of this script
+**** TODO Improve Param() 
+***** TODO I've not really played around with =Param= too much, but from the looks of things I should be able to use =[Mandatory]= in the Param section.
+***** TODO Use =Param= to sort out the types going on (set =[Date]=, etc.)
 
 *** Fonts
 
