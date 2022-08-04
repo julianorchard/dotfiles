@@ -29,6 +29,7 @@ This all tangles to =~/.emacs.d/init.el=; I don't know if this is optimal, or if
     - [[#remove-pointless-gui][Remove Pointless GUI]]
     - [[#line-numbers-stuff][Line Numbers Stuff]]
     - [[#general-fonts][General Fonts]]
+    - [[#themes][Themes]]
     - [[#dashboard][Dashboard]]
   - [[#completion][Completion]]
     - [[#ivy-completion][Ivy Completion]]
@@ -297,8 +298,24 @@ I use [[https://github.com/edwardtufte/et-book][ETBookOT]] as my Serif font of c
   (set-face-attribute 'fixed-pitch nil :font "Fira Code Retina" :height 110)
   (set-face-attribute 'variable-pitch nil :font "ETBookOT" :height 160 :weight 'regular)
   (set-face-attribute 'header-line nil :font "Fira Code Retina" :height 300)
+#+end_src
+
+*** Themes
+
+I use a dark theme (by default) of /Tomorrow Night/, and /Solarized/ as a light theme (at the moment), both through the =doom-themes= package. 
+
+=Ctrl+F1= (for /Tomorrow Night/) and =Ctrl+F2= (for /Solarized/) are used to switch between them (found [[https://emacs.stackexchange.com/questions/45799/keyboard-shortcuts-for-applying-a-theme][here]]).
+
+#+begin_src :tangle ~/.emacs.d/init.el mkdirp yes
   (use-package doom-themes
-    :init (load-theme 'doom-tomorrow-night t))
+    :init (load-theme 'doom-tomorrow-night t)
+    :config
+    (global-set-key (kbd "C-<f1>")
+                    (lambda () (interactive)
+                      (load-theme 'doom-tomorrow-night t)))
+    (global-set-key (kbd "C-<f2>")
+                    (lambda () (interactive)
+                      (load-theme 'doom-solarized-light t))))
   (use-package all-the-icons
     :ensure t)
   (use-package doom-modeline
@@ -481,7 +498,8 @@ This is the main org-mode block.
     (setq org-duration-format (quote h:mm))
     (setq org-hide-emphasis-markers t)
     (setq org-todo-keywords
-          '((sequence "TODO" "PENDING" "|" "DONE" "CANCELLED")))
+          '((sequence "TODO(t)" "PEND(p)" "|" "DONE(d)" "CANC(c)")
+            (sequence "|" "FIVE(5)" "FOUR(4)" "THRE(3)" "TWO(2)" "ONE(1)")))
     (efs/org-font-setup)
 
 #+end_src
