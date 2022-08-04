@@ -784,6 +784,23 @@ Or should I say XeLaTeX!? (Use XeLaTeX by default export.
   (setq latex-run-command "xelatex")
 #+end_src
 
+This extremely helpful [[https://emacs.stackexchange.com/questions/169/how-do-i-reload-a-file-in-a-buffer][Stack Overflow User]] makes my workflow nicer with LaTeX.
+
+#+begin_src elisp :tangle ~/.emacs.d/init.el :mkdirp yes
+  (defun revert-buffer-no-confirm ()
+    "Revert buffer without confirmation."
+    (interactive)
+    (revert-buffer :ignore-auto :noconfirm))
+
+  (global-set-key (kbd "C-c C-1") 'revert-buffer-no-confirm)
+#+end_src
+
+And this allows the PDF document to refresh without confirmation... again, from [[https://stackoverflow.com/questions/42330517/force-docview-mode-to-show-updated-file-without-confirmation][Stack Overflow]]!
+
+#+begin_src elisp :tangle ~/.emacs.d/init.el :mkdirp yes
+  (setq revert-without-query '(".pdf"))
+#+end_src
+
 *** Powershell
 
 #+begin_src elisp :tangle ~/.emacs.d/init.el :mkdirp yes
