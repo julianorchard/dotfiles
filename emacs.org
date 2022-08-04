@@ -306,7 +306,7 @@ I use a dark theme (by default) of /Tomorrow Night/, and /Solarized/ as a light 
 
 =Ctrl+F1= (for /Tomorrow Night/) and =Ctrl+F2= (for /Solarized/) are used to switch between them (found [[https://emacs.stackexchange.com/questions/45799/keyboard-shortcuts-for-applying-a-theme][here]]).
 
-#+begin_src elisp :tangle ~/.emacs.d/init.el mkdirp yes
+#+begin_src elisp :tangle ~/.emacs.d/init.el :mkdirp yes
   (use-package doom-themes
     :init (load-theme 'doom-tomorrow-night t)
     :config
@@ -509,17 +509,6 @@ This is the main org-mode block.
 I'd like to be able to replace the '#+begin_quote' blocks and code blocks of Org with symbols in the end, and I've not got it working yet. This is mainly a reminder, copied from [[https://github.com/tecosaur/emacs-config][Tecosaur's]] dotfiles. 
 
 #+begin_src elisp :tangle ~/.emacs.d/init.el :mkdirp yes
-
-      (use-package ligature
-        :config
-        (require 'fira-code-mode)
-        (ligature-set-ligatures 't '("www"))
-        (ligature-set-ligatures 'eww-mode '("ff" "fi" "ffi"))
-        ;; Edit this: 
-        ;; Enable all Cascadia Code ligatures in programming modes
-        (ligature-set-ligatures 'prog-mode '("|||>" "<|||" "<==>" "<!--" "####" "~~>" "***" "||=" "||>" ":::" "::=" "=:=" "===" "==>" "=!=" "=>>" "=<<" "=/=" "!==" "!!." ">=>" ">>=" ">>>" ">>-" ">->" "->>" "-->" "---" "-<<" "<~~" "<~>" "<*>" "<||" "<|>" "<$>" "<==" "<=>" "<=<" "<->" "<--" "<-<" "<<=" "<<-" "<<<" "<+>" "</>" "###" "#_(" "..<" "..." "+++" "/==" "///" "_|_" "www" "&&" "^=" "~~" "~@" "~=" "~>" "~-" "**" "*>" "*/" "||" "|}" "|]" "|=" "|>" "|-" "{|" "[|" "]#" "::" ":=" ":>" ":<" "$>" "==" "=>" "!=" "!!" ">:" ">=" ">>" ">-" "-~" "-|" "->" "--" "-<" "<~" "<*" "<|" "<:" "<$" "<=" "<>" "<-" "<<" "<+" "</" "#{" "#[" "#:" "#=" "#!" "##" "#(" "#?" "#_" "%%" ".=" ".-" ".." ".?" "+>" "++" "?:" "?=" "?." "??" ";;" "/*" "/=" "/>" "//" "__" "~~" "(*" "*)" "\\\\" "://"))
-        (global-ligature-mode t))
-
   ;; ;; Get this working...
       ;; (appendq! +ligatures-extra-symbols
       ;;           `(:checkbox      "☐"
@@ -671,11 +660,10 @@ Hmm... should this be in Evil, or Org subsection...
 Prettier Org tables, please (they're lovely by default, but this makes them even nicer.
 
 #+begin_src elisp :tangle ~/.emacs.d/init.el :mkdirp yes
-  (progn
-    (add-to-list 'load-path "~/.emacs.d/site-lisp")
-    (require 'org-pretty-table)
-    (add-hook 'org-mode-hook (lambda () (org-pretty-table-mode))))
-  ;; Org-Tempo
+  ;; (progn
+  ;;   (add-to-list 'load-path "~/.emacs.d/site-lisp")
+  ;;   (require 'org-pretty-table)
+  ;;   (add-hook 'org-mode-hook (lambda () (org-pretty-table-mode))))
  #+end_src
 
 *** Org Tempo
@@ -711,21 +699,21 @@ I have started to use Org for planning a lot of things, and it gets busy. The st
 If =:order= isn't specified, =:order 0= is the default. At the moment, this is all the information I need for this, I think. 
 
 #+begin_src elisp :tangle ~/.emacs.d/init.el :mkdirp yes
-  (use-package org-super-agenda
-    :config
-    (let ((org-super-agenda-groups
-           '((:name "Today"
-                    :time-grid t
-                    :todo "TODAY")
-             (:name "This Week"
-                    :time-grid t
-                    :todo "THIS WEEK")
-             (:name "Important"
-                    ;; Don't need this yet, but:
-                    ;; :and (:tag "bills" :tag "another_important_tag")
-                    :priority "A")
-             (:todo "PENDING" :order 8))))
-      (org-agenda nil "a")))
+  ;; (use-package org-super-agenda
+  ;;   :config
+  ;;   (let ((org-super-agenda-groups
+  ;;          '((:name "Today"
+  ;;                   :time-grid t
+  ;;                   :todo "TODAY")
+  ;;            (:name "This Week"
+  ;;                   :time-grid t
+  ;;                   :todo "THIS WEEK")
+  ;;            (:name "Important"
+  ;;                   ;; Don't need this yet, but:
+  ;;                   ;; :and (:tag "bills" :tag "another_important_tag")
+  ;;                   :priority "A")
+  ;;            (:todo "PENDING" :order 8))))
+  ;;     (org-agenda nil "a")))
 #+end_src
 
 ** Todo
