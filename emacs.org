@@ -42,8 +42,8 @@ This all tangles to =~/.emacs.d/init.el=; I don't know if this is optimal, or if
   - [[#org][Org]]
     - [[#about-3][About]]
     - [[#font-setup][Font Setup]]
+    - [[#prettify-symbols-in-org-mode][Prettify Symbols in Org Mode]]
     - [[#main-org][Main Org]]
-    - [[#ligatures][Ligatures]]
     - [[#some-org-setup][Some Org Setup]]
     - [[#visual-column-mode][Visual Column Mode]]
     - [[#org-bullets][Org Bullets]]
@@ -306,16 +306,37 @@ I use a dark theme (by default) of /Tomorrow Night/, and /Solarized/ as a light 
 
 =Ctrl+F1= (for /Tomorrow Night/) and =Ctrl+F2= (for /Solarized/) are used to switch between them (found [[https://emacs.stackexchange.com/questions/45799/keyboard-shortcuts-for-applying-a-theme][here]]).
 
+**** TODO Issue when switching back to /tomorrow-night/ theme
+
+The meta-lines of org-files don't switch back to the /Tomorrow Night/ theme (I assume this is because they're not distinctly set or something?)
+
+Some of the bits that aren't in /Tomorrow Night/, but that are in /Solarized Light/:
+
+#+begin_src elisp
+   ;;;; org <built-in>
+   (org-block :background (doom-blend yellow bg 0.04) :extend t)
+   (org-block-background :background (doom-blend yellow bg 0.04))
+   (org-block-begin-line :background (doom-blend yellow bg 0.08) :extend t)
+   (org-block-end-line :background (doom-blend yellow bg 0.08) :extend t)
+#+end_src
+
+Two options I can see;
+
+- PR to define these keys (unlikely...)
+- Making custom versions of the themes I like (this is probably the one)
+
 #+begin_src elisp :tangle ~/.emacs.d/init.el :mkdirp yes
   (use-package doom-themes
     :init (load-theme 'doom-tomorrow-night t)
     :config
     (global-set-key (kbd "C-<f1>")
                     (lambda () (interactive)
-                      (load-theme 'doom-tomorrow-night t)))
+                      (load-theme 'doom-tomorrow-night t)
+                      (efs/org-font-setup)))
     (global-set-key (kbd "C-<f2>")
                     (lambda () (interactive)
-                      (load-theme 'doom-solarized-light t))))
+                      (load-theme 'doom-solarized-light t)
+                      (efs/org-font-setup))))
   (use-package all-the-icons
     :ensure t)
   (use-package doom-modeline
@@ -478,7 +499,62 @@ One of the biggest draws to Emacs, for me, has become Org-mode. It's incredible.
     (set-face-attribute 'line-number nil :inherit 'fixed-pitch)
     (set-face-attribute 'line-number-current-line nil :inherit 'fixed-pitch)
     (set-face-attribute 'org-quote nil :inherit 'variable-pitch :slant 'italic))
+#+end_src
 
+*** Prettify Symbols in Org Mode
+
+I found this method on a Reddit post:
+
+#+begin_src elisp
+  (add-hook 'org-mode-hook (lambda ()
+                             "Prettify Symbols Setup for Org Documents"
+                             (push '("[ ]" . "☐") prettify-symbols-alist)
+                             ;;etc.
+                             ))
+#+end_src
+
+But ended up doing so many it's in its own funcion =efs/org-mode-symbols-setup=.
+
+#+begin_src elisp :tangle ~/.emacs.d/init.el :mkdirp yes
+  (defun efs/org-mode-symbols-setup ()
+    "Prettify Symbols Setup for Org Documents"
+    (push '("[ ]" . "☐") prettify-symbols-alist)
+    (push '("[X]" . "☑" ) prettify-symbols-alist)
+    (push '("[-]" . "○" ) prettify-symbols-alist)
+    (push '("#+BEGIN_SRC" . "→" ) prettify-symbols-alist)
+    (push '("#+END_SRC" . "←" ) prettify-symbols-alist)
+    (push '("#+begin_src" . "→" ) prettify-symbols-alist)
+    (push '("#+end_src" . "←" ) prettify-symbols-alist)
+    (push '("#+BEGIN_EXAMPLE" . "e.g. →" ) prettify-symbols-alist)
+    (push '("#+END_EXAMPLE" . "←" ) prettify-symbols-alist)
+    (push '("#+begin_example" . "e.g. →" ) prettify-symbols-alist)
+    (push '("#+end_example" . "←" ) prettify-symbols-alist)
+    (push '("#+BEGIN_QUOTE" . "“" ) prettify-symbols-alist)
+    (push '("#+END_QUOTE" . "”" ) prettify-symbols-alist)
+    (push '("#+begin_quote" . "“" ) prettify-symbols-alist)
+    (push '("#+end_quote" . "”" ) prettify-symbols-alist)
+    (push '("#+title:" . "⒯") prettify-symbols-alist)
+    (push '("#+TITLE:" . "⒯") prettify-symbols-alist)
+    (push '("#+options:" . "⌥") prettify-symbols-alist)
+    (push '("#+OPTIONS:" . "⌥") prettify-symbols-alist)
+    (push '("#+author:" . "⒜") prettify-symbols-alist)
+    (push '("#+AUTHOR:" . "⒜") prettify-symbols-alist)
+    (push '("#+date:" . "⒟") prettify-symbols-alist)
+    (push '("#+DATE:" . "⒟") prettify-symbols-alist)
+    (push '("#+description:" . "…") prettify-symbols-alist)
+    (push '("#+DESCRIPTION:" . "…") prettify-symbols-alist)
+    (push '("#+results:" . " result ⇒ ") prettify-symbols-alist)
+    (push '("#+RESULTS:" . " result ⇒ ") prettify-symbols-alist)
+    (push '("#+property:" . "∷") prettify-symbols-alist)
+    (push '("#+PROPERTY:" . "∷") prettify-symbols-alist)
+    (push '("[#A]" . "⬆") prettify-symbols-alist)
+    (push '("[#B]" . "■") prettify-symbols-alist)
+    (push '("[#C]" . "⬇") prettify-symbols-alist)
+    (push '("TODO" . "☐") prettify-symbols-alist)
+    (push '("PEND" . "○") prettify-symbols-alist)
+    (push '("DONE" . "☑") prettify-symbols-alist)
+    (push '("CANC" . "☒") prettify-symbols-alist)
+    (prettify-symbols-mode))
 #+end_src
 
 *** Main Org
@@ -490,8 +566,9 @@ This is the main org-mode block.
     :pin org
     :commands (org-capture org-agenda)
     :hook (org-mode . efs/org-mode-setup)
+    (org-mode . efs/org-mode-symbols-setup)
     :config
-    (setq org-ellipsis "     ↓")
+    (setq org-ellipsis "   ↓")
     (setq header-line-format " ")
     (setq org-agenda-files
           '("~/OneDrive/org/weekly.org" "~/OneDrive/org/todo.org"))
@@ -500,100 +577,12 @@ This is the main org-mode block.
     (setq org-todo-keywords
           '((sequence "TODO(t)" "PEND(p)" "|" "DONE(d)" "CANC(c)")
             (sequence "|" "FIVE(5)" "FOUR(4)" "THRE(3)" "TWO(2)" "ONE(1)")))
-    (efs/org-font-setup)
-
+    (setq org-priority-faces
+          '((?A . (:foreground "red"))
+            (?B . (:foreground "orange"))
+            (?C . (:foreground "yellow"))))
+    (efs/org-font-setup))
 #+end_src
-
-*** Ligatures
-
-I'd like to be able to replace the '#+begin_quote' blocks and code blocks of Org with symbols in the end, and I've not got it working yet. This is mainly a reminder, copied from [[https://github.com/tecosaur/emacs-config][Tecosaur's]] dotfiles. 
-
-#+begin_src elisp :tangle ~/.emacs.d/init.el :mkdirp yes
-  ;; ;; Get this working...
-      ;; (appendq! +ligatures-extra-symbols
-      ;;           `(:checkbox      "☐"
-      ;; 			     :pending       "◼"
-      ;; 			     :checkedbox    "☑"
-      ;; 			     :list_property "∷"
-      ;; 			     :em_dash       "—"
-      ;; 			     :ellipses      "…"
-      ;; 			     :arrow_right   "→"
-      ;; 			     :arrow_left    "←"
-      ;; 			     :title         "𝙏"
-      ;; 			     :subtitle      "𝙩"
-      ;; 			     :author        "𝘼"
-      ;; 			     :date          "𝘿"
-      ;; 			     :property      "☸"
-      ;; 			     :options       "⌥"
-      ;; 			     :startup       "⏻"
-      ;; 			     :macro         "𝓜"
-      ;; 			     :html_head     "🅷"
-      ;; 			     :html          "🅗"
-      ;; 			     :latex_class   "🄻"
-      ;; 			     :latex_header  "🅻"
-      ;; 			     :beamer_header "🅑"
-      ;; 			     :latex         "🅛"
-      ;; 			     :attr_latex    "🄛"
-      ;; 			     :attr_html     "🄗"
-      ;; 			     :attr_org      "⒪"
-      ;; 			     :begin_quote   "❝"
-      ;; 			     :end_quote     "❞"
-      ;; 			     :caption       "☰"
-      ;; 			     :header        "›"
-      ;; 			     :results       "🠶"
-      ;; 			     :begin_export  "⏩"
-      ;; 			     :end_export    "⏪"
-      ;; 			     :properties    "⚙"
-      ;; 			     :end           "∎"
-      ;; 			     :priority_a   ,(propertize "⚑" 'face 'all-the-icons-red)
-      ;; 			     :priority_b   ,(propertize "⬆" 'face 'all-the-icons-orange)
-      ;; 			     :priority_c   ,(propertize "■" 'face 'all-the-icons-yellow)
-      ;; 			     :priority_d   ,(propertize "⬇" 'face 'all-the-icons-green)
-      ;; 			     :priority_e   ,(propertize "❓" 'face 'all-the-icons-blue)))
-      ;; (set-ligatures! 'org-mode
-      ;; 		  :merge t
-      ;; 		  :checkbox      "[ ]"
-      ;; 		  :pending       "[-]"
-      ;; 		  :checkedbox    "[X]"
-      ;; 		  :list_property "::"
-      ;; 		  :em_dash       "---"
-      ;; 		  :ellipsis      "..."
-      ;; 		  :arrow_right   "->"
-      ;; 		  :arrow_left    "<-"
-      ;; 		  :title         "#+title:"
-      ;; 		  :subtitle      "#+subtitle:"
-      ;; 		  :author        "#+author:"
-      ;; 		  :date          "#+date:"
-      ;; 		  :property      "#+property:"
-      ;; 		  :options       "#+options:"
-      ;; 		  :startup       "#+startup:"
-      ;; 		  :macro         "#+macro:"
-      ;; 		  :html_head     "#+html_head:"
-      ;; 		  :html          "#+html:"
-      ;; 		  :latex_class   "#+latex_class:"
-      ;; 		  :latex_header  "#+latex_header:"
-      ;; 		  :beamer_header "#+beamer_header:"
-      ;; 		  :latex         "#+latex:"
-      ;; 		  :attr_latex    "#+attr_latex:"
-      ;; 		  :attr_html     "#+attr_html:"
-      ;; 		  :attr_org      "#+attr_org:"
-      ;; 		  :begin_quote   "#+begin_quote"
-      ;; 		  :end_quote     "#+end_quote"
-      ;; 		  :caption       "#+caption:"
-      ;; 		  :header        "#+header:"
-      ;; 		  :begin_export  "#+begin_export"
-      ;; 		  :end_export    "#+end_export"
-      ;; 		  :results       "#+RESULTS:"
-      ;; 		  :property      ":PROPERTIES:"
-      ;; 		  :end           ":END:"
-      ;; 		  :priority_a    "[#A]"
-      ;; 		  :priority_b    "[#B]"
-      ;; 		  :priority_c    "[#C]"
-      ;; 		  :priority_d    "[#D]"
-      ;; 		  :priority_e    "[#E]")
-      ;; (plist-put +ligatures-extra-symbols :name "⁍")
-      )
- #+end_src
 
 *** Some Org Setup
 
@@ -652,7 +641,6 @@ Hmm... should this be in Evil, or Org subsection...
            "* TODO %?\n  %U\n %a\n %i")
           ("j" "Journal" entry (file+datetree "~/OneDrive/org/journal.org")
            "* %?\nEntered on %U\n  %i\n  %a")))
-  ;; Org-Pretty-Table-Mode
  #+end_src
 
 *** Org Prettier Tables
@@ -672,14 +660,7 @@ This allows you to use =<s= to quickly insert a block of script, or =<q= to quic
 
 #+begin_src elisp :tangle ~/.emacs.d/init.el :mkdirp yes
   (require 'org-tempo)
-  ;; Org Padding
   ;;(require 'org-padding)
-  (add-hook 'org-mode-hook
-            (lambda ()
-              (push '("[ ]" . "o" ) prettify-symbols-alist)
-              (push '("[X]" . "x" ) prettify-symbols-alist)
-              (push '("[-]" . "~" ) prettify-symbols-alist)
-              (prettify-symbols-mode)))
 #+end_src
 
 *** Tables Of Content
