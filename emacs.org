@@ -1,13 +1,11 @@
 #+author: Julian Orchard <git@julianorchard.co.uk>
 #+title: /emacs.org/
+#+description: My literate emacs configuration, mainly for Windows 10 at the moment. 
 
-I'm still learning all about Emacs, and I probably always will be. So these are my current settings, semi-documented, semi-copied from other configurations, fully-useful to me at the moment. 
-
-This all tangles to =~/.emacs.d/init.el=; I don't know if this is optimal, or if there's a big downside to doing it like this, yet, but I'll find out and change it if necessary.
+This is my on-going project to  /b e c o m e/  an emacs user (from being a vimmer).
 
 ** Content                                                     :toc_3:quote:
 #+BEGIN_QUOTE
-  - [[#meta][Meta]]
   - [[#the-basics][The Basics]]
     - [[#about][About]]
     - [[#improve-start-up-time][Improve Start-Up Time]]
@@ -22,75 +20,60 @@ This all tangles to =~/.emacs.d/init.el=; I don't know if this is optimal, or if
     - [[#dialogue-boxes][Dialogue Boxes]]
     - [[#yesno-or-yn][Yes/No, or Y/N]]
     - [[#load-path][Load Path]]
+    - [[#window-splits][Window Splits]]
   - [[#package-setup][Package Setup]]
-    - [[#needs-reviewing][Needs Reviewing!]]
+    - [[#package][Package]]
+    - [[#customize][Customize]]
   - [[#aesthetics][Aesthetics]]
     - [[#about-1][About]]
     - [[#remove-pointless-gui][Remove Pointless GUI]]
     - [[#line-numbers-stuff][Line Numbers Stuff]]
     - [[#general-fonts][General Fonts]]
     - [[#themes][Themes]]
-    - [[#dashboard][Dashboard]]
   - [[#completion][Completion]]
     - [[#ivy-completion][Ivy Completion]]
     - [[#company][Company]]
   - [[#evil][Evil]]
     - [[#about-2][About]]
     - [[#the-evil-mode][The Evil Mode]]
+    - [[#general-keybindings][General Keybindings]]
     - [[#the-evil-collection][The Evil Collection]]
     - [[#the-evil-commentary][The Evil Commentary]]
+    - [[#the-evil-surround][The Evil Surround]]
+  - [[#avy][Avy]]
+    - [[#setup][Setup]]
   - [[#org][Org]]
     - [[#about-3][About]]
+    - [[#main-org][Main Org]]
     - [[#font-setup][Font Setup]]
     - [[#prettify-symbols-in-org-mode][Prettify Symbols in Org Mode]]
-    - [[#main-org][Main Org]]
-    - [[#some-org-setup][Some Org Setup]]
+    - [[#org-setup][Org Setup]]
     - [[#visual-column-mode][Visual Column Mode]]
     - [[#org-bullets][Org Bullets]]
     - [[#evil-org][Evil Org]]
     - [[#org-prettier-tables][Org Prettier Tables]]
     - [[#org-tempo][Org Tempo]]
-    - [[#tables-of-content][Tables Of Content]]
+    - [[#org-tables-of-content][Org Tables Of Content]]
     - [[#super-agenda][Super Agenda]]
-  - [[#todo][Todo]]
+  - [[#helpful][Helpful]]
+  - [[#magit][Magit]]
     - [[#about-4][About]]
-    - [[#helpful][Helpful]]
-    - [[#magit][Magit]]
-    - [[#snippets][Snippets]]
+  - [[#snippets][Snippets]]
+  - [[#dired][Dired]]
+    - [[#subtree][Subtree]]
   - [[#language-modes][Language Modes]]
     - [[#about-5][About]]
     - [[#autohotkey][AutoHotkey]]
     - [[#latex][LaTeX]]
     - [[#powershell][Powershell]]
     - [[#ruby][Ruby]]
+    - [[#spell-checking][Spell Checking]]
     - [[#vbscript][VBScript]]
     - [[#web][Web]]
     - [[#yaml][YAML]]
   - [[#fun][Fun]]
-    - [[#about-6][About]]
     - [[#discord][Discord]]
-    - [[#meme][Meme]]
 #+END_QUOTE
-
-** Meta
-
-This isn't just another one of my config files, it's the config files to manage all others.
-
-I'm going to try and implement something similar to the [[https://github.com/daviwil/dotcrafter.el][dotcrafter.el]] example package by David Wilson.
-
-#+begin_src elisp
-  (defun org-babel-tangle-config ()
-    (when (or (string-equal (buffer-file-name)
-                            (expand-file-name "~/config/tester.org"))
-              (string-equal (buffer-file-name)
-                            (expand-file-name "~/config/test2.org")))
-              (let ((org-config-babel-evaluate nil))
-                (org-babel-tangle))))
-
-    (add-hook 'org-mode-hook
-              (lambda ()
-                (add-hook 'after-save-hook #'org-babel-tangle-config)))
-#+end_src
 
 ** The Basics
 *** About
@@ -124,22 +107,17 @@ Upon starting Emacs (on Windows 10, at least), it's annoying that it's not full 
 
 *** Scratch Buffer and Startup Info
 
-This adds a message like:
-
-#+begin_src elisp
-;; Emacs loaded in X.XXXX seconds, just for you to waste time reading this in the scratch buffer
-#+end_src
-
-It's quite simple:
+Change the scratch buffer and disable the startup messages.
 
 #+begin_src elisp :tangle ~/.emacs.d/init.el :mkdirp yes
   (setq inhibit-startup-message t)
-  (setq initial-scratch-message (concat ";;  Emacs loaded in " (emacs-init-time) ", just for you to waste time reading this in the scratch buffer\ 
+  (setq initial-scratch-message (concat ";;  Emacs loaded in " (emacs-init-time) ", according to (emacs-init-time), at least...\ 
 
-"))
+
+  "))
 #+end_src
 
-But I've started using Dashboard instead (configuration further in this file...).
+I used /Dashboard/ for a short while, but I've decided to make this config as simple as I can.
 
 *** My Details
 
@@ -152,15 +130,18 @@ Added because it's sometimes nice to have these around (although I've not really
 
 *** Escape Actually Escapes
 
-One of the most initially frustrating things about Emacs was escaping the minibuffer for any reason would yeild terrible results.
+This is an incredibly useful binding, and one the lack of which /seriously/ threw me when first using emacs.
 
 #+begin_src elisp :tangle ~/.emacs.d/init.el :mkdirp yes
   (global-set-key (kbd "<escape>") 'keyboard-escape-quit)
 #+end_src
 
+**** TODO Use General.el to set this keybind?
+<2022-08-12 Fri>
+
 *** Mouse
 
-Scrolling amount. 
+Set scrolling amount.
 
 #+begin_src elisp :tangle ~/.emacs.d/init.el :mkdirp yes
   (setq mouse-wheel-scroll-amount '(1 ((shift) . 1))) 
@@ -230,10 +211,18 @@ Paths to load, for Elisp by me or others.
                (concat (getenv "HOMEPATH") "/.emacs.d/lisp/"))
 #+end_src
 
-** Package Setup
-*** Needs Reviewing!
+*** Window Splits
 
-Now *THIS* needs review. Is this the right place for it, and is this good /stuff at all/? I don't know, at the moment, so I need to find out...
+Default the window splits to be horizontal all the time. This is almost always what I want, so it does make sense for me to do it like this
+
+#+begin_src elisp :tangle ~/.emacs.d/init.el :mkdirp yes
+  (setq split-width-threshold 1 )
+#+end_src
+
+** Package Setup
+*** Package
+
+So this is basically setting the package-archives Melpa and Elpa.
 
 #+begin_src elisp :tangle ~/.emacs.d/init.el :mkdirp yes
   (require 'package)
@@ -241,25 +230,37 @@ Now *THIS* needs review. Is this the right place for it, and is this good /stuff
                            ("org" . "https://orgmode.org/elpa/")
                            ("elpa" . "https://elpa.gnu.org/packages/")))
   (package-initialize)
+#+end_src
+
+This refreshes the package contents, I believe.
+
+#+begin_src elisp :tangle ~/.emacs.d/init.el :mkdirp yes
   (unless package-archive-contents
    (package-refresh-contents))
   (unless (package-installed-p 'use-package)
      (package-install 'use-package))
+#+end_src
+
+And now we =require 'use-package=.
+
+#+begin_src elisp :tangle ~/.emacs.d/init.el :mkdirp yes
   (require 'use-package)
   (setq use-package-always-ensure t)
-  (custom-set-variables
-   '(line-number-mode nil)
-   '(org-agenda-files '("~/OneDrive/org/weekly.org"))
-   '(package-selected-packages
-     '(org-pretty-table yasnippet-snippets company elcord 2048-game web-mode solaire-mode php-mode evil-org linum-off evil-leader visual-fill-column yasnippet ahk-mode magit org-bullets evil-commentary evil-collection helpful doom-modeline all-the-icons doom-themes ivy no-littering command-log-mode use-package evil))
-   '(show-paren-mode t))
-  (custom-set-faces)
+#+end_src
+
+*** Customize
+
+I'm not sure if this really /belongs/ here, but we can move some of the variables set by the =customize= interface to a different file (according to [[https://stackoverflow.com/questions/5052088/what-is-custom-set-variables-and-faces-in-my-emacs][this]], anyway).
+
+#+begin_src elisp :tangle ~/.emacs.d/init.el :mkdirp yes
+  (setq custom-file "~/.emacs.d/custom.el")
+  (load custom-file)
 #+end_src
 
 ** Aesthetics
 *** About
 
-Generally, this bit is about the looks of Emacs; the /whole/ look and feel is spread around the configuration a fair bit (especially concerning org-mode), but this is a lot of the inital, most important setup (thank you again, Doom Emacs).
+This part used to be a lot more involved, but I've decided I want to keep things more minimal to actually enjoy /using/ this software more, rather than endlessly making tiny aesthetic changes. I'm therefore planning on using the stock Emacs themes (or very similar), and maybe a light and dark version.
 
 *** Remove Pointless GUI
 
@@ -276,11 +277,12 @@ But first, get rid of the more useless stuff, and mess with the line-numbers (ne
 
 *** Line Numbers Stuff
 
-This needs reviewing.
+This needs reviewing...
 
 #+begin_src elisp :tangle ~/.emacs.d/init.el :mkdirp yes
   (column-number-mode)
-  (setq display-line-numbers 'relative)
+  (setq display-line-numbers-mode t)
+  (setq display-line-numbers-type 'relative)
   (dolist (rm-ln-hook '(org-mode-hook
                         term-mode-hook
                         shell-mode-hook
@@ -289,56 +291,38 @@ This needs reviewing.
     (add-hook rm-ln-hook (lambda () (display-line-numbers-mode))))
 #+end_src
 
+**** TODO Get Line Numbering Working
 *** General Fonts
 
-I use [[https://github.com/edwardtufte/et-book][ETBookOT]] as my Serif font of choice, and [[https://github.com/tonsky/FiraCode][Fira Code]] for the codes: 
+I used to use ET Book for some really nice looking Org-documents, especially. However, I've stopped this and now just use Fira (I also use a [[version https://github.com/zwaldowski/Fira/tree/zwaldowski/mod-new/otf][fork]] for the /italicised/ version).
 
 #+begin_src elisp :tangle ~/.emacs.d/init.el :mkdirp yes
+  (set-face-attribute 'italic nil :font "Fira Mono" :height 105)
   (set-face-attribute 'default nil :font "Fira Code Retina" :height 110)
-  (set-face-attribute 'fixed-pitch nil :font "Fira Code Retina" :height 110)
-  (set-face-attribute 'variable-pitch nil :font "ETBookOT" :height 160 :weight 'regular)
-  (set-face-attribute 'header-line nil :font "Fira Code Retina" :height 300)
 #+end_src
+
+I'm not massively attached to this font; I do like it a lot but I don't mind changing it if I decide the fact it doesn't have an italic version officially is a problem. 
 
 *** Themes
 
-I use a dark theme (by default) of /Tomorrow Night/, and /Solarized/ as a light theme (at the moment), both through the =doom-themes= package. 
+I used to use Doom themes. I am now planning on using the default dark and light themes for Emacs. 
 
-=Ctrl+F1= (for /Tomorrow Night/) and =Ctrl+F2= (for /Solarized/) are used to switch between them (found [[https://emacs.stackexchange.com/questions/45799/keyboard-shortcuts-for-applying-a-theme][here]]).
++=Ctrl+F1= (for /Tomorrow Night/) and =Ctrl+F2= (for /Solarized/) are used to switch between them (found [[https://emacs.stackexchange.com/questions/45799/keyboard-shortcuts-for-applying-a-theme][here]]).+
 
-**** TODO Issue when switching back to /tomorrow-night/ theme
-
-The meta-lines of org-files don't switch back to the /Tomorrow Night/ theme (I assume this is because they're not distinctly set or something?)
-
-Some of the bits that aren't in /Tomorrow Night/, but that are in /Solarized Light/:
+This /was/ what I used:
 
 #+begin_src elisp
-   ;;;; org <built-in>
-   (org-block :background (doom-blend yellow bg 0.04) :extend t)
-   (org-block-background :background (doom-blend yellow bg 0.04))
-   (org-block-begin-line :background (doom-blend yellow bg 0.08) :extend t)
-   (org-block-end-line :background (doom-blend yellow bg 0.08) :extend t)
-#+end_src
-
-Two options I can see;
-
-- PR to define these keys (unlikely...)
-- Making custom versions of the themes I like (this is probably the one)
-
-#+begin_src elisp :tangle ~/.emacs.d/init.el :mkdirp yes
   (use-package doom-themes
     :init (load-theme 'doom-tomorrow-night t)
     :config
     (global-set-key (kbd "C-<f1>")
                     (lambda () (interactive)
                       (load-theme 'doom-tomorrow-night t)
-                      (efs/org-font-setup)))
+                      (here/org-font-setup)))
     (global-set-key (kbd "C-<f2>")
                     (lambda () (interactive)
                       (load-theme 'doom-solarized-light t)
-                      (efs/org-font-setup))))
-  (use-package all-the-icons
-    :ensure t)
+                      (here/org-font-setup))))
   (use-package doom-modeline
     :ensure t
     :init (doom-modeline-mode 1)
@@ -347,26 +331,11 @@ Two options I can see;
     :init (solaire-global-mode +1))
 #+end_src
 
-*** Dashboard
-
-Playing with dashboard. I did actually write the below Elisp, but I realise it's /identical/ to what's on the Github Repo; I'm proud to have 'got it right'... maybe some of this basic stuff is going in.
-
-I'd like to change the =dashboard-startup-banner= to something, maybe.
+But I do still want /all-the-icons/:
 
 #+begin_src elisp :tangle ~/.emacs.d/init.el :mkdirp yes
-    (use-package dashboard
-      :ensure t
-      :config 
-      (dashboard-setup-startup-hook)
-      (setq dashboard-banner-logo-title (concat "Emacs startup took " (emacs-init-time) "!"))
-      (setq dashboard-startup-banner "~/config/src/dash.png")
-      (setq dashboard-center-content t)
-      (add-to-list 'dashboard-items '(agenda) t))
-      ;; (setq dashboard-items '((recents  . 5)
-      ;;                         (bookmarks . 5)
-      ;;                         (projects . 5)
-      ;;                         (agenda . 5)
-      ;;                         (registers . 5)))
+  (use-package all-the-icons
+    :ensure t)
 #+end_src
 
 ** Completion
@@ -380,7 +349,6 @@ Completion in the minibuffer.
       :bind (("C-s" . swiper)
              :map ivy-minibuffer-map
              ("TAB" . ivy-alt-done)	
-             ("C-l" . ivy-alt-done)
              ("C-j" . ivy-next-line)
              ("C-k" . ivy-previous-line)
              :map ivy-switch-buffer-map
@@ -396,6 +364,7 @@ Completion in the minibuffer.
     (global-set-key (kbd "C-x C-k") 'kill-this-buffer)
 #+end_src
 
+**** TODO Ivy completion bindings with General
 *** Company
 
 For completion /outside/ the minibuffer.
@@ -406,18 +375,17 @@ For completion /outside/ the minibuffer.
     (company-global-modes '(not shell-mode eaf-mode))
     :config
     (global-company-mode 1))
+  ;; (setq company-backends (mapcar #'company-mode/backend-with-yas company-backends)))
 #+end_src
 
 ** Evil
 *** About
 
-Evil allows vim users (like me) to join the church of Emacs... but we'll always be heretics, to some degree... 
-
-I'd like to work on my Evil config a lot more, get to know it, and get to know how I should best make bindings using it. I feel like I'm lost with it at the moment, but that's fine! It's a journey...
+The most vital Emacs package for me.
 
 *** The Evil Mode
 
-We go with =use-package= to get Evil mode configured, and installed. 
+=use-package= to get Evil mode installed and configured. 
 
 #+begin_src elisp :tangle ~/.emacs.d/init.el :mkdirp yes
   (use-package evil
@@ -430,18 +398,58 @@ We go with =use-package= to get Evil mode configured, and installed.
     (setq evil-want-C-i-jump nil)
     :config
     (evil-mode 1)
-    (define-key evil-insert-state-map (kbd "C-g") 'evil-normal-state)
+    (setq evil-split-window-below t)
+    (setq evil-vsplit-window-right t)
     (evil-global-set-key 'motion "j" 'evil-next-visual-line)
     (evil-global-set-key 'motion "k" 'evil-previous-visual-line)
-    (define-key evil-normal-state-map (kbd "C-l") 'evil-window-next)
-    (define-key evil-normal-state-map (kbd "C-h") 'evil-window-next)
     (evil-set-initial-state 'messages-buffer-mode 'normal)
     (evil-set-initial-state 'dashboard-mode 'normal))
 #+end_src
 
+*** General Keybindings
+
+I'm going to use =general.el= to manage some of these bindings. 
+
+#+begin_src elisp :tangle ~/.emacs.d/init.el :mkdirp yes
+  (use-package general
+    :ensure t
+    :config
+    (general-evil-setup t)
+    (general-define-key
+     :states '(normal visual)
+     :prefix "SPC"
+     "SPC" 'execute-extended-command
+     "r" 'eval-region
+     )
+    (general-define-key
+     :states 'normal
+     :prefix "SPC"
+     "q" 'evil-quit
+     "h" 'evil-window-left
+     "j" 'evil-window-down
+     "k" 'evil-window-up
+     "l" 'evil-window-right
+     "b" 'ivy-switch-buffer
+     "f" 'find-file-other-window
+     "tf" 'org-babel-tangle
+     "ts" 'org-time-stamp
+     "a" 'org-agenda
+     "c" 'org-capture
+     "1" 'delete-other-windows
+     "0" 'delete-window
+     "2" 'split-window-below
+     "3" 'split-window-right
+     "{" 'shrink-window-horizontally
+     "}" 'enlarge-window-horizontally
+     "+" 'balance-windows
+     ))
+#+end_src
+
+**** TODO Spread some General bindings around the config file
+
 *** The Evil Collection
 
-The the evil collection! 
+Adds evil-bindings to a wide range of Emacs applications without having to do anything!
 
 #+begin_src elisp :tangle ~/.emacs.d/init.el :mkdirp yes
   (use-package evil-collection
@@ -452,7 +460,7 @@ The the evil collection!
 
 *** The Evil Commentary
 
-Like Tim Pope's incredible 'vim commentary', but it's in Emacs!
+Tim Pope's incredible [[https://github.com/tpope/vim-commentary][commentary.vim]], ported to Evil-mode.
 
 #+begin_src elisp :tangle ~/.emacs.d/init.el :mkdirp yes
   (use-package evil-commentary
@@ -461,30 +469,112 @@ Like Tim Pope's incredible 'vim commentary', but it's in Emacs!
     :config (evil-commentary-mode +1))
 #+end_src
 
+*** The Evil Surround
+
+And another Tpope plugin ported to Emacs (which I don't actually use in Vim too much, but want to start using more often), [[https://github.com/tpope/vim-surround][vim-surround]].
+
+#+begin_src elisp :tangle ~/.emacs.d/init.el :mkdirp yes
+(use-package evil-surround
+  :ensure t
+  :config
+  (global-evil-surround-mode 1))
+#+end_src
+
+** Avy
+*** Setup
+
+This plugin is for jumping to text in the current view. I used a similar plugin in Atom, but never tried vim-easymotion. 
+
+#+begin_src elisp :tangle ~/.emacs.d/init.el :mkdirp yes
+(use-package avy
+  :ensure t
+  :config
+  (general-define-key
+     :states 'normal
+     :prefix "SPC"
+     "," 'avy-goto-char))
+#+end_src
+
+Not sure if I'll end up using this much right now, but want to try it out. 
+
 ** Org
 *** About
 
-One of the biggest draws to Emacs, for me, has become Org-mode. It's incredible. 
+One of the biggest draws to Emacs, for me, has become Org-mode. 
+
+*** Main Org
+
+This is the main org-mode block.
+
+#+begin_src elisp :tangle ~/.emacs.d/init.el :mkdirp yes
+  (use-package org
+    :pin org
+    :commands (org-capture org-agenda)
+    :hook (org-mode . here/org-mode-setup)
+    (org-mode . here/org-mode-symbols-setup)
+    (org-mode . here/org-capture-workflow)
+    :config
+    (setq org-ellipsis " ⌄")
+    (set-face-underline 'org-ellipsis nil)
+    (setq header-line-format " ")
+    (setq org-agenda-files
+          '("~/OneDrive/org/" "~/config/"))
+    (setq org-duration-format (quote h:mm))
+    (setq org-hide-emphasis-markers t)
+    (setq org-todo-keywords
+          '((sequence "TODO(t)" "PEND(p)" "|" "DONE(d)" "CANC(c)")
+            (sequence "|" "FIVE(5)" "FOUR(4)" "THRE(3)" "TWO(2)" "ONE(1)")))
+    (setq org-priority-faces
+          '((?A . (:foreground "red"))
+            (?B . (:foreground "orange"))
+            (?C . (:foreground "yellow"))))
+    (set-face-attribute 'org-quote nil :inherit 'italic))
+#+end_src
+
+Note, I do this like [[https://emacs.stackexchange.com/questions/30169/set-org-capture-datetree-write-on-top-of-the-file][this]], because I want to put items at the top of the list.
+
+#+begin_src elisp :tangle ~/.emacs.d/init.el :mkdirp yes
+    (defun here/org-capture-workflow ()
+      "My org-capture templates."
+      (setq org-capture-templates
+            '(("w" "Wessex" entry (file+headline "~/OneDrive/org/wessex.org" "Tasklist")
+                "* TODO %?" :prepend t)
+              ("p" "Personal" entry (file+headline "~/OneDrive/org/personal.org" "Tasklist")
+                "* TODO %?" :prepend t))))
+#+end_src
 
 *** Font Setup
 
-#+begin_src elisp :tangle ~/.emacs.d/init.el :mkdirp yes
-  (defun efs/org-font-setup ()
+I started using this setup, below (edited from Davwils /Emacs From Scratch/), but I've subsequently decided upon a more plain configuration (without the Serif fonts I used here):
+
+#+begin_src elisp
+  (defun here/org-font-setup ()
     ;; Replace list hyphen with dot
     (font-lock-add-keywords 'org-mode
                             '(("^ *\\([-]\\) "
                                (0 (prog1 () (compose-region (match-beginning 1) (match-end 1) "•"))))))
     ;; Set faces for heading levels
+    ;; (dolist (face '((org-document-title . 2.0)
+    ;;                 (org-level-1 . 1.4)
+    ;;                 (org-level-2 . 1.2)
+    ;;                 (org-level-3 . 1.1)
+    ;;                 (org-level-4 . 1.1)
+    ;;                 (org-level-5 . 1.0)
+    ;;                 (org-level-6 . 1.0)
+    ;;                 (org-level-7 . 1.0)
+    ;;                 (org-level-8 . 1.0)))
+    ;;   (set-face-attribute (car face) nil :font "ETBookOT" :weight 'Light :height (cdr face)))
+
     (dolist (face '((org-document-title . 2.0)
-                    (org-level-1 . 1.4)
-                    (org-level-2 . 1.2)
-                    (org-level-3 . 1.1)
-                    (org-level-4 . 1.1)
+                    (org-level-1 . 1.0)
+                    (org-level-2 . 1.0)
+                    (org-level-3 . 1.0)
+                    (org-level-4 . 1.0)
                     (org-level-5 . 1.0)
                     (org-level-6 . 1.0)
                     (org-level-7 . 1.0)
                     (org-level-8 . 1.0)))
-      (set-face-attribute (car face) nil :font "ETBookOT" :weight 'Light :height (cdr face)))
+      (set-face-attribute (car face) nil :inherit 'fixed-pitch))
 
     ;; Ensure that anything that should be fixed-pitch in Org files appears that way
     (set-face-attribute 'org-block nil :foreground nil :inherit 'fixed-pitch)
@@ -494,11 +584,11 @@ One of the biggest draws to Emacs, for me, has become Org-mode. It's incredible.
     (set-face-attribute 'org-table nil :inherit 'fixed-pitch)
     (set-face-attribute 'org-verbatim nil :inherit 'fixed-pitch)
     (set-face-attribute 'org-special-keyword nil :inherit '(font-lock-comment-face fixed-pitch))
-    ;; (set-face-attribute 'org-meta-line nil :inherit '(font-lock-comment-face fixed-pitch))
+    (set-face-attribute 'org-meta-line nil :inherit '(font-lock-comment-face fixed-pitch))
     (set-face-attribute 'org-checkbox nil :inherit 'fixed-pitch)
     (set-face-attribute 'line-number nil :inherit 'fixed-pitch)
     (set-face-attribute 'line-number-current-line nil :inherit 'fixed-pitch)
-    (set-face-attribute 'org-quote nil :inherit 'variable-pitch :slant 'italic))
+    (set-face-attribute 'org-quote nil :inherit 'fixed-pitch :slant 'italic))
 #+end_src
 
 *** Prettify Symbols in Org Mode
@@ -513,10 +603,10 @@ I found this method on a Reddit post:
                              ))
 #+end_src
 
-But ended up doing so many it's in its own funcion =efs/org-mode-symbols-setup=.
+But ended up doing so many it's in its own funcion =here/org-mode-symbols-setup=.
 
 #+begin_src elisp :tangle ~/.emacs.d/init.el :mkdirp yes
-  (defun efs/org-mode-symbols-setup ()
+  (defun here/org-mode-symbols-setup ()
     "Prettify Symbols Setup for Org Documents"
     (push '("[ ]" . "☐") prettify-symbols-alist)
     (push '("[X]" . "☑" ) prettify-symbols-alist)
@@ -550,63 +640,34 @@ But ended up doing so many it's in its own funcion =efs/org-mode-symbols-setup=.
     (push '("[#A]" . "⬆") prettify-symbols-alist)
     (push '("[#B]" . "■") prettify-symbols-alist)
     (push '("[#C]" . "⬇") prettify-symbols-alist)
-    (push '("TODO" . "☐") prettify-symbols-alist)
-    (push '("PEND" . "○") prettify-symbols-alist)
-    (push '("DONE" . "☑") prettify-symbols-alist)
-    (push '("CANC" . "☒") prettify-symbols-alist)
+    ;; (push '("TODO" . "☐") prettify-symbols-alist)
+    ;; (push '("PEND" . "○") prettify-symbols-alist)
+    ;; (push '("DONE" . "☑") prettify-symbols-alist)
+    ;; (push '("CANC" . "☒") prettify-symbols-alist)
     (prettify-symbols-mode))
 #+end_src
 
-*** Main Org
+*** Org Setup
 
-This is the main org-mode block.
-
-#+begin_src elisp :tangle ~/.emacs.d/init.el :mkdirp yes
-  (use-package org
-    :pin org
-    :commands (org-capture org-agenda)
-    :hook (org-mode . efs/org-mode-setup)
-    (org-mode . efs/org-mode-symbols-setup)
-    :config
-    (setq org-ellipsis "   ↓")
-    (setq header-line-format " ")
-    (setq org-agenda-files
-          '("~/OneDrive/org/weekly.org" "~/OneDrive/org/todo.org"))
-    (setq org-duration-format (quote h:mm))
-    (setq org-hide-emphasis-markers t)
-    (setq org-todo-keywords
-          '((sequence "TODO(t)" "PEND(p)" "|" "DONE(d)" "CANC(c)")
-            (sequence "|" "FIVE(5)" "FOUR(4)" "THRE(3)" "TWO(2)" "ONE(1)")))
-    (setq org-priority-faces
-          '((?A . (:foreground "red"))
-            (?B . (:foreground "orange"))
-            (?C . (:foreground "yellow"))))
-    (efs/org-font-setup))
-#+end_src
-
-*** Some Org Setup
-
-Some random bits
+Including the removal of =variable-line-mode t=.
 
 #+begin_src elisp :tangle ~/.emacs.d/init.el :mkdirp yes
- (defun efs/org-mode-setup ()
+ (defun here/org-mode-setup ()
     (org-indent-mode)
-    (variable-pitch-mode 1)
-    (visual-line-mode 1)
-    (line-spacing 9))
+    (visual-line-mode 1))
  #+end_src
 
 *** Visual Column Mode
 
-Centre it.
+Centring org-mode docs. 
 
 #+begin_src elisp :tangle ~/.emacs.d/init.el :mkdirp yes
-  (defun efs/org-mode-visual-fill ()
+  (defun here/org-mode-visual-fill ()
     (setq visual-fill-column-width 100
           visual-fill-column-center-text t)
     (visual-fill-column-mode 1))
  (use-package visual-fill-column
-    :hook (org-mode . efs/org-mode-visual-fill))
+    :hook (org-mode . here/org-mode-visual-fill))
  #+end_src
 
 *** Org Bullets
@@ -618,12 +679,14 @@ Better bullet points and indentation.
     :hook (org-mode . org-bullets-mode)
     :custom
     ;; (org-bullets-bullet-list '("◉" "○" "●" "○" "●" "○" "●")))
-    (org-bullets-bullet-list '("\u200b" " " "◉" "-")))
- #+end_src
+    ;; (org-bullets-bullet-list '("\u200b" " " "◉" "-")))
+   (org-bullets-bullet-list '("●" "○")))
 
+ #+end_src
+ 
 *** Evil Org
 
-Hmm... should this be in Evil, or Org subsection...
+Evil stuff for org specifically.
 
 #+begin_src elisp :tangle ~/.emacs.d/init.el :mkdirp yes
   (use-package evil-org
@@ -633,14 +696,6 @@ Hmm... should this be in Evil, or Org subsection...
     :config
     (require 'evil-org-agenda)
     (evil-org-agenda-set-keys))
-  ;; How to make org-templates without the 'capture' part
-  ;; Would be to a file with the name of the Monday of the given week. 
-  (setq org-capture-templates
-        '(("t" "Todo / Journal")
-          ("tt" "To Sort" entry (file+olp "~/OneDrive/org/todo.org" "Todo")
-           "* TODO %?\n  %U\n %a\n %i")
-          ("j" "Journal" entry (file+datetree "~/OneDrive/org/journal.org")
-           "* %?\nEntered on %U\n  %i\n  %a")))
  #+end_src
 
 *** Org Prettier Tables
@@ -660,10 +715,9 @@ This allows you to use =<s= to quickly insert a block of script, or =<q= to quic
 
 #+begin_src elisp :tangle ~/.emacs.d/init.el :mkdirp yes
   (require 'org-tempo)
-  ;;(require 'org-padding)
 #+end_src
 
-*** Tables Of Content
+*** Org Tables Of Content
 
 This is a really nice plugin (that I mainly use for /this very project/) that generates a nice table of contents on the saving of the document. The following is /basically/ taken from the [[https://github.com/snosov1/toc-org][repo]], but it works so I'm happy (and I don't want/need to use it with Markdown).
 
@@ -675,34 +729,27 @@ This is a really nice plugin (that I mainly use for /this very project/) that ge
 
 *** Super Agenda
 
-I have started to use Org for planning a lot of things, and it gets busy. The standard Org Agenda is nice, but I think this makes things more clear.
+Not using this /yet/. 
 
-If =:order= isn't specified, =:order 0= is the default. At the moment, this is all the information I need for this, I think. 
-
-#+begin_src elisp :tangle ~/.emacs.d/init.el :mkdirp yes
-  ;; (use-package org-super-agenda
-  ;;   :config
-  ;;   (let ((org-super-agenda-groups
-  ;;          '((:name "Today"
-  ;;                   :time-grid t
-  ;;                   :todo "TODAY")
-  ;;            (:name "This Week"
-  ;;                   :time-grid t
-  ;;                   :todo "THIS WEEK")
-  ;;            (:name "Important"
-  ;;                   ;; Don't need this yet, but:
-  ;;                   ;; :and (:tag "bills" :tag "another_important_tag")
-  ;;                   :priority "A")
-  ;;            (:todo "PENDING" :order 8))))
-  ;;     (org-agenda nil "a")))
+#+begin_src elisp
+  (use-package org-super-agenda
+    :config
+    (let ((org-super-agenda-groups
+           '((:name "Today"
+                    :time-grid t
+                    :todo "TODAY")
+             (:name "This Week"
+                    :time-grid t
+                    :todo "THIS WEEK")
+             (:name "Important"
+                    ;; Don't need this yet, but:
+                    ;; :and (:tag "bills" :tag "another_important_tag")
+                    :priority "A")
+             (:todo "PENDING" :order 8))))
+      (org-agenda nil "a")))
 #+end_src
 
-** Todo
-*** About
-
-This needs annotation/better formatting/reviewing.
-
-*** Helpful
+** Helpful
 
 This is a todo, really. Taken from Daviwils dotfiles.
 
@@ -718,20 +765,24 @@ This is a todo, really. Taken from Daviwils dotfiles.
     ([remap describe-key] . helpful-key))
   #+end_src
 
-*** Magit
+** Magit
+*** About
 
-Need to get this working with my Github SSH key; it's not authorized or working for some reason.
++I need to get this working with my SSH key.+ I'm not using this at the moment, so leaving it commented for a moment. I /will/ make use of it in the future, but it's not a priority.
 
 #+begin_src elisp :tangle ~/.emacs.d/init.el :mkdirp yes
-  (use-package magit
-    :ensure t
-    :defer 5
-    :commands magit-status
-    :custom
-    (magit-display-buffer-function #'magit-display-buffer-same-window-except-diff-v1))
+  ;; (use-package magit
+  ;;   :ensure t
+  ;;   :defer 5
+  ;;   :commands magit-status
+  ;;   :custom
+  ;;   (magit-display-buffer-function #'magit-display-buffer-same-window-except-diff-v1))
 #+end_src
 
-*** Snippets
+**** TODO [#C] Get Magit working
+<2022-09-02 Fri>
+
+** Snippets
 
 This is one of the things I'd like to get working most of all.
 
@@ -741,6 +792,19 @@ This is one of the things I'd like to get working most of all.
     (setq yas-snippet-dirs)
     :init
     (use-package yasnippet-snippets :after yasnippet))
+#+end_src
+
+** Dired
+*** Subtree 
+
+[[https://xenodium.com/drill-down-emacs-dired-with-dired-subtree/][Drill down Emacs dired with dired-subtree]], a fairly useful addition to Dired. 
+
+#+begin_src elisp :tangle ~/.emacs.d/init.el :mkdirp yes
+  (use-package dired-subtree :ensure t
+    :after dired
+    :config
+    (bind-key "<tab>" #'dired-subtree-toggle dired-mode-map)
+    (bind-key "<backtab>" #'dired-subtree-cycle dired-mode-map))
 #+end_src
 
 ** Language Modes
@@ -768,12 +832,12 @@ Or should I say XeLaTeX!? (Use XeLaTeX by default export.
 This extremely helpful [[https://emacs.stackexchange.com/questions/169/how-do-i-reload-a-file-in-a-buffer][Stack Overflow User]] makes my workflow nicer with LaTeX.
 
 #+begin_src elisp :tangle ~/.emacs.d/init.el :mkdirp yes
-  (defun revert-buffer-no-confirm ()
+  (defun here/revert-buffer-no-confirm ()
     "Revert buffer without confirmation."
     (interactive)
     (revert-buffer :ignore-auto :noconfirm))
 
-  (global-set-key (kbd "C-c C-1") 'revert-buffer-no-confirm)
+  (global-set-key (kbd "C-c C-1") 'here/revert-buffer-no-confirm)
 #+end_src
 
 And this allows the PDF document to refresh without confirmation... again, from [[https://stackoverflow.com/questions/42330517/force-docview-mode-to-show-updated-file-without-confirmation][Stack Overflow]]!
@@ -798,6 +862,16 @@ And this allows the PDF document to refresh without confirmation... again, from 
                  '("\\.\\(?:cap\\|gemspec\\|irbrc\\|gemrc\\|rake\\|rb\\|ru\\|thor\\)\\'" . ruby-mode))
     (add-to-list 'auto-mode-alist
                  '("\\(?:Brewfile\\|Capfile\\|Gemfile\\(?:\\.[a-zA-Z0-9._-]+\\)?\\|[rR]akefile\\)\\'" . ruby-mode))
+#+end_src
+
+*** Spell Checking
+
+#+begin_src elisp
+  (require 'ispell)
+  (setq ispell-program-name "c:/Users/jorchard/aspell/aspell.exe")
+  (setq ispell-local-dictionary "en_GB")
+  (setq mail-user-agent 'message-user-agent)
+  (require 'message-outlook)
 #+end_src
 
 *** VBScript
@@ -828,13 +902,9 @@ A general mode for web-development stuff.
 #+end_src
 
 ** Fun
-*** About
-
-This is stuff that I didn't think fit in anywhere other than a category of 'fun'. It's either trivial or recreational stuff.
-
 *** Discord
 
-What's the point of using Emacs if you can't obnoxiously tell everyone constantly by having it listed as a game/application you're active in on Discord?! (In all seriousness, it's a fun package and the results are really nice looking).
+Tell /everyone/ on Discord you use Emacs (otherwise what's the point in using it at all)?!
 
 #+begin_src elisp :tangle ~/.emacs.d/init.el :mkdirp yes
     (if (and (eq system-type 'windows-nt)
@@ -844,9 +914,4 @@ What's the point of using Emacs if you can't obnoxiously tell everyone constantl
           (elcord-mode 1)))
 #+end_src
 
-*** Meme
-
-#+begin_src elisp :tangle ~/.emacs.d/init.el :mkdirp yes
-  ;; (use-package imgur)
-  ;; (use-package meme)
-#+end_src
+Initially, I wanted to do this by testing to see if =discord= is an executable on the system, but I can't get that working with Windows easily (and on my work machine I can't do certain things) so in the end I just check if the username is /julia/, which is my home PC username (it was automatically shortened from my email when I logged into the PC with a Microsoft account).
