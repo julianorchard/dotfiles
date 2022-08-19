@@ -281,6 +281,7 @@ But first, get rid of the more useless stuff, and mess with the line-numbers (ne
   (set-fringe-mode 5)
   (menu-bar-mode -1)
   (setq visible-bell t)
+  ;; Don't 
 #+end_src
 
 *** Line Numbers Stuff
@@ -289,14 +290,14 @@ This needs reviewing...
 
 #+begin_src elisp :tangle ~/.emacs.d/init.el :mkdirp yes
   (column-number-mode)
-  (setq display-line-numbers-mode t)
+  (global-display-line-numbers-mode)
   (setq display-line-numbers-type 'relative)
   ;; (dolist (rm-ln-hook '(org-mode-hook
   ;;                       term-mode-hook
   ;;                       shell-mode-hook
   ;;                       treemacs-mode-hook
   ;;                       eshell-mode-hook))
-  ;;   (add-hook rm-ln-hook (lambda () (display-line-numbers-mode))))
+  ;;   (add-hook rm-ln-hook (lambda () (global-display-line-numbers-mode))))
 #+end_src
 
 **** TODO Get Line Numbering Working
@@ -313,11 +314,46 @@ I'm not massively attached to this font; I do like it a lot but I don't mind cha
 
 *** Themes
 
-I used to use Doom themes. I am now planning on using the default dark and light themes for Emacs. 
+I used to use Doom themes. I am now +planning on+ using the default dark and light themes built into Emacs.
+
+#+begin_src elisp :tangle ~/.emacs.d/init.el :mkdirp yes
+  (defun set-dark-theme ()
+    (interactive)
+    "Sets the dark version of the default theme"
+    (set-background-color "black")
+    (set-foreground-color "white"))
+
+  (defun set-light-theme ()
+    (interactive)
+    "Sets the light version of the default theme"
+    (set-background-color "white")
+    (set-foreground-color "black"))
+#+end_src
+
+For switching themes, I wanted to do it automatically if I'm working in the evening... I initially tried something like /this/:
+
+#+begin_src elisp
+  (if (time-less-p (parse-time-string "2022-08-19 23:00:00")
+               (current-time))
+      ...)
+#+end_src
+
+The problem was that I was trying to use a full date/time for the comparison, whereas the solution (which sadly, in the end I had to [[https://stackoverflow.com/questions/14760567/emacs-auto-load-color-theme-by-time][look up]]) turned out to be just using /hours/ of the day:
+
+#+begin_src elisp :tangle ~/.emacs.d/init.el :mkdirp yes
+  (if (member (string-to-number (substring (current-time-string) 11 13))
+              (number-sequence 7 20))
+      (set-light-theme)
+    (set-dark-theme))
+#+end_src
+
+I find elisp tricky.
+
+...
 
 +=Ctrl+F1= (for /Tomorrow Night/) and =Ctrl+F2= (for /Solarized/) are used to switch between them (found [[https://emacs.stackexchange.com/questions/45799/keyboard-shortcuts-for-applying-a-theme][here]]).+
 
-This /was/ what I used:
+This /was/ what I used, when using Doom Emacs Themes;
 
 #+begin_src elisp
   (use-package doom-themes
@@ -451,6 +487,8 @@ I'm going to use =general.el= to manage some of these bindings.
      "{" 'shrink-window-horizontally
      "}" 'enlarge-window-horizontally
      "+" 'balance-windows
+     "[" 'set-light-theme
+     "]" 'set-dark-theme
      ))
 #+end_src
 
