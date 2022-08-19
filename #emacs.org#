@@ -524,35 +524,22 @@ One of the biggest draws to Emacs, for me, has become Org-mode.
 This is the main org-mode block.
 
 #+begin_src elisp :tangle ~/.emacs.d/init.el :mkdirp yes
-  (use-package org
-    :pin org
-    :commands (org-capture org-agenda)
-    :hook (org-mode . here/org-mode-setup)
-    (org-mode . here/org-mode-symbols-setup)
-    ;; (org-mode . here/org-capture-workflow)
-    :config
-    (setq org-ellipsis " ⌄")
-    (set-face-underline 'org-ellipsis nil)
-    (setq header-line-format " ")
-    (setq org-agenda-files
-          '("~/org/" "~/config/"))
-    (setq org-duration-format (quote h:mm))
-    (setq org-hide-emphasis-markers t)
-    (setq org-todo-keywords
-          '((sequence "TODO(t)" "PEND(p)" "|" "DONE(d)" "CANC(c)")
-            (sequence "|" "FIVE(5)" "FOUR(4)" "THRE(3)" "TWO(2)" "ONE(1)")))
-    (setq org-priority-faces
-          '((?A . (:foreground "red"))
-            (?B . (:foreground "orange"))
-            (?C . (:foreground "yellow"))))
-    (setq org-capture-templates
-          '(("w" "Wessex" entry (file+headline "~/org/wessex.org" "Tasklist")
-             "* TODO %?" :prepend t)
-            ("p" "Personal" entry (file+headline "~/org/personal.org" "Tasklist")
-             "* TODO %?" :prepend t)
-            ("j" "Journal" entry (file+datetree "~/org/journal.org")
-             "* Entry for %U\n%?")
-            )))
+  (use-package org :pin org :commands (org-capture org-agenda) :hook
+    (org-mode . here/org-mode-setup) (org-mode
+    . here/org-mode-symbols-setup) ;; (org-mode
+    . here/org-capture-workflow) :config (setq org-ellipsis " ⌄")
+    (set-face-underline 'org-ellipsis nil) (setq header-line-format " ")
+    (setq org-agenda-files '("~/org/" "~/config/")) (setq
+    org-duration-format (quote h:mm)) (setq org-hide-emphasis-markers t)
+    (setq org-todo-keywords '((sequence "TODO(t)" "PEND(p)" "|"
+    "DONE(d)" "CANC(c)") (sequence "|" "FIVE(5)" "FOUR(4)" "THRE(3)"
+    "TWO(2)" "ONE(1)"))) (setq org-priority-faces '((?A . (:foreground
+    "red")) (?B . (:foreground "orange")) (?C . (:foreground
+    "yellow")))) (setq org-capture-templates '(("w" "Wessex" entry
+    (file+headline "~/org/wessex.org" "Tasklist") "* TODO %?" :prepend
+    t) ("p" "Personal" entry (file+headline "~/org/personal.org"
+    "Tasklist") "* TODO %?" :prepend t) ("j" "Journal" entry
+    (file+datetree "~/org/journal.org") "* Entry for %U\n%?")  )))
 #+end_src
 
 Note, I do the org-capture-templates part with [[https://emacs.stackexchange.com/questions/30169/set-org-capture-datetree-write-on-top-of-the-file][this]], because I want to put items at the top of the list.
