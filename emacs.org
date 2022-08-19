@@ -281,7 +281,6 @@ But first, get rid of the more useless stuff, and mess with the line-numbers (ne
   (set-fringe-mode 5)
   (menu-bar-mode -1)
   (setq visible-bell t)
-  ;; Don't 
 #+end_src
 
 *** Line Numbers Stuff
