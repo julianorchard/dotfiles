@@ -15,11 +15,6 @@ We do not think ourselves into new ways of living, we live ourselves into new wa
 #+BEGIN_QUOTE
   - [[#what-is-this][What is this?]]
   - [[#whats-actually-here][What's actually here?]]
-    - [[#emacs][Emacs]]
-    - [[#windows-10][Windows 10]]
-    - [[#vim][Vim]]
-    - [[#arch-linux-btw][Arch Linux (btw)]]
-    - [[#remote-server][Remote Server]]
   - [[#see-also][See Also]]
 #+END_QUOTE
 
@@ -37,13 +32,11 @@ I will eventually make this easier.
 
 Here are the documents that have (and haven't) been converted to this literate configuration yet:
 
-*** DONE [[file:emacs.org][Emacs]]
-*** DONE [[file:windows.org][Windows 10]]
-*** DONE [[file:vim.org][Vim]]
-*** TODO [[file:arch.org][Arch Linux (btw)]]
-**** /(literate transfer work in progress)/
-*** TODO Remote Server
-**** /(literate transfer yet to be made!)/
+- [[file:emacs.org][Emacs]]
+- [[file:windows.org][Windows 10]]
+- [[file:vim.org][Vim]]
+- [[file:arch.org][Arch Linux (btw)]] /(literate transfer in progress)/
+- Remote Server /(literate transfer yet to begin)/
 
 ** See Also
 

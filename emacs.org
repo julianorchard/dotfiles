@@ -40,11 +40,13 @@ This is my on-going project to  /b e c o m e/  an emacs user (from being a vimme
     - [[#the-evil-collection][The Evil Collection]]
     - [[#the-evil-commentary][The Evil Commentary]]
     - [[#the-evil-surround][The Evil Surround]]
+    - [[#undo-fu][Undo-Fu]]
   - [[#avy][Avy]]
     - [[#setup][Setup]]
   - [[#org][Org]]
     - [[#about-3][About]]
     - [[#main-org][Main Org]]
+    - [[#org-blog][Org Blog]]
     - [[#font-setup][Font Setup]]
     - [[#prettify-symbols-in-org-mode][Prettify Symbols in Org Mode]]
     - [[#org-setup][Org Setup]]
@@ -66,6 +68,7 @@ This is my on-going project to  /b e c o m e/  an emacs user (from being a vimme
     - [[#autohotkey][AutoHotkey]]
     - [[#latex][LaTeX]]
     - [[#powershell][Powershell]]
+    - [[#python][Python]]
     - [[#ruby][Ruby]]
     - [[#spell-checking][Spell Checking]]
     - [[#vbscript][VBScript]]
@@ -163,7 +166,12 @@ Spending any longer than 5 seconds in a buffer of lisp will require this, and it
 One of the wost things I found about initially using Emacs was how quickly simply opening files cluttered up everything. Get rid of the temporary files, as much as possible. Backup files to =~/Documents/Emacs-backup-dir/= too, out of the way as much as is reasonable...
 
 #+begin_src elisp :tangle ~/.emacs.d/init.el :mkdirp yes
-  (setq backup-directory-alist '(("~/Documents/Emacs-backup-dir/")))
+  (setq backup-directory-alist `(("." . "~/.cache/emacs/")))
+  (setq backup-by-copying t
+        delete-old-versions t
+        kept-new-versions 5
+        kept-old-versions 5
+        version-control t)
   (setq create-lockfiles nil)
 #+end_src
 
@@ -396,6 +404,7 @@ The most vital Emacs package for me.
     (setq evil-want-keybinding nil)
     (setq evil-want-C-u-scroll t)
     (setq evil-want-C-i-jump nil)
+    (setq evil-undo-system 'undo-fu)
     :config
     (evil-mode 1)
     (setq evil-split-window-below t)
@@ -480,6 +489,14 @@ And another Tpope plugin ported to Emacs (which I don't actually use in Vim too 
   (global-evil-surround-mode 1))
 #+end_src
 
+*** Undo-Fu
+
+Undo and redo; used by Evil-mode to enable =Ctrl+r= functionality.
+
+#+begin_src elisp :tangle ~/.emacs.d/init.el :mkdirp yes
+  (use-package undo-fu)
+#+end_src 
+
 ** Avy
 *** Setup
 
@@ -518,7 +535,7 @@ This is the main org-mode block.
     (set-face-underline 'org-ellipsis nil)
     (setq header-line-format " ")
     (setq org-agenda-files
-          '("~/OneDrive/org/" "~/config/"))
+          '("~/org/" "~/config/"))
     (setq org-duration-format (quote h:mm))
     (setq org-hide-emphasis-markers t)
     (setq org-todo-keywords
@@ -527,21 +544,62 @@ This is the main org-mode block.
     (setq org-priority-faces
           '((?A . (:foreground "red"))
             (?B . (:foreground "orange"))
-            (?C . (:foreground "yellow"))))
-    (set-face-attribute 'org-quote nil :inherit 'italic))
+            (?C . (:foreground "yellow")))))
 #+end_src
 
 Note, I do this like [[https://emacs.stackexchange.com/questions/30169/set-org-capture-datetree-write-on-top-of-the-file][this]], because I want to put items at the top of the list.
 
 #+begin_src elisp :tangle ~/.emacs.d/init.el :mkdirp yes
-    (defun here/org-capture-workflow ()
-      "My org-capture templates."
-      (setq org-capture-templates
-            '(("w" "Wessex" entry (file+headline "~/OneDrive/org/wessex.org" "Tasklist")
-                "* TODO %?" :prepend t)
-              ("p" "Personal" entry (file+headline "~/OneDrive/org/personal.org" "Tasklist")
-                "* TODO %?" :prepend t))))
+  (defun here/org-capture-workflow ()
+    "My org-capture templates."
+    (setq org-capture-templates
+          '(("w" "Wessex" entry (file+headline "~/org/wessex.org" "Tasklist")
+             "* TODO %?" :prepend t)
+            ("p" "Personal" entry (file+headline "~/org/personal.org" "Tasklist")
+             "* TODO %?" :prepend t)
+            ("j" "Journal" entry (file+datetree "~/org/journal.org")
+             "* Entry for %U\n%?" :prepend t)
+            )))
 #+end_src
+
+*** Org Blog
+
+I've started using Org-blog for my personal site:
+
+#+begin_src elisp
+  (use-package org-static-blog
+    :ensure t
+    :config
+    (setq org-static-blog-publish-title "Hylobatid")
+    (setq org-static-blog-publish-url "https://hylobatid.github.io/")
+    (setq org-static-blog-publish-directory "~/hylobatid.github.io/")
+    (setq org-static-blog-posts-directory "~/hylobatid.github.io/blog/posts/")
+    (setq org-static-blog-drafts-directory "~/hylobatid.github.io/blog/drafts/")
+    (setq org-static-blog-enable-tags t)
+    (setq org-static-blog-use-preview t)
+    (setq org-export-with-toc nil)
+    (setq org-export-with-section-numbers nil)
+    (setq org-static-blog-page-header
+          "<meta name=\"author\" content=\"Hylobatid\">
+  <meta name=\"referrer\" content=\"no-referrer\">
+  <link href= \"static/style.css\" rel=\"stylesheet\" type=\"text/css\" />
+  <link rel=\"icon\" href=\"static/favicon.ico\">")
+    (setq org-static-blog-page-preamble
+          "<div class=\"header\">
+    <a href=\"https://hylobatid.github.io\">Hylobatid</a>
+  </div>")
+    (setq org-static-blog-page-postamble
+          "<div id=\"archive\">
+    <a href=\"https://hylobatid.github.io/archive.html\">Other posts</a>
+  </div>
+  <footer>
+    Made with <a href=\"https://github.com/bastibe/org-static-blog\">Org</a>.
+  </footer>")
+    (setq org-static-blog-index-front-matter
+          "<h1>Thoughts</h1>\n"))
+#+end_src
+
+Lots of it is a work in progress.
 
 *** Font Setup
 
@@ -784,14 +842,15 @@ This is a todo, really. Taken from Daviwils dotfiles.
 
 ** Snippets
 
-This is one of the things I'd like to get working most of all.
+It's now working, /a bit/; mainly thanks to [[http://www.howardism.org/Technical/Emacs/templates-tutorial.html][this nice post]]!
 
 #+begin_src elisp :tangle ~/.emacs.d/init.el :mkdirp yes
   (use-package yasnippet
-    :custom
-    (setq yas-snippet-dirs)
+    :ensure t
     :init
-    (use-package yasnippet-snippets :after yasnippet))
+    (yas-global-mode 1)
+    :config
+    (add-to-list 'yas-snippet-dirs (locate-user-emacs-file "snippets")))
 #+end_src
 
 ** Dired
@@ -855,6 +914,15 @@ And this allows the PDF document to refresh without confirmation... again, from 
                  '("\\.ps1" . powershell)))
 #+end_src
 
+*** Python
+
+Something like this (but more, quite a bit more);
+
+#+begin_src elisp
+(python-mode)
+#+end_src
+
+**** TODO Python Mode
 *** Ruby
 
 #+begin_src elisp :tangle ~/.emacs.d/init.el :mkdirp yes
@@ -915,3 +983,4 @@ Tell /everyone/ on Discord you use Emacs (otherwise what's the point in using it
 #+end_src
 
 Initially, I wanted to do this by testing to see if =discord= is an executable on the system, but I can't get that working with Windows easily (and on my work machine I can't do certain things) so in the end I just check if the username is /julia/, which is my home PC username (it was automatically shortened from my email when I logged into the PC with a Microsoft account).
+
