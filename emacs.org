@@ -296,7 +296,7 @@ But first, get rid of the more useless GUI stuff.
 
 *** Line Numbers Stuff
 
-This needs reviewing...
+I had trouble with this, but use Daviwils dotfiles as a reference in the end (adding the =display-line-numbers-type= to my liking). 
 
 #+begin_src elisp :tangle ~/.emacs.d/init.el :mkdirp yes
   (column-number-mode)
@@ -306,17 +306,12 @@ This needs reviewing...
                   prog-mode-hook
                   conf-mode-hook))
     (add-hook mode (lambda () (display-line-numbers-mode 1))))
-  (dolist (rm-ln-hook '(org-mode-hook
-                        ;; term-mode-hook
-                        ;; shell-mode-hook
-                        ;; treemacs-mode-hook
-                        ;; eshell-mode-hook
-                        ))
+  (dolist (rm-ln-hook '(org-mode-hook))
     (add-hook rm-ln-hook (lambda () (display-line-numbers-mode 0))))
 
 #+end_src
 
-**** TODO Get Line Numbering Working
+**** DONE Get Line Numbering Working
 *** General Fonts
 
 I used to use ET Book for some really nice looking Org-documents, especially. However, I've stopped this and now just use Fira (I also use a [[version https://github.com/zwaldowski/Fira/tree/zwaldowski/mod-new/otf][fork]] for the /italicised/ version).
