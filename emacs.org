@@ -69,10 +69,13 @@ This is my on-going project to  /b e c o m e/  an emacs user (from being a vimme
   - [[#magit][Magit]]
     - [[#about-6][About]]
   - [[#snippets][Snippets]]
+    - [[#about-7][About]]
+    - [[#yasnippet][Yasnippet]]
+    - [[#create-snippets][Create Snippets]]
   - [[#dired][Dired]]
     - [[#subtree][Subtree]]
   - [[#language-modes][Language Modes]]
-    - [[#about-7][About]]
+    - [[#about-8][About]]
     - [[#autohotkey][AutoHotkey]]
     - [[#latex][LaTeX]]
     - [[#powershell][Powershell]]
@@ -600,6 +603,7 @@ This is the main org-mode block.
           '("~/org/" "~/config/"))
     (setq org-duration-format (quote h:mm))
     (setq org-hide-emphasis-markers t)
+    (setq org-startup-folded 'content)
     (setq org-todo-keywords
           '((sequence "TODO(t)" "PEND(p)" "|" "DONE(d)" "CANC(c)")
             (sequence "|" "FIVE(5)" "FOUR(4)" "THRE(3)" "TWO(2)" "ONE(1)")))
@@ -942,6 +946,11 @@ This is a todo, really. Taken from Daviwils dotfiles.
 <2022-09-02 Fri>
 
 ** Snippets
+*** About
+
+I use /YASNIPPET/ to create snippets.
+
+*** Yasnippet
 
 It's now working, /a bit/; mainly thanks to [[http://www.howardism.org/Technical/Emacs/templates-tutorial.html][this nice post]]!
 
@@ -950,8 +959,25 @@ It's now working, /a bit/; mainly thanks to [[http://www.howardism.org/Technical
     :ensure t
     :init
     (yas-global-mode 1)
+    :general
+    ;; There's probably a better way...
+    (general-nmap "SPC ns" 'config/custom-create-snippet)
     :config
     (add-to-list 'yas-snippet-dirs (locate-user-emacs-file "snippets")))
+#+end_src
+
+*** Create Snippets
+
+There's probably a better way to do this, but we use =general-nmap= and =SPC ns= as the binding.
+
+#+begin_src elisp :tangle ~/.emacs.d/init.el :mkdirp yes
+
+  (defun config/custom-create-snippet ()
+    (interactive)
+    (yas-new-snippet)
+    (if (not file-directory-p "~/config/snippets/")
+        (copy-directory (locate-user-emacs-file "snippets") "~/config/snippets")))
+
 #+end_src
 
 ** Dired
