@@ -9,6 +9,7 @@ This is my on-going project to  /b e c o m e/  an emacs user (from being a vimme
   - [[#the-basics][The Basics]]
     - [[#about][About]]
     - [[#improve-start-up-time][Improve Start-Up Time]]
+    - [[#start-in-home-folder][Start in Home Folder]]
     - [[#maximise-window][Maximise Window]]
     - [[#scratch-buffer-and-startup-info][Scratch Buffer and Startup Info]]
     - [[#my-details][My Details]]
@@ -59,6 +60,7 @@ This is my on-going project to  /b e c o m e/  an emacs user (from being a vimme
     - [[#super-agenda][Super Agenda]]
   - [[#eshell][Eshell]]
     - [[#about-4][About]]
+    - [[#aliases][Aliases]]
     - [[#eshell-prompt-extras][Eshell Prompt Extras]]
   - [[#helpful][Helpful]]
   - [[#magit][Magit]]
@@ -101,6 +103,12 @@ Delay garbage collection.
 #+begin_src elisp :tangle ~/.emacs.d/init.el :mkdirp yes
   (setq gc-cons-percentage 0.6)
   (setq gc-cons-threshold most-positive-fixnum)
+#+end_src
+
+*** Start in Home Folder
+
+#+begin_src elisp :tangle ~/.emacs.d/init.el :mkdirp yes
+  (cd (getenv "HOME"))
 #+end_src
 
 *** Maximise Window
@@ -379,19 +387,26 @@ This /was/ what I used, when using Doom Emacs Themes;
                     (lambda () (interactive)
                       (load-theme 'doom-solarized-light t)
                       (here/org-font-setup))))
+  ;; (use-package doom-modeline
+  ;;   :ensure t
+  ;;   :init (doom-modeline-mode 1)
+  ;;   :custom ((doom-modeline-height 20)))
+  ;; (use-package solaire-mode
+  ;;   :init (solaire-global-mode +1))
+#+end_src
+
+But I do still want /all-the-icons/:
+
+#+begin_src elisp :tangle ~/.emacs.d/init.el :mkdirp yes
   (use-package doom-modeline
     :ensure t
     :init (doom-modeline-mode 1)
     :custom ((doom-modeline-height 20)))
   (use-package solaire-mode
     :init (solaire-global-mode +1))
-#+end_src
-
-But I do still want /all-the-icons/:
-
-#+begin_src elisp :tangle ~/.emacs.d/init.el :mkdirp yes
   (use-package all-the-icons
     :ensure t)
+
 #+end_src
 
 ** Completion
@@ -599,7 +614,7 @@ This is the main org-mode block.
              "* TODO %?" :prepend t)
             ("p" "Personal" entry (file+headline "~/org/personal.org" "Tasklist")
              "* TODO %?" :prepend t)
-            ("j" "Journal" entry (file+datetree "~/org/journal.org")
+            ("j" "Journal" entry (file+olp+datetree "~/org/journal.org")
              "* Entry for %U\n%?")
             )))
 #+end_src
@@ -856,6 +871,14 @@ Not using this /yet/.
 *** About
 
 I mainly use =eshell-prompt-extras= for the shell. 
+
+*** Aliases
+
+#+begin_src elisp :tangle ~/.emacs.d/init.el :mkdirp yes
+  (defalias 'ff 'find-file)
+  (defalias 'vim 'find-file) ;; muscle memory...
+  (defalias 'cls '(clear 1))
+#+end_src
 
 *** Eshell Prompt Extras
 
