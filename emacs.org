@@ -62,14 +62,17 @@ This is my on-going project to  /b e c o m e/  an emacs user (from being a vimme
     - [[#about-4][About]]
     - [[#aliases][Aliases]]
     - [[#eshell-prompt-extras][Eshell Prompt Extras]]
+  - [[#tramp][Tramp]]
+    - [[#about-5][About]]
+    - [[#wip][WIP]]
   - [[#helpful][Helpful]]
   - [[#magit][Magit]]
-    - [[#about-5][About]]
+    - [[#about-6][About]]
   - [[#snippets][Snippets]]
   - [[#dired][Dired]]
     - [[#subtree][Subtree]]
   - [[#language-modes][Language Modes]]
-    - [[#about-6][About]]
+    - [[#about-7][About]]
     - [[#autohotkey][AutoHotkey]]
     - [[#latex][LaTeX]]
     - [[#powershell][Powershell]]
@@ -871,7 +874,7 @@ I mainly use =eshell-prompt-extras= for the shell.
 
 #+begin_src elisp :tangle ~/.emacs.d/init.el :mkdirp yes
   (defalias 'ff 'find-file)
-  (defalias 'vim 'find-file) ;; muscle memory...
+  (defalias 'vim 'find-file) ;; afaik this isn't working
   (defalias 'cls '(clear 1))
 #+end_src
 
@@ -889,6 +892,20 @@ I mainly use =eshell-prompt-extras= for the shell.
       (setq eshell-highlight-prompt nil
             eshell-prompt-function 'epe-theme-lambda)))
 
+#+end_src
+
+** Tramp
+*** About
+
+Remote connecting with Tramp.
+
+*** WIP
+
+#+begin_src elisp
+  (use-package tramp
+    :ensure t
+    :config
+    (setq tramp-default-method "sshx"))
 #+end_src
 
 ** Helpful
@@ -1003,7 +1020,12 @@ And this allows the PDF document to refresh without confirmation... again, from 
 Something like this (but more, quite a bit more);
 
 #+begin_src elisp
-(python-mode)
+      (use-package elpy
+        :ensure t
+        :init
+        (elpy-enable)
+        :config
+        (setq elpy-rpc-python-command "c:/MAMP/bin/python/bin/python.exe"))
 #+end_src
 
 **** TODO Python Mode
