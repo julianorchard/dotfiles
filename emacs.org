@@ -589,40 +589,43 @@ One of the biggest draws to Emacs, for me, has become Org-mode.
 This is the main org-mode block.
 
 #+begin_src elisp :tangle ~/.emacs.d/init.el :mkdirp yes
-  (use-package org
-    :pin org
-    :commands (org-capture org-agenda)
-    :hook (org-mode . here/org-mode-setup)
-    (org-mode . here/org-mode-symbols-setup)
-    ;; (org-mode . here/org-capture-workflow)
-    :config
-    (setq org-ellipsis " ⌄")
-    (set-face-underline 'org-ellipsis nil)
-    (setq header-line-format " ")
-    (setq org-agenda-files
-          '("~/org/" "~/config/"))
-    (setq org-duration-format (quote h:mm))
-    (setq org-hide-emphasis-markers t)
-    (setq org-startup-folded 'content)
-    (setq org-todo-keywords
-          '((sequence "TODO(t)" "PEND(p)" "|" "DONE(d)" "CANC(c)")
-            (sequence "|" "FIVE(5)" "FOUR(4)" "THRE(3)" "TWO(2)" "ONE(1)")))
-    (setq org-priority-faces
-          '((?A . (:foreground "red"))
-            (?B . (:foreground "orange"))
-            (?C . (:foreground "yellow"))))
-    (setq org-capture-templates
-          '(("w" "Wessex" entry (file+headline "~/org/wessex.org" "Tasklist")
-             "* TODO %?" :prepend t)
-            ("p" "Personal" entry (file+headline "~/org/personal.org" "Tasklist")
-             "* TODO %?" :prepend t)
-            ("j" "Journal" entry (file+olp+datetree "~/org/journal.org")
-             "* Entry for %U\n%?")
-            )))
+    (use-package org
+      :pin org
+      :commands (org-capture org-agenda)
+      :hook (org-mode . here/org-mode-setup)
+      (org-mode . here/org-mode-symbols-setup)
+      ;; (org-mode . here/org-capture-workflow)
+      :config
+      (setq org-ellipsis "  ⌄ ")
+      (set-face-underline 'org-ellipsis nil)
+      (setq header-line-format " ")
+      (setq org-agenda-files
+            '("~/org/" "~/config/"))
+      (setq org-duration-format (quote h:mm))
+      (setq org-hide-emphasis-markers t)
+      (setq org-startup-folded 'content)
+      (setq org-todo-keywords
+            '((sequence "TODO(t)" "PEND(p)" "|" "DONE(d)" "CANC(c)")
+              (sequence "|" "FIVE(5)" "FOUR(4)" "THRE(3)" "TWO(2)" "ONE(1)")))
+      (setq org-priority-faces
+            '((?A . (:foreground "red"))
+              (?B . (:foreground "orange"))
+              (?C . (:foreground "yellow"))))
+      (setq org-capture-templates
+            '(("w" "Wessex" entry (file+headline "~/org/wessex.org" "Tasklist")
+               "* TODO  %?\nDEADLINE: %t" :prepend t)
+              ("p" "Personal" entry (file+headline "~/org/personal.org" "Tasklist")
+               "* TODO  %?\nDEADLINE: %t" :prepend t)
+              ("j" "Journal" entry (file+olp+datetree "~/org/journal.org")
+               "* Entry for %U\n%?")
+              )
+            )
+
+
+      )
 #+end_src
 
 Note, I do the org-capture-templates part with [[https://emacs.stackexchange.com/questions/30169/set-org-capture-datetree-write-on-top-of-the-file][this]], because I want to put items at the top of the list.
-
 
 *** Org Blog
 
@@ -876,10 +879,26 @@ I mainly use =eshell-prompt-extras= for the shell.
 
 *** Aliases
 
+Stuff for opening files.
+
 #+begin_src elisp :tangle ~/.emacs.d/init.el :mkdirp yes
-  (defalias 'ff 'find-file)
-  (defalias 'vim 'find-file) ;; afaik this isn't working
+
+  (defalias 'ff 'find-file-other-window)
+  (defalias 'e 'find-file-other-window)
+  ;;(defalias 'vim 'find-file) ;; afaik this isn't working 
+
+  (defalias 'less 'find-file-read-only-other-window)
+
+#+end_src
+
+Navigation and absolute essentials.
+
+#+begin_src elisp :tangle ~/.emacs.d/init.el :mkdirp yes
+
   (defalias 'cls '(clear 1))
+  (defalias 'd 'dired)
+  (defalias 'll '(ls -la))
+
 #+end_src
 
 *** Eshell Prompt Extras
@@ -1114,5 +1133,5 @@ Tell /everyone/ on Discord you use Emacs (otherwise what's the point in using it
           (elcord-mode 1)))
 #+end_src
 
-Initially, I wanted to do this by testing to see if =discord= is an executable on the system, but I can't get that working with Windows easily (and on my work machine I can't do certain things) so in the end I just check if the username is /julia/, which is my home PC username (it was automatically shortened from my email when I logged into the PC with a Microsoft account).
+Initially, I wanted to do this by testing to see if =discord= is an executable on the system, but I can't get that's working with Windows easily (and on my work machine I can't do certain things) so in the end I just check if the username is /julia/, which is my home PC username (it was automatically shortened from my email when I logged into the PC with a Microsoft account).
 
