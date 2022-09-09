@@ -396,18 +396,21 @@ This /was/ what I used, when using Doom Emacs Themes;
   ;;   :init (solaire-global-mode +1))
 #+end_src
 
-But I do still want /all-the-icons/:
+But I do still want /all-the-icons/, and Doom Modeline is very nice too. We use =display-battery-mode= when we're on my ThinkPad (a.k.a. the only non-remote Linux machine I use), and we use =display-time-mode= for everything.
 
 #+begin_src elisp :tangle ~/.emacs.d/init.el :mkdirp yes
   (use-package doom-modeline
     :ensure t
     :init (doom-modeline-mode 1)
-    :custom ((doom-modeline-height 20)))
+    :custom ((doom-modeline-height 20))
+    :config
+    (display-time-mode 1)
+    (if (eq system-type 'gnu/linux)
+        (display-battery-mode 1)))
   (use-package solaire-mode
     :init (solaire-global-mode +1))
   (use-package all-the-icons
     :ensure t)
-
 #+end_src
 
 ** Completion
