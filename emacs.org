@@ -111,6 +111,8 @@ Delay garbage collection.
   (setq gc-cons-threshold most-positive-fixnum)
 #+end_src
 
+**** TODO Put themeing stuff as high up as possible
+
 *** Start in Home Folder
 
 #+begin_src elisp :tangle ~/.emacs.d/init.el :mkdirp yes
@@ -131,8 +133,7 @@ Change the scratch buffer and disable the startup messages.
 
 #+begin_src elisp :tangle ~/.emacs.d/init.el :mkdirp yes
   (setq inhibit-startup-message t)
-  (setq initial-scratch-message (concat ";;  Emacs loaded in " (emacs-init-time) ", according to (emacs-init-time), at least...\ 
-
+  (setq initial-scratch-message (concat ";; Emacs loaded in " (emacs-init-time) ", according to (emacs-init-time), at least...\ 
 
   "))
 #+end_src
@@ -388,12 +389,6 @@ This /was/ what I used, when using Doom Emacs Themes;
                     (lambda () (interactive)
                       (load-theme 'doom-solarized-light t)
                       (here/org-font-setup))))
-  ;; (use-package doom-modeline
-  ;;   :ensure t
-  ;;   :init (doom-modeline-mode 1)
-  ;;   :custom ((doom-modeline-height 20)))
-  ;; (use-package solaire-mode
-  ;;   :init (solaire-global-mode +1))
 #+end_src
 
 But I do still want /all-the-icons/, and Doom Modeline is very nice too. We use =display-battery-mode= when we're on my ThinkPad (a.k.a. the only non-remote Linux machine I use), and we use =display-time-mode= for everything.
