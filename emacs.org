@@ -589,40 +589,70 @@ One of the biggest draws to Emacs, for me, has become Org-mode.
 This is the main org-mode block.
 
 #+begin_src elisp :tangle ~/.emacs.d/init.el :mkdirp yes
-    (use-package org
-      :pin org
-      :commands (org-capture org-agenda)
-      :hook (org-mode . here/org-mode-setup)
-      (org-mode . here/org-mode-symbols-setup)
-      ;; (org-mode . here/org-capture-workflow)
-      :config
-      (setq org-ellipsis "  ⌄ ")
-      (set-face-underline 'org-ellipsis nil)
-      (setq header-line-format " ")
-      (setq org-agenda-files
-            '("~/org/" "~/config/"))
-      (setq org-duration-format (quote h:mm))
-      (setq org-hide-emphasis-markers t)
-      (setq org-startup-folded 'content)
-      (setq org-todo-keywords
-            '((sequence "TODO(t)" "PEND(p)" "|" "DONE(d)" "CANC(c)")
-              (sequence "|" "FIVE(5)" "FOUR(4)" "THRE(3)" "TWO(2)" "ONE(1)")))
-      (setq org-priority-faces
-            '((?A . (:foreground "red"))
-              (?B . (:foreground "orange"))
-              (?C . (:foreground "yellow"))))
-      (setq org-capture-templates
-            '(("w" "Wessex" entry (file+headline "~/org/wessex.org" "Tasklist")
-               "* TODO  %?\nDEADLINE: %t" :prepend t)
-              ("p" "Personal" entry (file+headline "~/org/personal.org" "Tasklist")
-               "* TODO  %?\nDEADLINE: %t" :prepend t)
-              ("j" "Journal" entry (file+olp+datetree "~/org/journal.org")
-               "* Entry for %U\n%?")
-              )
-            )
 
+  (use-package org
+    :pin org
+    :commands (org-capture org-agenda)
+    :hook (org-mode . here/org-mode-setup)
+    (org-mode . here/org-mode-symbols-setup)
+    ;; (org-mode . here/org-capture-workflow)
+    :config
+    (setq org-ellipsis "  ⌄ ")
+    (set-face-underline 'org-ellipsis nil)
+    (setq header-line-format " ")
+    (setq org-agenda-files
+          '("~/org/" "~/config/"))
+    (setq org-duration-format (quote h:mm))
+    (setq org-hide-emphasis-markers t)
+    (setq org-startup-folded 'content)
+    (setq org-todo-keywords
+          '((sequence "TODO(t)" "PEND(p)" "|" "DONE(d)" "CANC(c)")
+            (sequence "|" "FIVE(5)" "FOUR(4)" "THRE(3)" "TWO(2)" "ONE(1)")))
+    (setq org-priority-faces
+          '((?A . (:foreground "red"))
+            (?B . (:foreground "orange"))
+            (?C . (:foreground "yellow"))))
+    (setq org-capture-templates
+          '(("w" "Wessex")
+            ("wt" "Task" entry (file+headline "~/org/wessex.org" "Tasklist")
+             "* TODO  %?\nDEADLINE: %t" :prepend t)
+            ("wm" "Meeting" entry (file+headline "~/org/wessex-meetings.org" "On-going")
+             "* %U %?\n** (Rough) Minutes\n- What we talked about\n- What someone said\n** Tasks\n*** TODO Something to work on\nDEADLINE: %t\n" :prepend t)
+            ("p" "Personal")
+            ("pt" "Task" entry (file+headline "~/org/personal.org" "Tasklist")
+             "* TODO  %?\nDEADLINE: %t" :prepend t)
+            ("pj" "Journal" entry (file+olp+datetree "~/org/journal.org")
+             "* Entry for %U\n%?")
+            ("pb" "Birthday" entry (file "~/org/misc/birthday.org")
+             "* %(config/org-capture-prompt \"Person's Name\" 'persons-name)\nSCHEDULED: %(org-read-date)")
+            ("t" "Test")
+            ("tr" "Read String" entry (file "~/org/misc/birthday.org")
+             "* %(read-string \"In: \")")
+            ("tb" "Test Birth" entry (file "~/org/misc/birthday.org")
+             "* %(set-variable current-birthday (org-read-date)) and %(current-birthday)")
+            ))
+    )
+#+end_src
 
-      )
+**** TODO Create a new org-file for PDF export for work
+
+#+begin_src elisp :tangle ~/.emacs.d/init.el :mkdirp yes
+
+  ;; By Storax, https://storax.github.io/blog/2016/05/02/org-capture-tricks/
+    (defvar org-capture-hist nil
+      "History of prompt answers for org capture.")
+    (defun config/org-capture-prompt (prompt variable)
+      "PROMPT for string, save it to VARIABLE and insert it."
+      (make-local-variable variable)
+      (set variable (read-string (concat prompt ": ") nil org-capture-hist)))
+
+    (defun org-document-new (path)
+      "Create a new document and prompt for a file name."
+      (interactive)
+      (let ((name (read-string "Document Name: ")))
+        (expand-file-name (format "%s.org" name) path))
+      (find-file (insert-file "~/Documents/org-pdf/template.org")))
+
 #+end_src
 
 Note, I do the org-capture-templates part with [[https://emacs.stackexchange.com/questions/30169/set-org-capture-datetree-write-on-top-of-the-file][this]], because I want to put items at the top of the list.
