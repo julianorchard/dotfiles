@@ -381,10 +381,12 @@ That's it for Kitty.
 
 I'm using =i3=, because it /just works/. It's actually amazing how quickly I've got this working compared to using my previous window managers. I guess there's a reason it's one of the most popular choices...
 
+*** Basic Config
+
 #+begin_src i3 :tangle ~/.config/i3/config :mkdirp yes
 
 set $mod Mod4
-font firacode:monospace 8
+font Fira Code:monospace 8
 exec --no-startup-id dex --autostart --environment i3
 exec --no-startup-id xss-lock --transfer-sleep-lock -- i3lock --nofork
 exec --no-startup-id nm-applet
@@ -401,6 +403,15 @@ exec nitrogen --set-auto ~/Images/senjougahara.jpg
 
 #+end_src
 
+Use Dunst for notifications.
+
+#+begin_src  i3 :tangle ~/.config/i3/config :mkdirp yes
+
+# Notification Daemon
+exec_always --no-startup-id dunst -config ~/.config/dunst/dunstrc
+
+#+end_src
+
 Audio bindings and some other basic stuff.
 
 #+begin_src i3 :tangle ~/.config/i3/config :mkdirp yes
@@ -414,6 +425,8 @@ floating_modifier $mod
 
 #+end_src
 
+*** Bindings
+
 Some basic movement keybindings and some normal bindings. I need to change lots of this still, but I plan on keeping it pretty simple. 
 
 #+begin_src i3 :tangle ~/.config/i3/config :mkdirp yes
@@ -421,8 +434,9 @@ Some basic movement keybindings and some normal bindings. I need to change lots 
 bindsym $mod+Return exec i3-sensible-terminal
 bindsym $mod+q kill
 bindsym $mod+d exec dmenu_run -nb '#1e1e1e' -sf '#1e1e1e' -sb '#F4800D' -nf '#F4800D' -b
-bindsym $mod+f exec Firefox
+bindsym $mod+f exec firefox
 bindsym $mod+e exec emacs
+bindsym $mod+semicolon exec i3lock-fancy
 
 bindsym $mod+h focus left
 bindsym $mod+k focus down
@@ -452,6 +466,8 @@ bindsym $mod+space focus mode_toggle
 bindsym $mod+a focus parent
 
 #+end_src
+
+*** Workstations
 
 This sets the workspace names, and then binds some basic workstation bindings to them for movement between and movement of windows between workstations.
 
@@ -510,10 +526,12 @@ assign [class="Emacs"] $ws1
 assign [class="Firefox"] $ws2
 assign [class="kitty"] $ws3
 
-assign [class="spotify"] $ws9
-assign [class="signal-desktop"] $ws9
+assign [class="Spotify"] $ws9
+assign [class="Signal"] $ws9
 
 #+end_src
+
+*** Resize
 
 Not that I use it much, but this is /resize mode/.
 
@@ -539,12 +557,16 @@ bindsym $mod+r mode "resize"
 
 #+end_src
 
+
+*** Bar
+
 =i3status= is the bar used by i3wm. It's minimal but good for what I want (don't really want much interactivity, just basic stats and stuff). This is definitely not finished, however. 
 
 #+begin_src i3 :tangle ~/.config/i3/config :mkdirp yes
 
 bar {
   status_command i3status
+  font Fira Code-10 10
   colors {
     background #1E1E1E
     statusline #F4800D
@@ -552,6 +574,8 @@ bar {
 }
 
 #+end_src
+
+**** TODO Syncthing status
 
 ** Zathura
 
