@@ -17,6 +17,7 @@ As a result, I've recently made it a mission to try and just get something simpl
   - [[#x11][X11]]
   - [[#terminal][Terminal]]
   - [[#window-manager][Window Manager]]
+  - [[#start-page][Start Page]]
   - [[#zathura][Zathura]]
   - [[#lsd][LSD]]
 #+END_QUOTE
@@ -115,12 +116,12 @@ And we set some default applications to use:
 
  Next, we set up some aliases that I commonly use. I've written a bit about them below:
 
- | Alias       | Purpose                                                | Requirement     |
- |-------------+--------------------------------------------------------+-----------------|
- | =cls=       | Clears the terminal                                    | Using CMD often |
- | =md=        | Make directory and create any we need to along the way |                 |
- | =cat=       | Replace =cat= command with =bat=                       | [[https://github.com/sharkdp/bat][sharkdp/bat]]     |
- | =la= / =ls= | Replace some =ls -la= commands with LSD                | [[https://github.com/Peltoche/lsd][Peltoche/lsd]]    |
+ | Alias   | Purpose                                                | Requirement     |
+ |---------+--------------------------------------------------------+-----------------|
+ | =cls=     | Clears the terminal                                    | Using CMD often |
+ | =md=      | Make directory and create any we need to along the way |                 |
+ | =cat=     | Replace =cat= command with =bat=                           | [[https://github.com/sharkdp/bat][sharkdp/bat]]     |
+ | =la= / =ls= | Replace some =ls -la= commands with LSD                  | [[https://github.com/Peltoche/lsd][Peltoche/lsd]]    |
 
 #+begin_src sh :tangle ~/.zshrc :mkdirp yes
 
@@ -202,11 +203,14 @@ This part is from the default =xinitrc= file. I believe it just starts programs 
 
 #+end_src
 
-Meanwhile, I want to start some programs of my own! Including the essential [[https://github.com/coldfix/udiskie][udiskie]]! I then execute [[https://github.com/awesomeWM/awesome][AwesomeWM]]... aaaand this is where we diverge from reality; so soon! 
+Meanwhile, I want to start some programs of my own! Including the essential [[https://github.com/coldfix/udiskie][udiskie]]! I then exec my window manager of choice.
 
 #+begin_src sh :tangle ~/.config/X11/xinitrc :mkdirp yes
-  [ -x /usr/bin/udiskie ] && udiskie &
-  exec awesome
+  # [ -x /usr/bin/udiskie ] && exec udiskie
+
+  # exec awesome
+  # exec bspwm
+  exec i3
 #+end_src
 
 I've stopped using Awesome since discovering Emacs and wanting to focus on an less overwhelmingly fully featured window manager.
@@ -386,7 +390,7 @@ I'm using =i3=, because it /just works/. It's actually amazing how quickly I've 
 #+begin_src i3 :tangle ~/.config/i3/config :mkdirp yes
 
 set $mod Mod4
-font Fira Code:monospace 8
+font pango:file-icons:Fira Code:monospace 10
 exec --no-startup-id dex --autostart --environment i3
 exec --no-startup-id xss-lock --transfer-sleep-lock -- i3lock --nofork
 exec --no-startup-id nm-applet
@@ -473,15 +477,16 @@ This sets the workspace names, and then binds some basic workstation bindings to
 
 #+begin_src i3 :tangle ~/.config/i3/config :mkdirp yes
 
-set $ws1 "1"
-set $ws2 "2"
-set $ws3 "3"
-set $ws4 "4"
-set $ws5 "5"
-set $ws6 "6"
+
+set $ws1 "1:"
+set $ws2 "2:"
+set $ws3 "3:"
+set $ws4 "4:Four"
+set $ws5 "5:Five"
+set $ws6 "6:Six"
 set $ws7 "7"
 set $ws8 "8"
-set $ws9 "9"
+set $ws9 "9:"
 set $ws10 "10"
 
 bindsym $mod+1 workspace number $ws1
@@ -557,7 +562,6 @@ bindsym $mod+r mode "resize"
 
 #+end_src
 
-
 *** Bar
 
 =i3status= is the bar used by i3wm. It's minimal but good for what I want (don't really want much interactivity, just basic stats and stuff). This is definitely not finished, however. 
@@ -565,8 +569,10 @@ bindsym $mod+r mode "resize"
 #+begin_src i3 :tangle ~/.config/i3/config :mkdirp yes
 
 bar {
-  status_command i3status
-  font Fira Code-10 10
+  separator_symbol " "
+  strip_workspace_numbers yes
+  status_command i3blocks
+  font pango:file-icons-10 10
   colors {
     background #1E1E1E
     statusline #F4800D
@@ -575,7 +581,62 @@ bar {
 
 #+end_src
 
-**** TODO Syncthing status
+*** i3blocks
+
+As far as I'm aware, the functionality of the build in i3bar is /fairly/ limiated. It's therefore a nice idea to have something a little more robust to be able to use. That's why I've gone for i3blocks. I used it ages ago and remember quite enjoying it, so I'll try and get something nicely working again...
+
+**** Syncthing status
+
+=ps ax= gets running processes, =grep -v= excludes the command itself from registering as a running process, then we =wc= (word count) the output of the command =grep "syncthing"=. If that's nothing, Syncthing isn't running... it's not /likely/ to be running:
+
+#+begin_src ini :tangle ~/.config/i3blocks/config :mkdirp yes
+[syncthing]
+command=[ $(ps ax | grep -v "grep syncthing" | grep "syncthing" | wc -c) -ne 0 ] && echo "" || echo ""
+interval=60
+#+end_src
+
+**** Internet Connection
+
+Ping =google.com= and just tell me if that works:
+
+#+begin_src ini :tangle ~/.config/i3blocks/config :mkdirp yes
+[internet]
+command=ping -q -c1 google.com &>/dev/null && echo "" || echo ""
+interval=5
+#+end_src
+
+**** Battery percentage
+
+This requires changing the permissions of the capacity file:
+
+#+begin_src ini :tangle ~/.config/i3blocks/config :mkdirp yes
+[battery]
+command=echo " $(cat /sys/class/power_supply/BAT0/capacity)%"
+interval=5
+#+end_src
+
+**** Time
+
+#+begin_src ini :tangle ~/.config/i3blocks/config :mkdirp yes
+[time]
+command=echo "$(date '+%H:%M')"
+interval=5
+#+end_src
+
+**** Empty
+
+#+begin_src ini :tangle ~/.config/i3blocks/config :mkdirp yes
+[time]
+command=echo " "
+interval=once
+#+end_src
+
+
+** Start Page
+
+Very minimal browser start page.
+
+
 
 ** Zathura
 
