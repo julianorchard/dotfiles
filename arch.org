@@ -9,14 +9,17 @@ Very occasionally, and only on my ThinkPad x220, sadly.
 
 I'd love to use Arch more, to be honest, as it's a lovely experience, but I don't use it so often these days. 
 
+As a result, I've recently made it a mission to try and just get something simple, reproducable, and consistent going on. I'm using default =i3=, as a result (I've used a wide variety of similar window managers).
+
 ** Content                                                      :toc:quote:
 #+BEGIN_QUOTE
   - [[#zshell][Zshell]]
   - [[#x11][X11]]
-  - [[#zathura][Zathura]]
   - [[#terminal][Terminal]]
+  - [[#window-manager][Window Manager]]
+  - [[#start-page][Start Page]]
+  - [[#zathura][Zathura]]
   - [[#lsd][LSD]]
-  - [[#leftwm][LeftWM]]
 #+END_QUOTE
 
 ** Zshell
@@ -113,12 +116,12 @@ And we set some default applications to use:
 
  Next, we set up some aliases that I commonly use. I've written a bit about them below:
 
- | Alias       | Purpose                                                | Requirement     |
- |-------------+--------------------------------------------------------+-----------------|
- | =cls=       | Clears the terminal                                    | Using CMD often |
- | =md=        | Make directory and create any we need to along the way |                 |
- | =cat=       | Replace =cat= command with =bat=                       | [[https://github.com/sharkdp/bat][sharkdp/bat]]     |
- | =la= / =ls= | Replace some =ls -la= commands with LSD                | [[https://github.com/Peltoche/lsd][Peltoche/lsd]]    |
+ | Alias   | Purpose                                                | Requirement     |
+ |---------+--------------------------------------------------------+-----------------|
+ | =cls=     | Clears the terminal                                    | Using CMD often |
+ | =md=      | Make directory and create any we need to along the way |                 |
+ | =cat=     | Replace =cat= command with =bat=                           | [[https://github.com/sharkdp/bat][sharkdp/bat]]     |
+ | =la= / =ls= | Replace some =ls -la= commands with LSD                  | [[https://github.com/Peltoche/lsd][Peltoche/lsd]]    |
 
 #+begin_src sh :tangle ~/.zshrc :mkdirp yes
 
@@ -200,11 +203,14 @@ This part is from the default =xinitrc= file. I believe it just starts programs 
 
 #+end_src
 
-Meanwhile, I want to start some programs of my own! Including the essential [[https://github.com/coldfix/udiskie][udiskie]]! I then execute [[https://github.com/awesomeWM/awesome][AwesomeWM]]... aaaand this is where we diverge from reality; so soon! 
+Meanwhile, I want to start some programs of my own! Including the essential [[https://github.com/coldfix/udiskie][udiskie]]! I then exec my window manager of choice.
 
 #+begin_src sh :tangle ~/.config/X11/xinitrc :mkdirp yes
-  [ -x /usr/bin/udiskie ] && udiskie &
-  exec awesome
+  # [ -x /usr/bin/udiskie ] && exec udiskie
+
+  # exec awesome
+  # exec bspwm
+  exec i3
 #+end_src
 
 I've stopped using Awesome since discovering Emacs and wanting to focus on an less overwhelmingly fully featured window manager.
@@ -321,26 +327,6 @@ Now, for more colours, for xterm and Urxvt:
 
 Not the best.
 
-** Zathura
-
-A very nice little PDF viewer, with a nice little config, here:
-
-#+begin_src sh :tangle ~/.config/zathura/zathurarc :mkdirp yes
-# Setting:
-set statusbar-h-padding 0
-set statusbar-v-padding 0
-set page-padding 1
-# Colouring:
-set default-bg      "#FF0000"
-set default-fg      "#00FFFF"
-set statusbar-bg    "#00FFFF"
-set statusbar-fg    "#000000"
-# Mapping:
-map i recolor
-#+end_src
-
-I've had this same configuration since I basically started using Arch, and although it doesn't match a lot of other stuff I'm using now, I need to keep it.
-
 ** Terminal
 
 I used urxvt for a very long time, but I now use Kitty, and it's brilliant.
@@ -395,6 +381,283 @@ Sweet, sweet aesthetics:
 #+end_src
 
 That's it for Kitty. 
+** Window Manager
+
+I'm using =i3=, because it /just works/. It's actually amazing how quickly I've got this working compared to using my previous window managers. I guess there's a reason it's one of the most popular choices...
+
+*** Basic Config
+
+#+begin_src i3 :tangle ~/.config/i3/config :mkdirp yes
+
+set $mod Mod4
+font pango:file-icons:Fira Code:monospace 10
+exec --no-startup-id dex --autostart --environment i3
+exec --no-startup-id xss-lock --transfer-sleep-lock -- i3lock --nofork
+exec --no-startup-id nm-applet
+for_window [class="^.*"] border pixel 0
+
+#+end_src
+
+Setting the wallpaper with =nitrogen=.
+
+#+begin_src i3 :tangle ~/.config/i3/config :mkdirp yes
+
+# Wallpapers
+exec nitrogen --set-auto ~/Images/senjougahara.jpg
+
+#+end_src
+
+Use Dunst for notifications.
+
+#+begin_src  i3 :tangle ~/.config/i3/config :mkdirp yes
+
+# Notification Daemon
+exec_always --no-startup-id dunst -config ~/.config/dunst/dunstrc
+
+#+end_src
+
+Audio bindings and some other basic stuff.
+
+#+begin_src i3 :tangle ~/.config/i3/config :mkdirp yes
+
+set $refresh_i3status killall -SIGUSR1 i3status
+bindsym XF86AudioRaiseVolume exec --no-startup-id pactl set-sink-volume @DEFAULT_SINK@ +10% && $refresh_i3status
+bindsym XF86AudioLowerVolume exec --no-startup-id pactl set-sink-volume @DEFAULT_SINK@ -10% && $refresh_i3status
+bindsym XF86AudioMute exec --no-startup-id pactl set-sink-mute @DEFAULT_SINK@ toggle && $refresh_i3status
+bindsym XF86AudioMicMute exec --no-startup-id pactl set-source-mute @DEFAULT_SOURCE@ toggle && $refresh_i3status
+floating_modifier $mod
+
+#+end_src
+
+*** Bindings
+
+Some basic movement keybindings and some normal bindings. I need to change lots of this still, but I plan on keeping it pretty simple. 
+
+#+begin_src i3 :tangle ~/.config/i3/config :mkdirp yes
+
+bindsym $mod+Return exec i3-sensible-terminal
+bindsym $mod+q kill
+bindsym $mod+d exec dmenu_run -nb '#1e1e1e' -sf '#1e1e1e' -sb '#F4800D' -nf '#F4800D' -b
+bindsym $mod+f exec firefox
+bindsym $mod+e exec emacs
+bindsym $mod+semicolon exec i3lock-fancy
+
+bindsym $mod+h focus left
+bindsym $mod+k focus down
+bindsym $mod+j focus up
+bindsym $mod+l focus right
+bindsym $mod+Left focus left
+bindsym $mod+Down focus down
+bindsym $mod+Up focus up
+
+bindsym $mod+Right focus right
+bindsym $mod+Shift+j move left
+bindsym $mod+Shift+k move down
+bindsym $mod+Shift+l move up
+bindsym $mod+Shift+semicolon move right
+bindsym $mod+Shift+Left move left
+bindsym $mod+Shift+Down move down
+bindsym $mod+Shift+Up move up
+bindsym $mod+Shift+Right move right
+# bindsym $mod+h split h
+# bindsym $mod+v split v
+# bindsym $mod+f fullscreen toggle
+bindsym $mod+s layout stacking
+bindsym $mod+w layout tabbed
+# bindsym $mod+e layout toggle split
+bindsym $mod+Shift+space floating toggle
+bindsym $mod+space focus mode_toggle
+bindsym $mod+a focus parent
+
+#+end_src
+
+*** Workstations
+
+This sets the workspace names, and then binds some basic workstation bindings to them for movement between and movement of windows between workstations.
+
+#+begin_src i3 :tangle ~/.config/i3/config :mkdirp yes
+
+
+set $ws1 "1:"
+set $ws2 "2:"
+set $ws3 "3:"
+set $ws4 "4:Four"
+set $ws5 "5:Five"
+set $ws6 "6:Six"
+set $ws7 "7"
+set $ws8 "8"
+set $ws9 "9:"
+set $ws10 "10"
+
+bindsym $mod+1 workspace number $ws1
+bindsym $mod+2 workspace number $ws2
+bindsym $mod+3 workspace number $ws3
+bindsym $mod+4 workspace number $ws4
+bindsym $mod+5 workspace number $ws5
+bindsym $mod+6 workspace number $ws6
+bindsym $mod+7 workspace number $ws7
+bindsym $mod+8 workspace number $ws8
+bindsym $mod+9 workspace number $ws9
+bindsym $mod+0 workspace number $ws10
+
+bindsym $mod+Shift+1 move container to workspace number $ws1
+bindsym $mod+Shift+2 move container to workspace number $ws2
+bindsym $mod+Shift+3 move container to workspace number $ws3
+bindsym $mod+Shift+4 move container to workspace number $ws4
+bindsym $mod+Shift+5 move container to workspace number $ws5
+bindsym $mod+Shift+6 move container to workspace number $ws6
+bindsym $mod+Shift+7 move container to workspace number $ws7
+bindsym $mod+Shift+8 move container to workspace number $ws8
+bindsym $mod+Shift+9 move container to workspace number $ws9
+bindsym $mod+Shift+0 move container to workspace number $ws10
+
+#+end_src
+
+Reloading, restarting, and exiting X sessions!
+
+#+begin_src i3 :tangle ~/.config/i3/config :mkdirp yes
+
+bindsym $mod+Shift+c reload
+bindsym $mod+Shift+r restart
+bindsym $mod+Shift+e exec "i3-nagbar -t warning -m 'You pressed the exit shortcut. Do you really want to exit i3? This will end your X session.' -B 'Yes, exit i3' 'i3-msg exit'"
+
+#+end_src
+
+Set some default workspaces for certain applications. I never really made use of this feature using i3 or other window managers before, but I want to be really strict with it with this config. 
+
+#+begin_src i3 :tangle ~/.config/i3/config :mkdirp yes
+
+assign [class="Emacs"] $ws1
+assign [class="Firefox"] $ws2
+assign [class="kitty"] $ws3
+
+assign [class="Spotify"] $ws9
+assign [class="Signal"] $ws9
+
+#+end_src
+
+*** Resize
+
+Not that I use it much, but this is /resize mode/.
+
+#+begin_src i3 :tangle ~/.config/i3/config :mkdirp yes
+
+mode "resize" {
+  bindsym j resize shrink width 10 px or 10 ppt
+  bindsym k resize grow height 10 px or 10 ppt
+  bindsym l resize shrink height 10 px or 10 ppt
+  bindsym semicolon resize grow width 10 px or 10 ppt
+  # same bindings, but for the arrow keys
+  bindsym Left resize shrink width 10 px or 10 ppt
+  bindsym Down resize grow height 10 px or 10 ppt
+  bindsym Up resize shrink height 10 px or 10 ppt
+  bindsym Right resize grow width 10 px or 10 ppt
+  # back to normal: Enter or Escape or $mod+r
+  bindsym Return mode "default"
+  bindsym Escape mode "default"
+  bindsym $mod+r mode "default"
+}
+
+bindsym $mod+r mode "resize"
+
+#+end_src
+
+*** Bar
+
+=i3status= is the bar used by i3wm. It's minimal but good for what I want (don't really want much interactivity, just basic stats and stuff). This is definitely not finished, however. 
+
+#+begin_src i3 :tangle ~/.config/i3/config :mkdirp yes
+
+bar {
+  separator_symbol " "
+  strip_workspace_numbers yes
+  status_command i3blocks
+  font pango:file-icons-10 10
+  colors {
+    background #1E1E1E
+    statusline #F4800D
+  }
+}
+
+#+end_src
+
+*** i3blocks
+
+As far as I'm aware, the functionality of the build in i3bar is /fairly/ limiated. It's therefore a nice idea to have something a little more robust to be able to use. That's why I've gone for i3blocks. I used it ages ago and remember quite enjoying it, so I'll try and get something nicely working again...
+
+**** Syncthing status
+
+=ps ax= gets running processes, =grep -v= excludes the command itself from registering as a running process, then we =wc= (word count) the output of the command =grep "syncthing"=. If that's nothing, Syncthing isn't running... it's not /likely/ to be running:
+
+#+begin_src ini :tangle ~/.config/i3blocks/config :mkdirp yes
+[syncthing]
+command=[ $(ps ax | grep -v "grep syncthing" | grep "syncthing" | wc -c) -ne 0 ] && echo "" || echo ""
+interval=60
+#+end_src
+
+**** Internet Connection
+
+Ping =google.com= and just tell me if that works:
+
+#+begin_src ini :tangle ~/.config/i3blocks/config :mkdirp yes
+[internet]
+command=ping -q -c1 google.com &>/dev/null && echo "" || echo ""
+interval=5
+#+end_src
+
+**** Battery percentage
+
+This requires changing the permissions of the capacity file:
+
+#+begin_src ini :tangle ~/.config/i3blocks/config :mkdirp yes
+[battery]
+command=echo " $(cat /sys/class/power_supply/BAT0/capacity)%"
+interval=5
+#+end_src
+
+**** Time
+
+#+begin_src ini :tangle ~/.config/i3blocks/config :mkdirp yes
+[time]
+command=echo "$(date '+%H:%M')"
+interval=5
+#+end_src
+
+**** Empty
+
+#+begin_src ini :tangle ~/.config/i3blocks/config :mkdirp yes
+[time]
+command=echo " "
+interval=once
+#+end_src
+
+
+** Start Page
+
+Very minimal browser start page.
+
+
+
+** Zathura
+
+A very nice little PDF viewer, with a nice little config, here:
+
+#+begin_src sh :tangle ~/.config/zathura/zathurarc :mkdirp yes
+# Setting:
+set statusbar-h-padding 0
+set statusbar-v-padding 0
+set page-padding 1
+# Colouring:
+set default-bg      "#FF0000"
+set default-fg      "#00FFFF"
+set statusbar-bg    "#00FFFF"
+set statusbar-fg    "#000000"
+# Mapping:
+map i recolor
+#+end_src
+
+I've had this same configuration since I basically started using Arch, and although it doesn't match a lot of other stuff I'm using now, I need to keep it.
+
 ** LSD
 
 A little LSD config:
@@ -417,327 +680,3 @@ A little LSD config:
     separator: "  "
 #+end_src
 
-** LeftWM
-
-I'm really not sure about this window manager but it's what I'm using at the moment, and it's fine (plus I'm mainly focussed on Emacs anyway).
-
-#+begin_src toml :tangle ~/.config/leftwm/config.toml
-modkey = "Mod4"
-mousekey = "Mod4"
-workspaces = []
-tags = ["1", "2", "3", "4", "5", "6", "7", "8", "9"]
-layouts = ["MainAndVertStack", "MainAndHorizontalStack", "MainAndDeck", "GridHorizontal", "EvenHorizontal", "EvenVertical", "Fibonacci", "LeftMain", "CenterMain", "CenterMainBalanced", "CenterMainFluid", "Monocle", "RightWiderLeftStack", "LeftWiderRightStack"]
-layout_mode = "Workspace"
-insert_behavior = "Bottom"
-scratchpad = []
-window_rules = []
-disable_current_tag_swap = false
-disable_tile_drag = false
-focus_behaviour = "Sloppy"
-focus_new_windows = true
-
-[[keybind]]
-command = "Execute"
-value = "dmenu_run"
-modifier = ["modkey"]
-key = "p"
-
-[[keybind]]
-command = "Execute"
-value = "kitty"
-modifier = ["modkey"]
-key = "Return"
-
-[[keybind]]
-command = "CloseWindow"
-value = ""
-modifier = ["modkey"]
-key = "q"
-
-[[keybind]]
-command = "SoftReload"
-value = ""
-modifier = ["modkey"]
-key = "r"
-
-[[keybind]]
-command = "Execute"
-value = "loginctl kill-session $XDG_SESSION_ID"
-modifier = ["modkey", "Shift"]
-key = "x"
-
-[[keybind]]
-command = "Execute"
-value = "i3lock-fancy"
-modifier = ["modkey"]
-key = "l"
-
-[[keybind]]
-command = "MoveToLastWorkspace"
-value = ""
-modifier = ["modkey", "Shift"]
-key = "w"
-
-[[keybind]]
-command = "SwapTags"
-value = ""
-modifier = ["modkey"]
-key = "w"
-
-[[keybind]]
-command = "MoveWindowUp"
-value = ""
-modifier = ["modkey", "Shift"]
-key = "k"
-
-[[keybind]]
-command = "MoveWindowDown"
-value = ""
-modifier = ["modkey", "Shift"]
-key = "j"
-
-[[keybind]]
-command = "MoveWindowTop"
-value = ""
-modifier = ["modkey"]
-key = "Return"
-
-[[keybind]]
-command = "FocusWindowUp"
-value = ""
-modifier = ["modkey"]
-key = "k"
-
-[[keybind]]
-command = "FocusWindowDown"
-value = ""
-modifier = ["modkey"]
-key = "j"
-
-[[keybind]]
-command = "NextLayout"
-value = ""
-modifier = ["modkey", "Control"]
-key = "k"
-
-[[keybind]]
-command = "PreviousLayout"
-value = ""
-modifier = ["modkey", "Control"]
-key = "j"
-
-[[keybind]]
-command = "FocusWorkspaceNext"
-value = ""
-modifier = ["modkey"]
-key = "l"
-
-[[keybind]]
-command = "FocusWorkspacePrevious"
-value = ""
-modifier = ["modkey"]
-key = "h"
-
-[[keybind]]
-command = "MoveWindowUp"
-value = ""
-modifier = ["modkey", "Shift"]
-key = "Up"
-
-[[keybind]]
-command = "MoveWindowDown"
-value = ""
-modifier = ["modkey", "Shift"]
-key = "Down"
-
-[[keybind]]
-command = "FocusWindowUp"
-value = ""
-modifier = ["modkey"]
-key = "Up"
-
-[[keybind]]
-command = "FocusWindowDown"
-value = ""
-modifier = ["modkey"]
-key = "Down"
-
-[[keybind]]
-command = "NextLayout"
-value = ""
-modifier = ["modkey", "Control"]
-key = "Up"
-
-[[keybind]]
-command = "PreviousLayout"
-value = ""
-modifier = ["modkey", "Control"]
-key = "Down"
-
-[[keybind]]
-command = "FocusWorkspaceNext"
-value = ""
-modifier = ["modkey"]
-key = "Right"
-
-[[keybind]]
-command = "FocusWorkspacePrevious"
-value = ""
-modifier = ["modkey"]
-key = "Left"
-
-[[keybind]]
-command = "GotoTag"
-value = "1"
-modifier = ["modkey"]
-key = "1"
-
-[[keybind]]
-command = "GotoTag"
-value = "2"
-modifier = ["modkey"]
-key = "2"
-
-[[keybind]]
-command = "GotoTag"
-value = "3"
-modifier = ["modkey"]
-key = "3"
-
-[[keybind]]
-command = "GotoTag"
-value = "4"
-modifier = ["modkey"]
-key = "4"
-
-[[keybind]]
-command = "GotoTag"
-value = "5"
-modifier = ["modkey"]
-key = "5"
-
-[[keybind]]
-command = "GotoTag"
-value = "6"
-modifier = ["modkey"]
-key = "6"
-
-[[keybind]]
-command = "GotoTag"
-value = "7"
-modifier = ["modkey"]
-key = "7"
-
-[[keybind]]
-command = "GotoTag"
-value = "8"
-modifier = ["modkey"]
-key = "8"
-
-[[keybind]]
-command = "GotoTag"
-value = "9"
-modifier = ["modkey"]
-key = "9"
-
-[[keybind]]
-command = "MoveToTag"
-value = "1"
-modifier = ["modkey", "Shift"]
-key = "1"
-
-[[keybind]]
-command = "MoveToTag"
-value = "2"
-modifier = ["modkey", "Shift"]
-key = "2"
-
-[[keybind]]
-command = "MoveToTag"
-value = "3"
-modifier = ["modkey", "Shift"]
-key = "3"
-
-[[keybind]]
-command = "MoveToTag"
-value = "4"
-modifier = ["modkey", "Shift"]
-key = "4"
-
-[[keybind]]
-command = "MoveToTag"
-value = "5"
-modifier = ["modkey", "Shift"]
-key = "5"
-
-[[keybind]]
-command = "MoveToTag"
-value = "6"
-modifier = ["modkey", "Shift"]
-key = "6"
-
-[[keybind]]
-command = "MoveToTag"
-value = "7"
-modifier = ["modkey", "Shift"]
-key = "7"
-
-[[keybind]]
-command = "MoveToTag"
-value = "8"
-modifier = ["modkey", "Shift"]
-key = "8"
-
-[[keybind]]
-command = "MoveToTag"
-value = "9"
-modifier = ["modkey", "Shift"]
-key = "9"
-
-
-# Brightness Keys
-
-[[keybind]]
-command = "Execute"
-value = "light -U 2"
-modifier = []
-key = "XF86XK_MonBrightnessDown"
-
-[[keybind]]
-command = "Execute"
-value = "light -A 2"
-modifier = []
-key = "XF86XK_MonBrightnessUp"
-
-[[keybind]]
-command = "Execute"
-value = "light -U 100"
-modifier = ["modkey"]
-key = "XF86XK_MonBrightnessDown"
-
-[[keybind]]
-command = "Execute"
-value = "light -A 100"
-modifier = ["modkey"]
-key = "XF86XK_MonBrightnessUp"
-
-# Applications 
-
-[[keybind]]
-command = "Execute"
-value = "emacs"
-modifier = ["modkey"]
-key = "e"
-
-[[keybind]]
-command = "Execute"
-value = "firefox"
-modifier = ["modkey"]
-key = "f"
-
-[[keybind]]
-comand = "Execute"
-value = "signal-desktop"
-modifier = ["modkey"]
-key = "s"
-#+end_src
