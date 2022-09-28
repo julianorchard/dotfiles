@@ -87,6 +87,7 @@ This is my on-going project to  /b e c o m e/  an emacs user (from being a vimme
     - [[#yaml][YAML]]
   - [[#fun][Fun]]
     - [[#discord][Discord]]
+  - [[#other][Other]]
 #+END_QUOTE
 
 ** The Basics
@@ -110,8 +111,6 @@ Delay garbage collection.
   (setq gc-cons-percentage 0.6)
   (setq gc-cons-threshold most-positive-fixnum)
 #+end_src
-
-**** TODO Put themeing stuff as high up as possible
 
 *** Start in Home Folder
 
@@ -156,9 +155,6 @@ This is an incredibly useful binding, and one the lack of which /seriously/ thre
 #+begin_src elisp :tangle ~/.emacs.d/init.el :mkdirp yes
   (global-set-key (kbd "<escape>") 'keyboard-escape-quit)
 #+end_src
-
-**** TODO Use General.el to set this keybind?
-<2022-08-12 Fri>
 
 *** Mouse
 
@@ -663,23 +659,29 @@ This is the main org-mode block.
             (?B . (:foreground "orange"))
             (?C . (:foreground "yellow"))))
     (setq org-capture-templates
+
           '(("w" "Wessex")
             ("wt" "Task" entry (file+headline "~/org/wessex.org" "Tasklist")
              "* TODO  %?\nDEADLINE: %t" :prepend t)
             ("wm" "Meeting" entry (file+headline "~/org/wessex-meetings.org" "On-going")
              "* %U %?\n** (Rough) Minutes\n- What we talked about\n- What someone said\n** Tasks\n*** TODO Something to work on\nDEADLINE: %t\n" :prepend t)
+
             ("p" "Personal")
-            ("pt" "Task" entry (file+headline "~/org/personal.org" "Tasklist")
+            ("pt" "General Task" entry (file+headline "~/org/personal.org" "Tasklist")
              "* TODO  %?\nDEADLINE: %t" :prepend t)
+            ("pc" "Computing Task" entry (file+headline "~/org/personal.org" "Computer")
+             "* TODO  %?\nDEADLINE: %t\n- [[repo][" :prepend t)
             ("pj" "Journal" entry (file+olp+datetree "~/org/journal.org")
              "* Entry for %U\n%?")
             ("pb" "Birthday" entry (file "~/org/misc/birthday.org")
              "* %(config/org-capture-prompt \"Person's Name\" 'persons-name)\nSCHEDULED: %(org-read-date)")
+
             ("t" "Test")
             ("tr" "Read String" entry (file "~/org/misc/birthday.org")
              "* %(read-string \"In: \")")
             ("tb" "Test Birth" entry (file "~/org/misc/birthday.org")
              "* %(set-variable current-birthday (org-read-date)) and %(current-birthday)")
+
             ))
     )
 #+end_src
@@ -1215,3 +1217,38 @@ Tell /everyone/ on Discord you use Emacs (otherwise what's the point in using it
 
 Initially, I wanted to do this by testing to see if =discord= is an executable on the system, but I can't get that's working with Windows easily (and on my work machine I can't do certain things) so in the end I just check if the username is /julia/, which is my home PC username (it was automatically shortened from my email when I logged into the PC with a Microsoft account).
 
+** Other
+
+While learning Elisp, I started writing a little tool to make an org-list some formatted HTML...
+
+#+begin_src elisp
+  ;; https://stackoverflow.com/questions/20747190/read-from-a-file-into-a-emacs-lisp-list
+  (defun slurp (inputfile)
+    (with-temp-buffer
+      (insert-file-contents inputfile)
+      (buffer-substring-no-properties
+       (point-min)
+       (point-max))))
+
+  (defun get-bookmark-file-content ()
+    (split-string
+     (slurp "~/org/misc/bookmarks.org") "\n" t))
+
+  (defun replace-in-string (what with in)
+    (replace-regexp-in-string (regexp-quote what) with in nil 'literal))
+
+  (defun start-page-build () 
+    (interactive)
+    (dolist (line (get-bookmark-file-content))
+      (if (not (string-match-p (regexp-quote "^\#\+") line))
+          (insert (concat (replace-in-string "* " "<ul>" line) "\n")))))
+
+  (defun start-page-build-plain () 
+    (interactive)
+    (dolist (line (get-bookmark-file-content))
+      (if (not (string-match-p (regexp-quote "^\#\+") line))
+          (insert (concat line "\n")))))
+
+#+end_src
+
+This is as far as I got, but lots of good ideas (from [[https://stackoverflow.com/questions/20747190/read-from-a-file-into-a-emacs-lisp-list][stack overflow]], as usual). Want to keep this in case it becomes useful.  
