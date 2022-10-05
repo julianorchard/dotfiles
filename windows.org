@@ -878,22 +878,62 @@ Here's a rough-and-ready script that makes use of it:
 
 I want to improve this part, at some point. The fonts I use are:
 
-- Anonymice NF (Nerd Font patched version)
-- ET Book Open Type
-- Fira Code
+- [[https://github.com/ryanoasis/nerd-fonts/tree/master/patched-fonts/AnonymousPro][Anonymice NF]]
+- [[https://github.com/tonsky/FiraCode][Fira Code Retina]]
+  - Plus a [[https://github.com/zwaldowski/Fira/tree/zwaldowski/mod-new/otf][patched version]] with the monospace /italics/
+- +[[https://github.com/edwardtufte/et-book][ET Book Open Type]]+ (don't use this in my Org documents anymore)
 
-This installs the [[https://github.com/ryanoasis/nerd-fonts/tree/master/patched-fonts/AnonymousPro][Anonymice]] patched [[https://github.com/ryanoasis/nerd-fonts][Nerd Font]]:
+#+begin_src powershell :tangle c:/cmd/bin/installFonts.ps1 :mkdirp yes
 
-#+begin_src powershell :tangle c:/cmd/bin/font-anonymice.ps1 :mkdirp yes
+  $fontArray = @(
 
-  $fontName = "Anonymice Nerd Font Complete Windows Compatible.ttf"
-  (New-Object System.Net.WebClient).DownloadFile("https://github.com/ryanoasis/nerd-fonts/raw/master/patched-fonts/AnonymousPro/complete/Anonymice%20Nerd%20Font%20Complete%20Windows%20Compatible.ttf","C:\cmd\sh\$fontName")
-  (New-Object -comObject Shell.Application).Namespace(0x14).CopyHere("C:\cmd\sh\$fontName",0x10)
-  Remove-Item "C:\cmd\sh\$fontName" -Force
+      @("Anonymice Nerd Font Complete Windows Compatible.ttf","https://github.com/ryanoasis/nerd-fonts/raw/master/patched-fonts/AnonymousPro/complete/Anonymice%20Nerd%20Font%20Complete%20Windows%20Compatible.ttf"),
+      @("FiraCode-VF.ttf","https://github.com/tonsky/FiraCode/releases/download/6.2/Fira_Code_v6.2.zip"),
+      @("FiraMono-MediumItalic.otf","https://github.com/zwaldowski/Fira/raw/zwaldowski/mod-new/otf/FiraMono-MediumItalic.otf")
+
+  )
+
+  ForEach ($font In $fontArray) {
+
+      $fontName = $font[0]
+      $fontURL  = $font[1]
+      $fontDownloadLocation = "$env:TEMP\$fontName"
+
+      Write-Host "Installing: $fontName"
+
+      If ([IO.Path]::GetExtension($fontURL) -eq '.zip') {
+          ## Extract a zip file first
+          Try { 
+              $fontArchive="$env:TEMP\font-install-temp.zip"
+              (New-Object System.Net.WebClient).DownloadFile($fontURL,$fontArchive)
+          } Catch {
+              Write-Host "! Error downloading $fontURL"
+          }
+          Expand-Archive $fontArchive -Force
+          (New-Object -comObject Shell.Application).Namespace(0x14).CopyHere((Get-ChildItem -Path "$env:TEMP\font-install-temp" -Include $fontName -File -Recurse).FullName,0x10)
+          Remove-Item "$env:TEMP\font-install-temp*" -Force -Recurse
+
+      } Else {
+          ## Just installing a font file
+          Try {
+              (New-Object System.Net.WebClient).DownloadFile($fontURL,$fontDownloadLocation)
+          } Catch {
+              Write-Host "! Error downloading $fontURL"
+          }
+          (New-Object -comObject Shell.Application).Namespace(0x14).CopyHere($fontDownloadLocation,0x10)
+          Remove-Item $fontDownloadLocation -Force
+
+      } 
+
+  }
 
 #+end_src
 
-But at the moment, I haven't written this for the other fonts I want on my system; it would be very useful for my [[file:emacs.org][emacs config]] too, so this is a TODO.
+**** TODO Refactor this at some point
+SCHEDULED: <2022-10-08 Sat>
+
+*This is untest on a new system without all these fonts installed.*
+
 
 ** AutoHotkey
 *** About

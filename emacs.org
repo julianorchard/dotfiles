@@ -321,11 +321,11 @@ I had trouble with this, but use Daviwils dotfiles as a reference in the end (ad
 I used to use ET Book for some really nice looking Org-documents, especially. However, I've stopped this and now just use Fira (I also use a [[version https://github.com/zwaldowski/Fira/tree/zwaldowski/mod-new/otf][fork]] for the /italicised/ version).
 
 #+begin_src elisp :tangle ~/.emacs.d/init.el :mkdirp yes
+  (set-face-attribute 'default nil :font "Fira Code Retina" :height 105)
   (set-face-attribute 'italic nil :font "Fira Mono" :height 105)
-  (set-face-attribute 'default nil :font "Fira Code Retina" :height 110)
 #+end_src
 
-I'm not massively attached to this font; I do like it a lot but I don't mind changing it if I decide the fact it doesn't have an italic version officially is a problem. 
++I'm not massively attached to this font; I do like it a lot but I don't mind changing it if I decide the fact it doesn't have an italic version officially is a problem.+ I am now massively attached to this font. I love it quite a lot. It's great. 
 
 *** Themes
 
@@ -642,10 +642,15 @@ This is the main org-mode block.
     :commands (org-capture org-agenda)
     :hook (org-mode . here/org-mode-setup)
     (org-mode . here/org-mode-symbols-setup)
+    ;; (org-mode . here/org-font-setup)
     ;; (org-mode . here/org-capture-workflow)
     :config
     (setq org-ellipsis "  ⌄ ")
     (set-face-underline 'org-ellipsis nil)
+    ;; (defun org-font-setup ()
+    (set-face-attribute 'org-quote nil :inherit 'default :slant 'italic)
+    (font-lock-comment-face ((t (:inherit font-lock-comment-face :slant 'italic))))
+    ;; )
     (setq header-line-format " ")
     (setq org-agenda-files
           '("~/org/" "~/config/"))
@@ -659,6 +664,7 @@ This is the main org-mode block.
           '((?A . (:foreground "red"))
             (?B . (:foreground "orange"))
             (?C . (:foreground "yellow"))))
+
     (setq org-capture-templates
 
           '(("w" "Wessex")
@@ -676,15 +682,9 @@ This is the main org-mode block.
              "* Entry for %U\n%?")
             ("pb" "Birthday" entry (file "~/org/misc/birthday.org")
              "* %(config/org-capture-prompt \"Person's Name\" 'persons-name)\nSCHEDULED: %(org-read-date)")
-
-            ("t" "Test")
-            ("tr" "Read String" entry (file "~/org/misc/birthday.org")
-             "* %(read-string \"In: \")")
-            ("tb" "Test Birth" entry (file "~/org/misc/birthday.org")
-             "* %(set-variable current-birthday (org-read-date)) and %(current-birthday)")
-
             ))
     )
+
 #+end_src
 
 **** TODO Create a new org-file for PDF export for work
@@ -754,47 +754,39 @@ Lots of it is a work in progress.
 I started using this setup, below (edited from Davwils /Emacs From Scratch/), but I've subsequently decided upon a more plain configuration (without the Serif fonts I used here):
 
 #+begin_src elisp
+
   (defun here/org-font-setup ()
-    ;; Replace list hyphen with dot
-    (font-lock-add-keywords 'org-mode
-                            '(("^ *\\([-]\\) "
-                               (0 (prog1 () (compose-region (match-beginning 1) (match-end 1) "•"))))))
-    ;; Set faces for heading levels
-    ;; (dolist (face '((org-document-title . 2.0)
-    ;;                 (org-level-1 . 1.4)
-    ;;                 (org-level-2 . 1.2)
-    ;;                 (org-level-3 . 1.1)
-    ;;                 (org-level-4 . 1.1)
+
+  ;; I don't use this, but it's for messing with the font-sizes
+    ;; (dolist (face '((org-document-title . 3.0)
+    ;;                 (org-level-1 . 1.0)
+    ;;                 (org-level-2 . 1.0)
+    ;;                 (org-level-3 . 1.0)
+    ;;                 (org-level-4 . 1.0)
     ;;                 (org-level-5 . 1.0)
     ;;                 (org-level-6 . 1.0)
     ;;                 (org-level-7 . 1.0)
     ;;                 (org-level-8 . 1.0)))
-    ;;   (set-face-attribute (car face) nil :font "ETBookOT" :weight 'Light :height (cdr face)))
+    ;;   (set-face-attribute (car face) nil :inherit 'default))
 
-    (dolist (face '((org-document-title . 2.0)
-                    (org-level-1 . 1.0)
-                    (org-level-2 . 1.0)
-                    (org-level-3 . 1.0)
-                    (org-level-4 . 1.0)
-                    (org-level-5 . 1.0)
-                    (org-level-6 . 1.0)
-                    (org-level-7 . 1.0)
-                    (org-level-8 . 1.0)))
-      (set-face-attribute (car face) nil :inherit 'fixed-pitch))
+  ;; This was used by Daviwils to set all the variable pitched fonts he
+  ;; used in his config, but I don't use those; I just use the lovely
+  ;; monospace font! So this is possibly quite useless, but nice for setting
+  ;; italic fonts with 'org-quote
+    ;; (set-face-attribute 'org-block nil :foreground nil :inherit 'default)
+    ;; (set-face-attribute 'org-table nil :inherit 'default)
+    ;; (set-face-attribute 'org-formula nil :inherit 'default)
+    ;; These seem to actively be worsened by the below...
+    ;; (set-face-attribute 'org-code nil :inherit 'default)
+    ;; (set-face-attribute 'org-verbatim nil :inherit 'italic)
+    ;; (set-face-attribute 'org-special-keyword nil :inherit '(font-lock-comment-face default))
+    ;; (set-face-attribute 'org-meta-line nil :inherit '(font-lock-comment-face default))
+    ;; (set-face-attribute 'org-checkbox nil :inherit 'default)
+    ;; (set-face-attribute 'line-number nil :inherit 'default)
+    ;; (set-face-attribute 'line-number-current-line nil :inherit 'default)
+    ;; Probably the most important one...
+    (set-face-attribute 'org-quote nil :inherit 'default :slant 'italic))
 
-    ;; Ensure that anything that should be fixed-pitch in Org files appears that way
-    (set-face-attribute 'org-block nil :foreground nil :inherit 'fixed-pitch)
-    (set-face-attribute 'org-table nil :inherit 'fixed-pitch)
-    (set-face-attribute 'org-formula nil :inherit 'fixed-pitch)
-    (set-face-attribute 'org-code nil :inherit 'fixed-pitch)
-    (set-face-attribute 'org-table nil :inherit 'fixed-pitch)
-    (set-face-attribute 'org-verbatim nil :inherit 'fixed-pitch)
-    (set-face-attribute 'org-special-keyword nil :inherit '(font-lock-comment-face fixed-pitch))
-    (set-face-attribute 'org-meta-line nil :inherit '(font-lock-comment-face fixed-pitch))
-    (set-face-attribute 'org-checkbox nil :inherit 'fixed-pitch)
-    (set-face-attribute 'line-number nil :inherit 'fixed-pitch)
-    (set-face-attribute 'line-number-current-line nil :inherit 'fixed-pitch)
-    (set-face-attribute 'org-quote nil :inherit 'fixed-pitch :slant 'italic))
 #+end_src
 
 *** Prettify Symbols in Org Mode
@@ -814,6 +806,7 @@ But ended up doing so many it's in its own funcion =here/org-mode-symbols-setup=
 #+begin_src elisp :tangle ~/.emacs.d/init.el :mkdirp yes
   (defun here/org-mode-symbols-setup ()
     "Prettify Symbols Setup for Org Documents"
+
     (push '("[ ]" . "☐") prettify-symbols-alist)
     (push '("[X]" . "☑" ) prettify-symbols-alist)
     (push '("[-]" . "○" ) prettify-symbols-alist)
@@ -846,11 +839,12 @@ But ended up doing so many it's in its own funcion =here/org-mode-symbols-setup=
     (push '("[#A]" . "⬆") prettify-symbols-alist)
     (push '("[#B]" . "■") prettify-symbols-alist)
     (push '("[#C]" . "⬇") prettify-symbols-alist)
-    ;; (push '("TODO" . "☐") prettify-symbols-alist)
-    ;; (push '("PEND" . "○") prettify-symbols-alist)
-    ;; (push '("DONE" . "☑") prettify-symbols-alist)
-    ;; (push '("CANC" . "☒") prettify-symbols-alist)
-    (prettify-symbols-mode))
+    (prettify-symbols-mode)
+
+    ;; Nicer Org Bullets
+    (font-lock-add-keywords 'org-mode
+                            '(("^ *\\([-]\\) "
+                               (0 (prog1 () (compose-region (match-beginning 1) (match-end 1) "•")))))))
 #+end_src
 
 *** Org Setup
@@ -1518,6 +1512,26 @@ And this allows the PDF document to refresh without confirmation... again, from 
 
 #+begin_src elisp :tangle ~/.emacs.d/init.el :mkdirp yes
   (setq revert-without-query '(".pdf"))
+#+end_src
+
+More stock stuff from Emacs wiki: 
+
+#+begin_src elisp :tangle ~/.emacs.d/init.el :mkdirp yes
+
+  (use-package auctex
+    :defer t
+    :ensure t
+    :config 
+    (require 'tex-mik)
+
+    (setq TeX-auto-save t)
+    (setq TeX-parse-self t)
+    (setq-default TeX-master nil)
+
+    (add-hook 'LaTeX-mode-hook 'visual-line-mode)
+    (add-hook 'LaTeX-mode-hook 'turn-on-reftex)
+    (setq reftex-plug-into-AUCTeX t))
+
 #+end_src
 
 *** Powershell
