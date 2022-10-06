@@ -1,9 +1,10 @@
+#+OPTIONS: broken-links:mark
 #+author: Julian Orchard <git@julianorchard.co.uk>
-#+title: /vim/
+#+title: Vim
 
 This is the main =.vimrc= file, but obviously it'll be in =.vim/vimrc=.
 
-** Contents                                                             :TOC_3:QUOTE:
+** Contents                                                             :TOC_3:QUOTE:noexport:
 #+BEGIN_QUOTE
   - [[#vimrc][vimrc]]
     - [[#initial-setup][Initial Setup]]

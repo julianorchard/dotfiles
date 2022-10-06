@@ -1,5 +1,6 @@
+#+OPTIONS: broken-links:mark
 #+author: Julian Orchard <hello@julianorchard.co.uk>
-#+title: /arch/
+#+title: Arch
 
 #+begin_quote
 I use arch, btw.
@@ -631,11 +632,9 @@ command=echo " "
 interval=once
 #+end_src
 
-
 ** Start Page
 
 Very minimal browser start page.
-
 
 
 ** Zathura

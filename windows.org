@@ -1,9 +1,10 @@
+#+OPTIONS: broken-links:mark
 #+author: Julian Orchard <git@julianorchard.co.uk>
-#+title: /windows/
+#+title: Windows
 
 A literate Windows 10 configuration, set up in the folder =C:/cmd=.
 
-** Contents                                                    :TOC_3:QUOTE:
+** Contents                                                    :TOC_3:QUOTE:noexport:
 #+BEGIN_QUOTE
   - [[#about][About]]
   - [[#dosbatch][DOSBatch]]

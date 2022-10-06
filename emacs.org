@@ -1,10 +1,13 @@
+#+OPTIONS: broken-links:mark
+#+options: toc:1
+#+EXPORT_EXCLUDE_TAGS: noexport
 #+author: Julian Orchard <git@julianorchard.co.uk>
-#+title: /emacs.org/
+#+title: Emacs
 #+description: My literate emacs configuration, mainly for Windows 10 at the moment. 
 
-This is my on-going project to  /b e c o m e/  an emacs user (from being a vimmer).
+This is my on-going project to /become/ an Emacs user (from being a [[link:vim.org][Vimmer]]).
 
-** Content                                                     :toc_3:quote:
+** Content                                                     :toc_3:quote:noexport:
 #+BEGIN_QUOTE
   - [[#the-basics][The Basics]]
     - [[#about][About]]
@@ -487,39 +490,40 @@ For my purposes, I think =general.el= is probably overkill and I should try and 
 I'm going to use =general.el= to manage some of these bindings. 
 
 #+begin_src elisp :tangle ~/.emacs.d/init.el :mkdirp yes
-    (use-package general
-      :ensure t
-      :config
-      (general-evil-setup t)
-      (general-define-key
-       :states '(normal visual)
-       :prefix "SPC"
-       "SPC" 'execute-extended-command
-       "r" 'eval-region
-       )
-      (general-define-key
-       :states 'normal
-       :prefix "SPC"
-       "q" 'evil-quit
-       "h" 'evil-window-left
-       "j" 'evil-window-down
-       "k" 'evil-window-up
-       "l" 'evil-window-right
-       "b" 'ivy-switch-buffer
-       "f" 'find-file
-       "tf" 'org-babel-tangle
-       "ts" 'org-time-stamp
-       "a" 'org-agenda
-       "c" 'org-capture
-       "d" 'custom-basic-time-date-stamp
-       "1" 'delete-other-windows
-       "0" 'delete-window
-       "2" 'split-window-below
-       "3" 'split-window-right
-       "+" 'balance-windows
-       "." 'custom-time-date-stamp
-       "-" 'custom-org-subheading
-       ))
+  (use-package general
+    :ensure t
+    :config
+    (general-evil-setup t)
+    (general-define-key
+     :states '(normal visual)
+     :prefix "SPC"
+     "SPC" 'execute-extended-command
+     "r" 'eval-region
+     )
+    (general-define-key
+     :states 'normal
+     :prefix "SPC"
+     "q" 'evil-quit
+     "h" 'evil-window-left
+     "j" 'evil-window-down
+     "k" 'evil-window-up
+     "l" 'evil-window-right
+     "b" 'ivy-switch-buffer
+     "f" 'find-file
+     "tf" 'org-babel-tangle
+     "ts" 'org-time-stamp
+     "op" 'org-publish-project
+     "a" 'org-agenda
+     "c" 'org-capture
+     "d" 'custom-basic-time-date-stamp
+     "1" 'delete-other-windows
+     "0" 'delete-window
+     "2" 'split-window-below
+     "3" 'split-window-right
+     "+" 'balance-windows
+     "." 'custom-time-date-stamp
+     "-" 'custom-org-subheading
+     ))
 
 #+end_src
 
@@ -1653,3 +1657,58 @@ While learning Elisp, I started writing a little tool to make an org-list some f
 #+end_src
 
 This is as far as I got, but lots of good ideas (from [[https://stackoverflow.com/questions/20747190/read-from-a-file-into-a-emacs-lisp-list][stack overflow]], as usual). Want to keep this in case it becomes useful.  
+
+#+begin_src elisp
+
+  (setq org-publish-project-alist
+        '(("config"
+           :base-directory "~/config/"
+           :publishing-function org-html-publish-to-html
+           :publishing-directory "~/julianorchard.github.io/config/"
+           :section-numbers nil
+           :html-head "<link rel=\"stylesheet\"
+                             href=\"../src/org-style.css\"
+                             type=\"text/css\"/>"
+           :html-preamble "<nav>
+                                <ul>
+                                <li>
+                                <a class=\"link\" href=\"/\">Home</a>
+                                </li>
+                                <li>
+                                <a class=\"link\" href=\"/about/\">About</a>
+                                </li>
+                                <li>
+                                <a class=\"link\" href=\"/posts/\">Posts</a>
+                                </li>
+                                <li>
+                                <a class=\"link\" href=\"/config/\">Config</a>
+                                </li>
+                                </ul>
+                                </nav>"
+           :html-postamble "<footer>
+                                 <div class=\"left\">
+                                         <p>
+                                                 Email: <a href=\"mailto:hello@julianorchard.co.uk\" class=\"highlight\">hello@julianorchard.co.uk</a>
+                                         <br />
+                                                 LinkedIn: <a href=\"https://linkedin.com/in/JulianOrchard\" class=\"highlight\">julianorchard</a>
+                                         <br />
+                                                 Mastodon: <a href=\"https://mastodon.social/@jdo\"
+                           class=\"highlight\">@jdo@mastodon.social</a> <u class=\"footer-kanji\" style=\"font-family: 'Noto Serif JP', serif; text-decoration: none;  line-height: 0px; font-size: 20px;\">森</u>
+                                         </p>
+                                 </div><!--
+                                 --><div class=\"right\">
+                                         <p>
+                                                 Check out this site on <a href=\"https://github.com/julianorchard/julianorchard.github.io\" class=\"highlight\" target=\"_blank\">GitHub</a>!
+                                                 <br />
+                                                 About <a href=\"/privacy/\" class=\"highlight\">Privacy Policy</a>.
+                                         </p>
+                                         <p>
+                                                 Copyright Julian Orchard, 2021
+                                         </p>
+                                 </div>
+                         </footer>
+                         <script src=\"/src/script.js\"></script>"
+           :force t)))
+
+
+#+end_src
