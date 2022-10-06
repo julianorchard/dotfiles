@@ -1,11 +1,10 @@
 #+OPTIONS: broken-links:mark
 #+options: toc:1
-#+EXPORT_EXCLUDE_TAGS: noexport
 #+author: Julian Orchard <git@julianorchard.co.uk>
-#+title: Emacs
-#+description: My literate emacs configuration, mainly for Windows 10 at the moment. 
+#+title: My Emacs Configuration
+#+description: My literate Emacs configuration, where I spend a lot of my time. 
 
-This is my on-going project to /become/ an Emacs user (from being a [[link:vim.org][Vimmer]]).
+This is my on-going project to /become/ an /Emacs user/ (from being mainly a Vim user). The web version of this is a bargain bin [[https://tecosaur.github.io/emacs-config/][tecosaur]] clone...
 
 ** Content                                                     :toc_3:quote:noexport:
 #+BEGIN_QUOTE
@@ -50,7 +49,7 @@ This is my on-going project to /become/ an Emacs user (from being a [[link:vim.o
   - [[#org][Org]]
     - [[#about-3][About]]
     - [[#main-org][Main Org]]
-    - [[#org-blog][Org Blog]]
+    - [[#org-publish-project][Org Publish Project]]
     - [[#font-setup][Font Setup]]
     - [[#prettify-symbols-in-org-mode][Prettify Symbols in Org Mode]]
     - [[#org-setup][Org Setup]]
@@ -109,11 +108,12 @@ This! What is /this/?
 
 Delay garbage collection.
 
-=most-positive-fixnum= is an elegant way of avoiding just having a large number there, like I've seen a lot when looking at this. 
+Using =most-positive-fixnum= is an elegant way of avoiding just having a large number there, like I've [[https://www.reddit.com/r/emacs/comments/4j828f/til_setq_gcconsthreshold_100000000/][seen a lot]] when looking at this. 
 
 #+begin_src elisp :tangle ~/.emacs.d/init.el :mkdirp yes
   (setq gc-cons-percentage 0.6)
   (setq gc-cons-threshold most-positive-fixnum)
+  (add-hook 'after-init-hook (lambda () (setq gc-cons-threshold 800000)))
 #+end_src
 
 *** Start in Home Folder
@@ -714,44 +714,69 @@ This is the main org-mode block.
 
 Note, I do the org-capture-templates part with [[https://emacs.stackexchange.com/questions/30169/set-org-capture-datetree-write-on-top-of-the-file][this]], because I want to put items at the top of the list.
 
-*** Org Blog
+*** Org Publish Project
 
-I've started using Org-blog for my personal site:
+The real question is... why should I /not/ use Emacs to manage my website too, eventually? The method below (for exporting this series of config files) is amazing and easy and great. 
 
-#+begin_src elisp
-  (use-package org-static-blog
-    :ensure t
-    :config
-    (setq org-static-blog-publish-title "Hylobatid")
-    (setq org-static-blog-publish-url "https://hylobatid.github.io/")
-    (setq org-static-blog-publish-directory "~/hylobatid.github.io/")
-    (setq org-static-blog-posts-directory "~/hylobatid.github.io/blog/posts/")
-    (setq org-static-blog-drafts-directory "~/hylobatid.github.io/blog/drafts/")
-    (setq org-static-blog-enable-tags t)
-    (setq org-static-blog-use-preview t)
-    (setq org-export-with-toc nil)
-    (setq org-export-with-section-numbers nil)
-    (setq org-static-blog-page-header
-          "<meta name=\"author\" content=\"Hylobatid\">
-  <meta name=\"referrer\" content=\"no-referrer\">
-  <link href= \"static/style.css\" rel=\"stylesheet\" type=\"text/css\" />
-  <link rel=\"icon\" href=\"static/favicon.ico\">")
-    (setq org-static-blog-page-preamble
-          "<div class=\"header\">
-    <a href=\"https://hylobatid.github.io\">Hylobatid</a>
-  </div>")
-    (setq org-static-blog-page-postamble
-          "<div id=\"archive\">
-    <a href=\"https://hylobatid.github.io/archive.html\">Other posts</a>
-  </div>
-  <footer>
-    Made with <a href=\"https://github.com/bastibe/org-static-blog\">Org</a>.
-  </footer>")
-    (setq org-static-blog-index-front-matter
-          "<h1>Thoughts</h1>\n"))
+It's getting difficult to justify using my own static site generator now (although I really like using it, still). 
+
+#+begin_src elisp :tangle ~/.emacs.d/init.el :mkdirp yes
+
+  (setq org-publish-project-alist
+        '(("config"
+           :base-directory "~/config/"
+           :publishing-function org-html-publish-to-html
+           :publishing-directory "~/julianorchard.github.io/config/"
+           :section-numbers nil
+           :html-head "
+  <link rel=\"stylesheet\" href=\"../src/org-style.css\" type=\"text/css\"/>"
+           :html-preamble "
+    <nav>
+      <ul>
+        <li>
+          <a class=\"link\" href=\"/\">Home</a>
+        </li>
+        <li>
+          <a class=\"link\" href=\"/about/\">About</a>
+        </li>
+        <li>
+          <a class=\"link\" href=\"/posts/\">Posts</a>
+        </li>
+        <li>
+          <a class=\"link\" href=\"/config/\">Config</a>
+        </li>
+      </ul>
+    </nav>"
+           :html-postamble "
+      <footer>
+        <div class=\"left\">
+          <p>
+            Email: <a href=\"mailto:hello@julianorchard.co.uk\" class=\"highlight\">hello@julianorchard.co.uk</a>
+            <br />
+            LinkedIn: <a href=\"https://linkedin.com/in/JulianOrchard\" class=\"highlight\">julianorchard</a>
+            <br />
+            Twitter: <a href=\"https://twitter.com/jdorchard/\">@jdorchard</a>
+            <br />
+            Mastodon: <a rel=\"me\" href=\"https://mastodon.social/@jdo\" class=\"highlight\">@jdo</a>
+          </p>
+        </div><!--
+      --><div class=\"right\">
+          <p>
+            Check out this site on <a href=\"https://github.com/julianorchard/julianorchard.github.io\" class=\"highlight\" target=\"_blank\">GitHub</a>!
+            <br />
+            About <a href=\"/privacy/\" class=\"highlight\">Privacy Policy</a>.
+          </p>
+          <p>
+            Copyright Julian Orchard, 2022
+          </p>
+        </div>
+      </footer>
+      <script src=\"/src/script.js\"></script>"
+           :force t)))
+
 #+end_src
 
-Lots of it is a work in progress.
+I am actually not sure if =:force t= is doing anything here!
 
 *** Font Setup
 
@@ -1658,57 +1683,3 @@ While learning Elisp, I started writing a little tool to make an org-list some f
 
 This is as far as I got, but lots of good ideas (from [[https://stackoverflow.com/questions/20747190/read-from-a-file-into-a-emacs-lisp-list][stack overflow]], as usual). Want to keep this in case it becomes useful.  
 
-#+begin_src elisp
-
-  (setq org-publish-project-alist
-        '(("config"
-           :base-directory "~/config/"
-           :publishing-function org-html-publish-to-html
-           :publishing-directory "~/julianorchard.github.io/config/"
-           :section-numbers nil
-           :html-head "<link rel=\"stylesheet\"
-                             href=\"../src/org-style.css\"
-                             type=\"text/css\"/>"
-           :html-preamble "<nav>
-                                <ul>
-                                <li>
-                                <a class=\"link\" href=\"/\">Home</a>
-                                </li>
-                                <li>
-                                <a class=\"link\" href=\"/about/\">About</a>
-                                </li>
-                                <li>
-                                <a class=\"link\" href=\"/posts/\">Posts</a>
-                                </li>
-                                <li>
-                                <a class=\"link\" href=\"/config/\">Config</a>
-                                </li>
-                                </ul>
-                                </nav>"
-           :html-postamble "<footer>
-                                 <div class=\"left\">
-                                         <p>
-                                                 Email: <a href=\"mailto:hello@julianorchard.co.uk\" class=\"highlight\">hello@julianorchard.co.uk</a>
-                                         <br />
-                                                 LinkedIn: <a href=\"https://linkedin.com/in/JulianOrchard\" class=\"highlight\">julianorchard</a>
-                                         <br />
-                                                 Mastodon: <a href=\"https://mastodon.social/@jdo\"
-                           class=\"highlight\">@jdo@mastodon.social</a> <u class=\"footer-kanji\" style=\"font-family: 'Noto Serif JP', serif; text-decoration: none;  line-height: 0px; font-size: 20px;\">森</u>
-                                         </p>
-                                 </div><!--
-                                 --><div class=\"right\">
-                                         <p>
-                                                 Check out this site on <a href=\"https://github.com/julianorchard/julianorchard.github.io\" class=\"highlight\" target=\"_blank\">GitHub</a>!
-                                                 <br />
-                                                 About <a href=\"/privacy/\" class=\"highlight\">Privacy Policy</a>.
-                                         </p>
-                                         <p>
-                                                 Copyright Julian Orchard, 2021
-                                         </p>
-                                 </div>
-                         </footer>
-                         <script src=\"/src/script.js\"></script>"
-           :force t)))
-
-
-#+end_src

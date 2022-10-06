@@ -1,9 +1,10 @@
 #+OPTIONS: broken-links:mark
 #+author: Julian Orchard <hello@julianorchard.co.uk>
-#+title: Arch
+#+title: My Arch Linux Configuration (btw)
+#+description: I use Arch Linux, btw. Nowhere near as much as I'd like, but this is my configuration (literately written, using Emacs Org Mode).
 
 #+begin_quote
-I use arch, btw.
+I use arch linux, btw.
 #+end_quote
 
 Very occasionally, and only on my ThinkPad x220, sadly.
@@ -12,13 +13,12 @@ I'd love to use Arch more, to be honest, as it's a lovely experience, but I don'
 
 As a result, I've recently made it a mission to try and just get something simple, reproducable, and consistent going on. I'm using default =i3=, as a result (I've used a wide variety of similar window managers).
 
-** Content                                                      :toc:quote:
+** Content                                                      :toc:quote:noexport:
 #+BEGIN_QUOTE
   - [[#zshell][Zshell]]
   - [[#x11][X11]]
   - [[#terminal][Terminal]]
   - [[#window-manager][Window Manager]]
-  - [[#start-page][Start Page]]
   - [[#zathura][Zathura]]
   - [[#lsd][LSD]]
 #+END_QUOTE
@@ -631,11 +631,6 @@ interval=5
 command=echo " "
 interval=once
 #+end_src
-
-** Start Page
-
-Very minimal browser start page.
-
 
 ** Zathura
 

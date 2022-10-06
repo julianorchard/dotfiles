@@ -1,6 +1,7 @@
 #+OPTIONS: broken-links:mark
 #+author: Julian Orchard <git@julianorchard.co.uk>
-#+title: Windows
+#+title: My Windows 10 Configuration
+#+description: A literately written Windows 10 setup; using PowerShell, DOSBatch, AutoHotkey, and other such hacky solutions. Written with Org Mode. 
 
 A literate Windows 10 configuration, set up in the folder =C:/cmd=.
 

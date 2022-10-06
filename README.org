@@ -1,9 +1,10 @@
 #+EXPORT_FILE_NAME: index.html
 #+OPTIONS: broken-links:mark
 #+options: toc:nil
+#+HTML_HEAD_EXTRA: <title>Config Index | Julian Orchard</title>
 #+author: Julian Orchard <git@julianorchard.co.uk>
-#+title: Config
-#+description: A README for all of my configuration files stored in this repo.
+#+title: My Configuration Files
+#+description: I manage all my configuration files literately through Emacs Org Mode. This is the index page for all my different configs for Emacs, Vim, Windows 10, and Arch Linux (btw).
 
 #+begin_quote
 

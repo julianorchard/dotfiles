@@ -1,8 +1,9 @@
 #+OPTIONS: broken-links:mark
 #+author: Julian Orchard <git@julianorchard.co.uk>
-#+title: Vim
+#+title: My Vim Configuration Files
+#+description: I used to primarily use Vim, now I only dip my toes in, occasionally.
 
-This is the main =.vimrc= file, but obviously it'll be in =.vim/vimrc=.
+This is the main =.vimrc= file, but obviously it'll be in =.vim/vimrc=... declutter your =~=!
 
 ** Contents                                                             :TOC_3:QUOTE:noexport:
 #+BEGIN_QUOTE
