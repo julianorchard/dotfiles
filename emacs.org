@@ -59,6 +59,7 @@ This is my on-going project to /become/ an /Emacs user/ (from being mainly a Vim
     - [[#org-prettier-tables][Org Prettier Tables]]
     - [[#org-tempo][Org Tempo]]
     - [[#org-tables-of-content][Org Tables Of Content]]
+    - [[#org-calendar-view-calfw][Org Calendar View (Calfw)]]
     - [[#super-agenda][Super Agenda]]
   - [[#eshell][Eshell]]
     - [[#about-4][About]]
@@ -653,7 +654,7 @@ This is the main org-mode block.
     (set-face-underline 'org-ellipsis nil)
     ;; (defun org-font-setup ()
     (set-face-attribute 'org-quote nil :inherit 'default :slant 'italic)
-    (font-lock-comment-face ((t (:inherit font-lock-comment-face :slant 'italic))))
+    ;; (font-lock-comment-face ((t (:inherit font-lock-comment-face :slant 'italic))))
     ;; )
     (setq header-line-format " ")
     (setq org-agenda-files
@@ -956,9 +957,40 @@ This is a really nice plugin (that I mainly use for /this very project/) that ge
     (add-hook 'org-mode-hook 'toc-org-mode))
 #+end_src
 
+*** Org Calendar View (Calfw)
+
+Org Mode isn't (in my opinion, and I've seen this opinion elsewhere) very good at doing 'long term' planning. For a week or two of upcoming tasks, it's okay, but long term, a nice calendar view is something I've sorely missed! 
+
+#+begin_src elisp 
+
+  (use-package calfw
+    :ensure t
+    :config
+    ;; There's basically no reason for me to use it
+    ;; without this additional package, which is for org
+    ;; specifically!
+    (use-package calfw-org
+      :ensure t)
+
+    (defun custom-calendar ()
+      "Defines my own calendar command so I can control 
+     what sources I pull calendar data from!"
+      (interactive)
+      (cfw:open-calendar-buffer
+      :contents-sources
+      (list
+       (cfw:org-create-file-source "wessex" "~/org/wessex.org" "Orange")
+       (cfw:org-create-file-source "wessex" "~/org/wessex-meetings.org" "Orange")
+       (cfw:org-create-file-source "personal" "~/org/personal.org" "Red")
+       (cfw:org-create-file-source "personal" "~/org/misc/birthday.org" "Red")
+       )))
+    )
+
+#+end_src
+
 *** Super Agenda
 
-Not using this /yet/. 
+Not using this at the moment.
 
 #+begin_src elisp
   (use-package org-super-agenda
