@@ -41,6 +41,7 @@ A literate Windows 10 configuration, set up in the folder =C:/cmd=.
     - [[#tidy-files][Tidy Files]]
     - [[#hack][Hack]]
     - [[#mamp-fix][MAMP Fix]]
+    - [[#org-sync][Org Sync]]
   - [[#wallpaper][Wallpaper]]
     - [[#about-3][About]]
     - [[#set-the-wallpaper][Set The Wallpaper]]
@@ -935,7 +936,6 @@ I want to improve this part, at some point. The fonts I use are:
 SCHEDULED: <2022-10-08 Sat>
 
 *This is untest on a new system without all these fonts installed.*
-
 
 ** AutoHotkey
 *** About
@@ -2109,6 +2109,30 @@ My work machine has issues. One of them is with [[https://www.mamp.info/en/mamp/
 #+end_src
 
 The issues I have occasionally seem to be fixed by resetting the MySQL-bin files.
+
+*** Org Sync
+
+I'm not allowed to use Syncthing at work. 
+
+#+begin_src sh :tangle c:/cmd/bin/org :mkdirp yes
+
+  #!/bin/sh
+
+  case "$1" in
+      push)
+          scp -rq ~/org/* o@sync.julianorchard.co.uk:~/org/
+          ;;
+      pull)
+          scp -rq o@sync.julianorchard.co.uk:~/org/* ~/org/
+          ;;
+      *)
+          echo "Requires either 'push' or 'pull' as an argument."
+          ;;
+  esac
+
+#+end_src
+
+I use this command /very often/.
 
 ** Wallpaper
 *** About
