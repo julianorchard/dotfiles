@@ -2120,10 +2120,10 @@ I'm not allowed to use Syncthing at work.
 
   case "$1" in
       push)
-          scp -rq ~/org/* o@sync.julianorchard.co.uk:~/org/
+          scp -rqv ~/org/* o@sync.julianorchard.co.uk:~/org/
           ;;
       pull)
-          scp -rq o@sync.julianorchard.co.uk:~/org/* ~/org/
+          scp -rqv o@sync.julianorchard.co.uk:~/org/* ~/org/
           ;;
       *)
           echo "Requires either 'push' or 'pull' as an argument."
