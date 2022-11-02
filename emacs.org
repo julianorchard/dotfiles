@@ -1,3 +1,8 @@
+# File Name:    emacs.org
+# Author:       Julian Orchard <hello@julianorchard.co.uk>
+# Date Added:   2022-11-02
+# Date Updated: 2022-11-02
+# Description:  My literate Emacs configuration.
 #+OPTIONS: broken-links:mark
 #+options: toc:1
 #+author: Julian Orchard <git@julianorchard.co.uk>
@@ -91,7 +96,9 @@ This is my on-going project to /become/ an /Emacs user/ (from being mainly a Vim
     - [[#yaml][YAML]]
   - [[#fun][Fun]]
     - [[#discord][Discord]]
+    - [[#descvim][Desc.vim]]
   - [[#other][Other]]
+    - [[#stack-overflow][Stack Overflow]]
 #+END_QUOTE
 
 ** The Basics
@@ -277,7 +284,7 @@ And now we =require 'use-package=.
 
 *** Customize
 
-I'm not sure if this really /belongs/ here, but we can move some of the variables set by the =customize= interface to a different file (according to [[https://stackoverflow.com/questions/5052088/what-is-custom-set-variables-and-faces-in-my-emacs][this]], anyway).
+I'm not sure if this really /belongs/ here, but we can move some of the variables set by the =customize= interface to a different file (according to [[https://stackoverflow.com/questions/5052088/what-is-jdo/set-variables-and-faces-in-my-emacs][this]], anyway).
 
 #+begin_src elisp :tangle ~/.emacs.d/init.el :mkdirp yes
   (setq custom-file "~/.emacs.d/custom.el")
@@ -325,11 +332,16 @@ I had trouble with this, but use Daviwils dotfiles as a reference in the end (ad
 I used to use ET Book for some really nice looking Org-documents, especially. However, I've stopped this and now just use Fira (I also use a [[version https://github.com/zwaldowski/Fira/tree/zwaldowski/mod-new/otf][fork]] for the /italicised/ version).
 
 #+begin_src elisp :tangle ~/.emacs.d/init.el :mkdirp yes
+
+  ;; Default and Italic
   (set-face-attribute 'default nil :font "Fira Code Retina" :height 105)
   (set-face-attribute 'italic nil :font "Fira Mono" :height 105)
-#+end_src
 
-+I'm not massively attached to this font; I do like it a lot but I don't mind changing it if I decide the fact it doesn't have an italic version officially is a problem.+ I am now massively attached to this font. I love it quite a lot. It's great. 
+  ;; Emoji
+  (use-package emojify
+    :hook (after-init . global-emojify-mode))
+
+#+end_src
 
 *** Themes
 
@@ -477,8 +489,8 @@ Evil Mode basic configuration.
     (setq evil-vsplit-window-right t)
     (evil-global-set-key 'motion "j" 'evil-next-visual-line)
     (evil-global-set-key 'motion "k" 'evil-previous-visual-line)
-    (evil-define-key 'normal 'global (kbd "<leader>k") 'custom-test)
-    (evil-global-set-key 'motion "SPC-w" 'custom-test)
+    (evil-define-key 'normal 'global (kbd "<leader>k") 'jdo/test)
+    (evil-global-set-key 'motion "SPC-w" 'jdo/test)
     (evil-set-initial-state 'messages-buffer-mode 'normal)
     (evil-set-initial-state 'dashboard-mode 'normal))
 #+end_src
@@ -516,15 +528,26 @@ I'm going to use =general.el= to manage some of these bindings.
      "op" 'org-publish-project
      "a" 'org-agenda
      "c" 'org-capture
-     "d" 'custom-basic-time-date-stamp
+     "d" 'jdo/basic-time-date-stamp
      "1" 'delete-other-windows
      "0" 'delete-window
      "2" 'split-window-below
      "3" 'split-window-right
      "+" 'balance-windows
-     "." 'custom-time-date-stamp
-     "-" 'custom-org-subheading
+     "." 'jdo/time-date-stamp
+     "-" 'jdo/org-subheading
      ))
+
+#+end_src
+
+This is a custom shell command fomr 
+
+#+begin_src elisp :tangle ~/.emacs.d/init.el :mkdirp yes
+
+  (defun jdo/shell-command-to-string (c)
+    "Take a shell command as an argument and remove newline chars."
+    (replace-regexp-in-string "\n\\'" ""
+                              (shell-command-to-string c)))
 
 #+end_src
 
@@ -532,43 +555,146 @@ Some custom functions...
 
 #+begin_src elisp :tangle ~/.emacs.d/init.el :mkdirp yes
 
-    ;; This is by far the most customised bits of Elisp
-    ;; I think I've written in this document! 
+  (defun jdo/test ()
+    "Custom testing function."
+    (interactive)
+    (insert "Testing! "))
 
-    (defun custom-test ()
-      "Custom testing function."
-      (interactive)
-      (insert "Testing! "))
+  (defun jdo/if-evil-insert-state ()
+    "Check if we're using Evil Mode and go into Insert State if so."
+    (interactive)
+    (if (bound-and-true-p evil-mode)
+        (evil-insert-state)))
 
-    (defun custom-if-evil-insert-state ()
-      "Check if we're using Evil Mode and go into Insert State if so."
-      (interactive)
-      (if (bound-and-true-p evil-mode)
-          (evil-insert-state)))
-
-    (defun custom-org-subheading ()
-      "A custom insert-subheading for Org Mode."
-      (interactive)
-      (if (eq major-mode 'org-mode)
-          (org-insert-subheading t))
-      (custom-if-evil-insert-state))
+  (defun jdo/org-subheading ()
+    "A custom insert-subheading for Org Mode."
+    (interactive)
+    (if (eq major-mode 'org-mode)
+        (org-insert-subheading t))
+    (jdo/if-evil-insert-state))
 
   ;; Bind this to something using emacs bindings too! Could be very useful!
-    (defun custom-basic-time-date-stamp ()
-      "A simple time stamp binding for Org Mode."
-      (interactive)
-      (insert (format-time-string "\[%Y-%m-%d %a %H:%M\]")))
-  
-    (defun custom-time-date-stamp ()
-      "A custom time/date stamp mainly used in Org Mode for updating notes."
-      (interactive)
-      (custom-org-subheading)
-      (insert "Note ")
-      (custom-basic-time-date-stamp)
-      (insert ": \n")
-      (custom-if-evil-insert-state))
+  (defun jdo/basic-time-date-stamp ()
+    "A simple time stamp binding for Org Mode."
+    (interactive)
+    (insert (format-time-string "\[%Y-%m-%d %a %H:%M\]")))
+
+  (defun jdo/time-date-stamp ()
+    "A custom time/date stamp mainly used in Org Mode for updating notes."
+    (interactive)
+    (jdo/org-subheading)
+    (insert "Note ")
+    (jdo/basic-time-date-stamp)
+    (insert ": \n")
+    (jdo/if-evil-insert-state))
 
 #+end_src
+
+This stuff inserts the GPL-v3 preamble texts in a couple of different ways:
+
+#+begin_src elisp :tangle ~/.emacs.d/init.el :mkdirp yes
+
+  (defvar gplv3-preambles
+    "This file is part of NAME_OF_SOFTWARE.
+
+NAME_OF_SOFTWARE is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
+
+NAME_OF_SOFTWARE is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License along with NAME_OF_SOFTWARE. If not, see <https://www.gnu.org/licenses/>.")
+
+  (defun replace-in-string (what with in)
+    (replace-regexp-in-string (regexp-quote what) with in nil 'literal))
+
+  (defun insert-gplv3-preamble ()
+    "Adds the GPL-v3 preamble text to a file."
+    (interactive)
+    (insert (replace-in-string "NAME_OF_SOFTWARE" (read-string "Enter software name: ") gplv3-preambles)))
+
+#+end_src
+
+It outputs like you'd expect:
+
+#+begin_quote
+This file is part of JULIANORCHARD/CONFIG.
+
+JULIANORCHARD/CONFIG is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
+
+JULIANORCHARD/CONFIG is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License along with JULIANORCHARD/CONFIG. If not, see <https://www.gnu.org/licenses/>.
+#+end_quote
+
+This is all related to checking if there's a LICENSE file in the Git repo we may or may not be current in!
+
+#+begin_src elisp :tangle ~/.emacs.d/init.el :mkdirp yes
+
+
+  (defun jdo/insert-license ()
+    "Check if there's a LICENSE file defined in root and, if so, 
+                 get the text from the file as a commented out region."
+    (interactive)
+    (if (jdo/license-exist)
+        (insert-file-contents (jdo/license-path))
+      (insert "There is no LICENSE file for this project.")))
+
+  (defun jdo/license-path ()
+    "Path to LICENSE file."
+    (concat (jdo/shell-command-to-string "git rev-parse --show-toplevel") "/LICENSE"))
+
+  (defun jdo/license-exist ()
+    "Is there a LICENSE file in this Git repository?"
+    (if (file-exists-p (jdo/license-path))
+        t nil))
+
+  (defun jdo/is-this-a-repo ()
+    "Here, we use `git rev-parse --is-inside-work-tree` to see
+                   if we're in a Git repository or not."
+    (if (string-match "true" (shell-command-to-string "git rev-parse --is-inside-work-tree"))
+        t nil))
+
+#+end_src
+
+Adds a short file description, similar to my desc vim plugin.
+
+#+begin_src elisp :tangle ~/.emacs.d/init.el :mkdirp yes
+
+  (defun desc-date-format ()
+    "Returns date in the right format for use by the 'desc' functions."
+    (format-time-string "%Y-%m-%d" (current-time)))
+
+  (defun desc-update-date-line ()
+    "Formats the replacement line nicely for the desc-update function."
+    (concat "Date " "Updated: " (desc-date-format)))
+
+  (defun desc-add ()
+    "Adds a little description to the top of a file."
+    (interactive)
+    (insert
+     (concat "File Name:    "    (buffer-name) "\n"
+             "Author:       "    "Julian Orchard <hello@julianorchard.co.uk>\n"
+             "Date Added:   "    (desc-date-format) "\n"
+             "Date " "Updated: " (desc-date-format) "\n" ; same initial date
+             "Description:  "    (jdo/if-evil-insert-state))))
+
+  (defun desc-update ()
+    "Looks for 'Date  Updated: ' string and replaces the date on save."
+    (interactive)
+    ;; This is very, very useful.
+    ;; Set point in file to return to:
+    (set-mark-command nil)
+    (goto-char (point-min))
+    (while (re-search-forward (concat "Date " "Updated:.*$") nil t)
+      (replace-match (desc-update-date-line)))
+    ;; Return to the point, here:
+    (pop-to-mark-command))
+
+  ;; desc-update Hook
+  (add-hook 'before-save-hook 'desc-update)
+
+#+end_src
+
+Unlike the Vim version, it actually checks the 'Date  Updated:' string and tries to replace it on save! This is nice, and I've worked around the fact it would do this stupidly in this file, too, by adding =(concat "Date " "Updated")=, etc.
 
 **** Note [2022-09-12 Mon 17:18]: 
 This is now working nicely! I like this feature, and in plaintext documents it will omit the org star indentation =(org-insert-subheading)= part.
@@ -972,7 +1098,7 @@ Org Mode isn't (in my opinion, and I've seen this opinion elsewhere) very good a
     (use-package calfw-org
       :ensure t)
 
-    (defun custom-calendar ()
+    (defun jdo/calendar ()
       "Defines my own calendar command so I can control 
      what sources I pull calendar data from!"
       (interactive)
@@ -1118,7 +1244,7 @@ It's now working, /a bit/; mainly thanks to [[http://www.howardism.org/Technical
     (yas-global-mode 1)
     :general
     ;; There's probably a better way...
-    (general-nmap "SPC ns" 'config/custom-create-snippet)
+    (general-nmap "SPC ns" 'jdo/create-snippet)
     :config
     (add-to-list 'yas-snippet-dirs (locate-user-emacs-file "snippets")))
 #+end_src
@@ -1129,7 +1255,7 @@ There's probably a better way to do this, but we use =general-nmap= and =SPC ns=
 
 #+begin_src elisp :tangle ~/.emacs.d/init.el :mkdirp yes
 
-  (defun config/custom-create-snippet ()
+  (defun jdo/create-snippet ()
     (interactive)
     (yas-new-snippet)
     (if (not file-directory-p "~/config/snippets/")
@@ -1679,6 +1805,15 @@ Tell /everyone/ on Discord you use Emacs (otherwise what's the point in using it
 
 Initially, I wanted to do this by testing to see if =discord= is an executable on the system, but I can't get that's working with Windows easily (and on my work machine I can't do certain things) so in the end I just check if the username is /julia/, which is my home PC username (it was automatically shortened from my email when I logged into the PC with a Microsoft account).
 
+*** Desc.vim
+
+Porting [[https://github.com/julianorchard/desc.vim][desc.vim]] to Emacs... in terms of functionality, not 
+
+#+begin_src elisp
+
+
+#+end_src
+
 ** Other
 
 While learning Elisp, I started writing a little tool to make an org-list some formatted HTML...
@@ -1714,4 +1849,23 @@ While learning Elisp, I started writing a little tool to make an org-list some f
 #+end_src
 
 This is as far as I got, but lots of good ideas (from [[https://stackoverflow.com/questions/20747190/read-from-a-file-into-a-emacs-lisp-list][stack overflow]], as usual). Want to keep this in case it becomes useful.  
+
+
+*** Stack Overflow
+
+[[https://stackoverflow.com/questions/65217967/how-to-copy-org-mode-contents-under-a-heading/74291033#74291033][How to copy Org Mode contents under a heading]], answer by me.
+
+#+begin_src elisp :tangle ~/.emacs.d/init.el :mkdirp y
+
+  (defun jdo/org-copy-under-heading ()
+    "Copies text under Org subtree."
+    (interactive)
+    (org-mark-subtree)
+    (next-line 1)
+    (kill-ring-save
+     (region-beginning)
+     (region-end))
+    (deactivate-mark))
+
+#+end_src
 

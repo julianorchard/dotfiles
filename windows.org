@@ -987,6 +987,12 @@ These are my absolute essential AutoHotkey bindings for productivity on Windows 
   ; "Alt + F", to Run Firefox
   !f::Run, "C:\Program Files\Mozilla Firefox\firefox.exe"
 
+  ; "Alt + c", to get "MouseMove, X, Y" positions to the clipboard
+  !c::
+  MouseGetPos, xpos, ypos
+  Clipboard := "MouseMove, " xpos ",  " ypos 
+  Return
+
 #+end_src
 
 *** Snipping Tools
