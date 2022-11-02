@@ -696,9 +696,6 @@ Adds a short file description, similar to my desc vim plugin.
 
 Unlike the Vim version, it actually checks the 'Date  Updated:' string and tries to replace it on save! This is nice, and I've worked around the fact it would do this stupidly in this file, too, by adding =(concat "Date " "Updated")=, etc.
 
-**** Note [2022-09-12 Mon 17:18]: 
-This is now working nicely! I like this feature, and in plaintext documents it will omit the org star indentation =(org-insert-subheading)= part.
-
 *** The Evil Collection
 
 Adds evil-bindings to a wide range of Emacs applications without having to do anything!
