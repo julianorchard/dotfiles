@@ -1,0 +1,72 @@
+{
+// cannot believe this is not default
+    "files.insertFinalNewline": true,
+// php 
+    "php.suggest.basic": false,
+    "php.validate.enable": false,
+    "emmet.excludeLanguages": [
+        "markdown",
+        "php"
+    ],
+    "php.validate.executablePath": "C:\\MAMP\\bin\\php\\php7.2.10\\php.exe",
+    "php.executablePath": "C:\\MAMP\\bin\\php\\php7.2.10\\php.exe",
+    "phpserver.ip": "127.0.0.1",
+    "phpserver.phpPath": "C:\\MAMP\\bin\\php\\php7.2.10\\php.exe",
+// font/ligature 
+    "editor.fontFamily": "Fira Code",
+    "editor.fontLigatures": true,
+// colour scheme 
+    "workbench.colorTheme": "Ayu Light",
+    "editor.lineNumbers": "relative",
+// vim 
+    "vim.camelCaseMotion.enable": true,
+    "vim.leader": ",",
+    "vim.sneak": true,
+    "vim.sneakReplacesF": true,
+    "vim.sneakUseIgnorecaseAndSmartcase": true,
+    "vim.useSystemClipboard": false,
+    "vim.vimrc.enable": true,
+    "vim.vimrc.path": "$HOME/.vim/vimrc",
+    // Keybindings for graphical hjkl motions --------
+    "vim.normalModeKeyBindings": [
+        {
+            "before": ["j"],
+            "after": ["g", "j"],
+        },
+        {
+            "before": ["k"],
+            "after": ["g", "k"],
+        },
+    ],
+    "vim.visualModeKeyBindings": [
+        {
+            "before": ["j"],
+            "after": ["g", "j"],
+        },
+        {
+            "before": ["k"],
+            "after": ["g", "k"],
+        },
+    ],
+// layout  
+    "explorer.confirmDelete": false,
+    "explorer.confirmDragAndDrop": false,
+    "window.menuBarVisibility": "compact",
+    "workbench.layoutControl.enabled": false,
+// live server 
+    "liveServer.settings.donotVerifyTags": true,
+    "liveServer.settings.donotShowInfoMsg": true,
+// term 
+    "terminal.integrated.profiles.windows": {
+        "PowerShell": {
+          "source": "PowerShell",
+          "icon": "terminal-powershell",
+          "args": ["-ExecutionPolicy", "bypass"]
+        }
+      },
+    "terminal.integrated.defaultProfile.windows": "PowerShell",
+// tab   
+    "editor.tabCompletion": "on",
+    "editor.detectIndentation": false,
+    "window.zoomLevel": -1,
+}

@@ -1,0 +1,92 @@
+#!/usr/bin/env ruby
+
+##   tidy  ---  Tidy files mauled by Windows Explorer renaming.
+
+# Copyright (c) 2022   Julian Orchard <jorchard@pm.me>
+
+## License:
+
+# See /LICENSE file in the root of this repository.
+
+## Code:
+
+def usage
+  puts
+  puts "---------------------------------------------"
+  puts "Tidy: Makes Windows File Bulk Renaming Neater"
+  puts "---------------------------------------------"
+  puts
+  puts "Designed to be used after bulk renaming files using"
+  puts "the Windows Explorer prompt."
+  puts
+  puts "Arguments: "
+  puts
+  puts "    -d         default; everything other than r"
+  puts "    -b         remove brackets from filename"
+  puts "    -e         normalize file extension"
+  puts "    -s         replace spaces with dashes"
+  puts "    -l         to lowercase"
+  puts "    -r         act recursively"
+  puts
+  exit
+end
+
+def tidy
+  current_dir = Dir.pwd
+  b_flag = s_flag = l_flag = e_flag = false
+
+  # Help
+  usage if ARGV.include? "h" or ARGV.empty?
+
+  # Opts
+  puts
+  puts "Changing files in " + current_dir + ": "
+  if ARGV.include? "d"
+    b_flag = s_flag = l_flag = e_flag = true
+    working_dir =  "*"
+  else
+    b_flag = true if ARGV.include? "b" # Brackets
+    s_flag = true if ARGV.include? "s" # Dashes
+    l_flag = true if ARGV.include? "l" # Lowercase
+    e_flag = true if ARGV.include? "e" # Extension
+    if ARGV.include? "r"
+      working_dir = "**/*" # Recursive
+    else
+      working_dir = "*"
+    end
+  end
+  puts
+
+  Dir.glob(working_dir) do |current_file|
+    next if current_file == "." or current_file == ".." or File.directory?(current_file)
+    file_rename = current_file
+
+    # Brackets
+    file_rename = file_rename.gsub("(", "").gsub(")", "") if b_flag == true
+
+    # Spaces
+    file_rename = file_rename.gsub(" ", "-") if s_flag == true
+
+    # Lowercase
+    file_rename = file_rename.downcase
+
+    # Normalise File Extension
+    if e_flag == true
+      case file_rename
+      when /\.jpeg/
+        file_rename = file_rename.gsub(".jpeg", ".jpg")
+      when /\.cmd/
+        file_rename = file_rename.gsub(".cmd", ".bat")
+      end
+    end
+
+    # Rename, Output
+    File.rename(current_file, current_dir + "/" + file_rename)
+    puts "    ->  " + current_file + "  =>  " + file_rename
+  end
+  puts
+end
+
+tidy
+
+# vi: ft=ruby

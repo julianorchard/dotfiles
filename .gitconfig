@@ -1,0 +1,9 @@
+[user]
+	signingkey = 
+	name = Julian Orchard
+	email = hello@julianorchard.co.uk
+[gui]
+[github]
+	user = julianorchard
+[commit]
+	gpgsign = true

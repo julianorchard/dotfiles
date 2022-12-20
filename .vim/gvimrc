@@ -1,0 +1,30 @@
+set vb t_vb=
+se guioptions-=m
+se guioptions-=T
+se guioptions-=r
+se guioptions-=L
+se guioptions-=tT
+se guitabtooltip=%{InfoGuiTooltip()}
+se balloonexpr=FoldSpellBalloon()
+let mapleader = ","
+
+if has('win32') || has('win32unix')
+  set guifont=Consolas:h12:cANSI
+el
+  set guifont=Monospace:h12
+en
+se textwidth=50
+
+setl spell spelllang=en_gb
+
+augroup GGOYO
+  autocmd!
+  autocmd VimEnter * :Goyo 55
+augroup END
+
+im <C-BS> <C-w>
+
+if expand('%:p:h') =~ 'vim-anywhere'
+  se fo+=a
+  nn <Leader>q :wqa<cr>
+en

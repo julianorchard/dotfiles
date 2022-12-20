@@ -1,0 +1,63 @@
+#!/bin/bash
+
+##   seo-kw-audit  ---  Simple tool to scrape website files for SEO keywords.
+
+# Copyright (c) 2022   Julian Orchard <jorchard@pm.me>
+
+## Description:
+
+# This is a simple tool used to generate a little CSV report on keywords. 
+
+# The only places it looks (at the moment) are in <title> and <h1> tags. It is 
+# also mainly configured to look at .php files, as this is what was required for 
+# my work. 
+
+## License:
+
+# See /LICENSE file in the root of this repository.
+
+## Code:
+
+# IFS allows you to search with spaces in path
+IFS=$'\n'; set -f
+
+# Input and Output Dirs and Folder Names
+input_dir="${HOME}/Documents/Website/2) UK Site/"
+output_file="${HOME}/Documents/pog/$(date +'%Y-%m-%d')-SEO-Audit.csv"
+
+echo "${output_file}"
+
+echo "${output_file}">$output_file
+
+# Give some column titles and clear the existing sheet data
+printf "Filename,Title Tag,H1 Tag,Notes,\n" > ${output_file}
+
+# Actual scan part
+for file in $(find ${input_dir} -name "*.php") ; do
+
+    # Remove the blog; that bit works already (testing purposes)
+    # [[ "${file}" == *"blog"* ]] && continue
+    # Skip 'includes' directories
+    [[ "${file}" == *"elms"* ]] && continue
+
+
+    # File Basename
+    file_basename=$(basename ${file} .php)
+
+    # Title and h1 greps
+    title_line=$(grep '<title' ${file} |  tr , _ | sed -e "s/^.*<title>//g" -e "s/<\/title>//g" | head -n 1)
+    h1_line=$(grep '<h1' ${file} | tr , _ | sed -e "s/^.*<h1>//g" -e "s/<\/h1>//g" | head -n 1)
+    h1_next_line=$(grep -A1 '<h1' ${file} | grep -v "<h1" |  tr , _ | sed -e "s/^.*<h1>//g" -e "s/<\/h1>//g" | head -n 1)
+
+    [[ "${file}" == *"blog"* ]] && file_basename="Blog Post: ${file_basename}" || file_basename="Static Page: ${file_basename}"
+
+    # Output to user
+    echo "Working on file ${file_basename}"
+
+    # Bulk of the output
+    [ ${#h1_line} -lt 12 ] && printf "${file_basename},${title_line},${h1_next_line},this was a seperate h1 line,\n" >> ${output_file} || printf "${file_basename},${title_line},${h1_line},\n" >> ${output_file}
+done
+
+# Unset IFS and End
+echo "Scan completed."
+unset IFS; set +f

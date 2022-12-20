@@ -1,0 +1,23 @@
+#!/bin/sh
+
+##   org  ---  Quickly push my org files to remote. 
+
+# Copyright (c) 2022   Julian Orchard <jorchard@pm.me>
+
+## License:
+
+# See /LICENSE file in the root of this repository.
+
+## Code:
+
+case "$1" in
+    push)
+        scp -rqv ~/org/* o@julian.rocks:~/org/
+        ;;
+    pull)
+        scp -rqv o@julian.rocks:~/org/* ~/org/
+        ;;
+    *)
+        echo "Requires either 'push' or 'pull' as an argument."
+        ;;
+esac
