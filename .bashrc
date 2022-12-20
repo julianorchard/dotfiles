@@ -1,3 +1,5 @@
+# Global 
+
 # Aliases
 alias cls="clear"
 alias grep="grep --color=auto"
@@ -9,24 +11,62 @@ alias l='ls -CF'
 # PS1
 export PS1=" \w > \[$(tput sgr0)\]"
 
-# Shortcuts
-alias backup="cp ~/.bashrc ~/.minttyrc /c/cmd/sh/."
-alias ga="git pull --recurse-submodules; git add ."
-alias gui="explorer ."
-alias dev="cd /c/cmd/"
-alias home="cd ~"
-alias uk="cd ~/Documents/Website/2\)\ UK\ Site/"
-alias us="cd ~/Documents/Website/3\)\ Export/US\ Site/"
-alias eu="cd ~/Documents/Website/3\)\ Export/EU\ Site/"
-alias ca="cd ~/Documents/Website/3\)\ Export/CA\ Site/"
-alias wip="cd ~/Documents/Website/6\)\ Wordpressify/wp-content/themes/wessex/"
-alias gitwc="~/gitwc.sh"
-alias php="/c/MAMP/bin/php/php7.2.10/php.exe"
-alias ruby="/c/MAMP/bin/ruby/bin/ruby.exe"
+function exec_windows() {
 
-# Path 0_0
-export PATH=$PATH:"/c/cmd/sh/"
-export PATH=$PATH:"$HOME/clock/bin/"
-export PATH=$PATH:"/c/cmd/bin/"
-export PATH=$PATH:"/c/cmd/bin/nvim/bin/"
-export PATH=$PATH:"/c/cmd/exe/"
+    # Aliases
+    alias gui="explorer ."
+    alias uk="cd ~/Documents/Website/2\)\ UK\ Site/"
+    alias us="cd ~/Documents/Website/3\)\ Export/US\ Site/"
+    alias eu="cd ~/Documents/Website/3\)\ Export/EU\ Site/"
+    alias ca="cd ~/Documents/Website/3\)\ Export/CA\ Site/"
+    alias php="/c/MAMP/bin/php/php7.2.10/php.exe"
+    alias ruby="/c/MAMP/bin/ruby/bin/ruby.exe"
+
+    # PATH
+    export PATH=$PATH:"$HOME/.dotfiles/.bin/"
+    # TODO: export PATH=$PATH:"$HOME/.dotfiles/.exe/"
+}
+
+function exec_linux() {
+
+	# Some of this is from ZSHRC
+
+	# Bundler, Ruby
+	export BUNDLE_USER_CONFIG="$XDG_CONFIG_HOME"/bundle
+	export BUNDLE_USER_CACHE="$XDG_CACHE_HOME"/bundle
+	export BUNDLE_USER_PLUGIN="$XDG_DATA_HOME"/bundle
+	# GPG
+	export GNUPGHOME="$XDG_CONFIG_HOME"/gnupg
+	# Less
+	export LESSHISTFILE="$XDG_CACHE_HOME"/less/history
+	export LESSKEY="$XDG_CONFIG_HOME"/less/lesskey
+	# Not Much
+	export NMBGIT="$XDG_DATA_HOME"/notmuch/nmbug⎋k
+	export NOTMUCH_CONFIG="$XDG_CONFIG_HOME"/notmuch/notmuchrc
+	# Node/NPM
+	export NODE_PATH="$NPM_PACKAGES"/lib/node_modules:"$NODE_PATH"
+	export NODE_REPL_HISTORY="$XDG_DATA_HOME"/node_repl_history
+	export NPM_PACKAGES="$XDG_CONFIG_HOME"/npm-packages
+	export PATH="$NPM_PACKAGES"/bin:"$PATH"
+	# GNU Pass
+	export PASSWORD_STORE_DIR="$XDG_DATA_HOME"/pass
+	# X11
+	export XAUTHORITY="$XDG_RUNTIME_DIR"/Xauthority
+	export XINITRC="$XDG_CONFIG_HOME"/X11/xinitrc 
+
+}
+
+syst=$(uname)
+
+case "${syst}" in
+    # TODO: Linux Needs Testing
+    'Linux')
+        exec_linux
+        ;;
+    *"MINGW"*)
+        exec_windows
+        ;;
+    *)  ;;
+esac
+
+
