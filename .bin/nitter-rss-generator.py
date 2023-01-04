@@ -1,11 +1,27 @@
 ##   nitter-rss-generator.py  ---  Generate a quick Nitter RSS feed.
 
-# Copyright (c) 2022   Julian Orchard <jorchard@pm.me>
+# Copyright (c) 2022 - 2023   Julian Orchard <jorchard@pm.me>
 
 ## Description:
 
 # Gets a list of your Twitter followers and makes a nice little
-# Nitter formatted URL RSS feed. 
+# Nitter formatted URL RSS feed. Uses tweepy.
+
+## Instructions: 
+
+# You need to direct this script to a file where your API bearer is
+# stored. It should contain a line like this: 
+
+# BEARER_TOKEN your_bearer_token_goes_here
+
+# If you follow a lot of people, you will need to up the RATE_LIMIT
+# variable in the file below (the first variable you see). It's set
+# as 500 by default, so if you follow less than 500 people it'll 
+# capture all of them by default. 
+
+# If you want to use a different Nitter instance (this script uses
+# https://nitter.net by default), you need ot change the variable 
+# NITTER_URL below.
 
 ## License:
 
@@ -13,22 +29,12 @@
 
 ## Code:
 
-
 import tweepy
 
-# Set the rate limit of how many accounts to check
-RATE_LIMIT = 20
-
-# Nitter URL you want to use
-NITTER_URL = "https://nitter.net/"
-
-# Key file path. Looks for the line containing "BEARER_TOKEN" 
-# then include the bearer token there!
+BEARER        = "" # Do not edit this! Use the file below
 KEY_FILE_PATH = "C:/Users/jorchard/Documents/Code/crypt/twitter_6a756c69616e"
-
-# Making this global, but we only need it for the auth
-BEARER = ""
-
+NITTER_URL    = "https://nitter.net/"
+RATE_LIMIT    = 500
 
 def get_key_file():
     '''
@@ -60,9 +66,9 @@ def following_list_nitter_rss(client, user_id):
         following_list.append(f"{user.username}")
     return following_list
 
-def get_id_from_username(client, usrnm):
+def get_id_from_username(client, twitter_username):
     '''Returns the ID from a given username (handle or '@').'''
-    return client.get_user(username=usrnm).data.id
+    return client.get_user(username=twitter_username).data.id
 
 def output_data_nicely(full_following_list):
     '''
@@ -103,16 +109,18 @@ def output_data_nicely(full_following_list):
     print(f"There were following {total_count} accounts, listed in the lists above!")
 
 def main():
-    # This isn't a good method...
+
     BEARER = get_key_file()
 
     client = client_auth()
     
-    usrnm = input("Enter a username: ")
-    usr = get_id_from_username(client, usrnm)
+    # Get username input
+    username = input("Enter a username: ")
+    user_id = get_id_from_username(client, username)
     
-    l = following_list_nitter_rss(client, usr)
-    output_data_nicely(l)
+    following_list = following_list_nitter_rss(client, user_id)
+
+    output_data_nicely(following_list)
 
 if __name__ == "__main__":
     main()
