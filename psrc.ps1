@@ -13,7 +13,7 @@
 ## Code:
 
 
-Set-ExecutionPolicy Bypass
+Set-ExecutionPolicy -Scope CurrentUser Bypass
 
 function prompt {
     " $ $(Split-Path -Path (Get-Location) -Leaf) > "
