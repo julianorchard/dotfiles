@@ -1,6 +1,7 @@
-# Global 
+# Global
 
 # Aliases
+alias config='git --git-dir=$HOME/.dotfiles/ --work-tree=$HOME'
 alias cls="clear"
 alias grep="grep --color=auto"
 alias ls="ls --color=always"
@@ -52,7 +53,7 @@ function exec_linux() {
 	export PASSWORD_STORE_DIR="$XDG_DATA_HOME"/pass
 	# X11
 	export XAUTHORITY="$XDG_RUNTIME_DIR"/Xauthority
-	export XINITRC="$XDG_CONFIG_HOME"/X11/xinitrc 
+	export XINITRC="$XDG_CONFIG_HOME"/X11/xinitrc
 
 }
 
