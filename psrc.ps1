@@ -4,7 +4,7 @@
 
 ## Description:
 
-# A small powershell configuration file with a few custom functions. 
+# A small powershell configuration file with a few custom functions.
 
 ## License:
 
@@ -13,28 +13,28 @@
 ## Code:
 
 
-Set-ExecutionPolicy -Bypass
+Set-ExecutionPolicy Bypass
 
 function prompt {
     " $ $(Split-Path -Path (Get-Location) -Leaf) > "
 }
 
 function Set-Wallpaper($MyWallpaper) {
-  $code = @' 
-  using System.Runtime.InteropServices; 
-  namespace Win32{ 
-    public class Wallpaper{ 
-      [DllImport("user32.dll", CharSet=CharSet.Auto)] 
-      static extern int SystemParametersInfo (int uAction , int uParam , string lpvParam , int fuWinIni) ; 
-      
-      public static void SetWallpaper(string thePath){ 
-        SystemParametersInfo(20,0,thePath,3); 
+  $code = @'
+  using System.Runtime.InteropServices;
+  namespace Win32{
+    public class Wallpaper{
+      [DllImport("user32.dll", CharSet=CharSet.Auto)]
+      static extern int SystemParametersInfo (int uAction , int uParam , string lpvParam , int fuWinIni) ;
+
+      public static void SetWallpaper(string thePath){
+        SystemParametersInfo(20,0,thePath,3);
       }
     }
-  } 
+  }
 '@
 
-  add-type $code 
+  add-type $code
   [Win32.Wallpaper]::SetWallpaper($MyWallpaper)
   }
 
@@ -46,12 +46,12 @@ function Get-Shortcut {
   if ($path -eq $null) {
     $pathUser = [System.Environment]::GetFolderPath('StartMenu')
     $pathCommon = $obj.SpecialFolders.Item('AllUsersStartMenu')
-    $path = dir $pathUser, $pathCommon -Filter *.lnk -Recurse 
+    $path = dir $pathUser, $pathCommon -Filter *.lnk -Recurse
   }
   if ($path -is [string]) {
     $path = dir $path -Filter *.lnk
   }
-  $path | ForEach-Object { 
+  $path | ForEach-Object {
     if ($_ -is [string]) {
       $_ = dir $_ -Filter *.lnk
     }
@@ -94,16 +94,16 @@ function Set-Shortcut {
   }
 }
 
-function Readable-Numbers($InputNumber,$NumberFormat) 
+function Readable-Numbers($InputNumber,$NumberFormat)
 {
-    function One-Digit($in) 
+    function One-Digit($in)
     {
         switch ( $in.Substring($in.Length - 1) )
         {
-            0 { 
-                if ($in.Length -eq 1) 
+            0 {
+                if ($in.Length -eq 1)
                 {
-                    $ReadableNumber = "Zero" 
+                    $ReadableNumber = "Zero"
                 }
                 else
                 {
@@ -122,7 +122,7 @@ function Readable-Numbers($InputNumber,$NumberFormat)
         }
         return $ReadableNumber
     }
-    function Two-Digit($in) 
+    function Two-Digit($in)
     {
         switch -Wildcard ( $in )
         {
@@ -136,12 +136,12 @@ function Readable-Numbers($InputNumber,$NumberFormat)
             17 { $ReadableNumber = "Seventeen" }
             18 { $ReadableNumber = "Eighteen" }
             19 { $ReadableNumber = "Nineteen" }
-            "[2-9][0-9]" 
-            { 
+            "[2-9][0-9]"
+            {
                 $i = $_.ToCharArray()
                 $i1 = $i[0]
                 $i2 = $i[1]
-                switch ( $i1 ) 
+                switch ( $i1 )
                 {
                     2 { $ReadableNumber = "Twenty" }
                     3 { $ReadableNumber = "Thirty" }
@@ -182,6 +182,6 @@ function ll { ls }
 function uk { cd "~\Documents\Website\2) UK Site\" }
 function us { cd "~\Documents\Website\3) Export\US Site" }
 function ca { cd "~\Documents\Website\3) Export\CA Site" }
-function eu { cd "~\Documents\Website\3) Export\EU Site" } 
+function eu { cd "~\Documents\Website\3) Export\EU Site" }
 
 cd $env:userprofile
