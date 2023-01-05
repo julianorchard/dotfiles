@@ -1,41 +1,116 @@
 # Dotfiles and Configurations
 
-These are my personal dotfiles and configs. They're mainly used on Windows, Ubuntu, and occasionally with Arch. 
+These are my personal dotfiles and configs.
+They're mainly used on Windows, Ubuntu, and
+occasionally with Arch. They mainly contain
+scripts for said systems, as well as Emacs, Vim,
+and VS Code configurations.
 
-I've moved from a literate configuration using Org. This is because, although I really enjoyed using Org to manage my dotfiles, as I started getting into more custom Elisp, I was finding I was having less fun using an Org document. I found it was easier to do everything with normal `.el` files instead, so I could add custom functions and get to know the language a little better. I think the literate configuration was better suited to small snippets of code with long explainations around them. I found this was a great way to document what I was doing. However, the same can be achieved with nice code comments.
+## History
+
+I started my journey storing these files with a
+bare git repo (following steps
+[here](https://www.atlassian.com/git/tutorials/dotfiles).
+I then moved on to a [literate
+configuration](https://en.wikipedia.org/wiki/Literate_programming),
+using Emacs [Org Mode](https://orgmode.org/) (I
+still use this for notes and other organizational
+things!). Finally, now, in this iteration, I've
+moved *back to using a bare repo*!
+
+Why did I change this? Using a literate
+configuration made everything reproducible, easy
+to manage, and thoroughly documented! Well, the
+main reason is because I realised I was getting
+*very* stuck into Emacs as an ecosystem. And I
+still enjoy using Vim and have even started using
+VS Code (with the Vim plugin installed, of course):
+this started to feel a little bit weird. This also
+didn't work well with my using these config files
+on remote servers (I'd always used graphical
+Emacs, and didn't really enjoy having to install
+Emacs and use it to combine the files before
+possibly uninstalling Emacs again...).
+
+Using a literate configuration made it feel like I
+was working on a large text document rather than
+with a computer. I didn't write scripts to improve
+workflow, like I had previously: I started to
+write everything in Emacs, and even that started
+to feel annoyingly far from writing proper code.
 
 ## Deploy
 
-One feature of Org I've not yet managed to sort (with this idea of moving configurations) is the idea of deploying these dotfiles. This is still a work in progress.
+As previously mentioned, I use a [bare git repo](https://www.atlassian.com/git/tutorials/dotfiles) to
+manage these files. This is probably the most
+system-agnostic way of doing it. It does mean you
+need Cygwin or Git Bash on Windows (I mainly use
+the latter).
 
-Although managing them with Org was extremely succinct in this regard, I think it did come with the rather large drawback of needing Emacs installed/open to actually deploy the configurations. This was most prevelantly a problem when I started to use the configurations on my remote server and things. 
+```sh
+$ install.sh
+```
+
+(TODO: Add some more detail here!)
 
 ## Contributing
 
-These are my personal dotfiles. If you want to fork this repo and use them, that's absolutely fine, but (unless you find a breaking change) I probably won't be accepting PRs.
+These are my personal dotfiles. If you want to
+fork this repo and use them, that's absolutely
+fine, but (unless you find a breaking change) I
+probably won't be accepting PRs.
 
 ## License
 
-Everything here, unless otherwise stated, is under the MIT License. See [License](/LICENSE) for more information.
+Everything here, unless otherwise stated[^1], is under
+the MIT License. See [License](/LICENSE) for more
+information.
+
+[^1]: Although Emacs typically uses GPLv3+, these are both
+compatible.
 
 ## Credits
 
-These credits don't cover every resource that has helped me on my way to these configurations, but they're hopefully giving credit to some of the biggest influences on them...
+These credits don't cover every resource that has
+helped me on my way to these configurations, but
+they're hopefully giving credit to some of the
+biggest influences on them...
 
 #### Emacs
 
-- [Daviwil's literate dotfiles](https://github.com/daviwil/dotfiles) and [his Emacs From Scratch series](https://github.com/daviwil/emacs-from-scratch) (which is what got me into Emacs in the first place!)
-- [Tecosaur's config](https://tecosaur.github.io/emacs-config/config.html); *the most beautiful literate configuration I've ever seen*
-- Even though I don't use it direcitly, [Doom Emacs](https://github.com/doomemacs/doomemacs) has been a massive help
-- [RedGuardToo's](https://github.com/redguardtoo/emacs.d) dotfiles, plus his [Mastering Emacs in One Year](https://github.com/redguardtoo/mastering-emacs-in-one-year-guide) Guide 
-- [MatthewZMD's M-Emacs](https://github.com/MatthewZMD/.emacs.d)
-- [Protesilaos'](https://protesilaos.com/emacs/dotemacs) great Emacs tips, packages (especially themes), and [YouTube videos](https://www.youtube.com/@protesilaos)
+- [Daviwil's literate
+  dotfiles](https://github.com/daviwil/dotfiles)
+  and [his Emacs From Scratch
+  series](https://github.com/daviwil/emacs-from-scratch)
+  (which is what got me into Emacs in the first
+  place!)
+- [Tecosaur's
+  config](https://tecosaur.github.io/emacs-config/config.html);
+  *the most beautiful literate configuration I've
+  ever seen*
+- Even though I don't use it direcitly, [Doom
+  Emacs](https://github.com/doomemacs/doomemacs)
+  has been a massive help
+- [RedGuardToo's](https://github.com/redguardtoo/emacs.d)
+  dotfiles, plus his [Mastering Emacs in One
+  Year](https://github.com/redguardtoo/mastering-emacs-in-one-year-guide)
+  Guide
+- [MatthewZMD's
+  M-Emacs](https://github.com/MatthewZMD/.emacs.d)
+- [Protesilaos'](https://protesilaos.com/emacs/dotemacs)
+  great Emacs tips, packages (especially themes),
+  and [YouTube
+  videos](https://www.youtube.com/@protesilaos)
 
 #### Vim
 
-- [Tim Pope](https://github.com/tpope), for obvious reasons
-- The dotfiles of [Daniel Hahler](https://github.com/blueyed)
+- [Tim Pope](https://github.com/tpope), for
+  obvious reasons
+- The dotfiles of [Daniel
+  Hahler](https://github.com/blueyed)
 
 #### Windows
 
-- [Chocolatey](https://chocolatey.org/) for their very useful [`refresh.cmd`](https://github.com/chocolatey/choco/blob/develop/src/chocolatey.resources/redirects/RefreshEnv.cmd)
+- [Chocolatey](https://chocolatey.org/) for their
+  very useful
+  [`refresh.cmd`](https://github.com/chocolatey/choco/blob/develop/src/chocolatey.resources/redirects/RefreshEnv.cmd)
