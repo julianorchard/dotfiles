@@ -68,8 +68,10 @@ Everything here, unless otherwise stated[^1], is
 under the MIT License. See [License](/LICENSE) for
 more information.
 
-[^1]: Although Emacs typically uses GPLv3+, these
-  are both compatible.
+[^1]: Emacs typically uses GPLv3+, but this is
+  compatible with the MIT license. Chocolatey is
+  under the Apache 2.0 license, so again,
+  compatible.
 
 ## Credits
 
