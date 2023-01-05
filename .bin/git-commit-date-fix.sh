@@ -21,13 +21,16 @@
 # we should use that as the default results
 [ "${1}" ] && DEFAULT_RESULTS=$1 || DEFAULT_RESULTS=5
 
+# TODO: Find a better place for this (/tmp?)
 LOG_OUTPUT="temp-log-output.txt"
 COMMIT_LINE="commit "
 
 function main() {
-  # TODO: Bonus, check we're in a repo which has commit history!
   if ! git rev-parse --git-dir > /dev/null 2>&1; then
     echo "Error: We're not in a Git repository right now."
+    exit 0
+  elif ! git log | grep -q commit ; then
+    echo "Error: There are no commits in this git repository at the moment."
     exit 0
   fi
 
@@ -65,6 +68,9 @@ function main() {
     [ ${c} -eq ${DEFAULT_RESULTS} ] && break
   done<"${LOG_OUTPUT}"
 
+  # We don't need the log output file anymore
+  rm $LOG_OUTPUT
+
   # get the line containing "commit " in `git log` output, then 4 lines down
 
   echo "Enter a number from above: "
@@ -82,7 +88,6 @@ function main() {
           export GIT_COMMITTER_DATE=\"${date_string}\"
       fi"
 
-  rm $LOG_OUTPUT
 }
 
 main
