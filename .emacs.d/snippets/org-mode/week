@@ -1,0 +1,17 @@
+# -*- mode: snippet -*-
+# name: author
+# key: <week
+# --
+#+TITLE: $0
+#+AUTHOR: Julian Orchard <hello@julianorchard.co.uk>
+#+DATE: ${1:year}/${2:month}/${3:day}
+** Usage: 
+
+*** C-c C-x C-u    ->   Update Table
+*** C-c C-c        ->   Update Day
+
+*** C-c C-x C-i    ->   Clock In
+*** C-c C-x C-o    ->   Clock Out
+
+*** C-c C-t        ->   Cycle Todo
+*** C-c C-d        ->   Add Due Date

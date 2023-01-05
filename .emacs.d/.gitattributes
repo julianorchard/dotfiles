@@ -1,0 +1,3 @@
+*.org linguist-detectable=true
+*.org linguist-documentation=false
+site-lisp/** linguist-vendored

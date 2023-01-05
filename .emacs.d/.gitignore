@@ -1,0 +1,11 @@
+auto-save-list/
+elpa/
+transient/
+var/
+*~
+eshell/
+server/
+bookmarks
+tramp
+etc
+emojis
