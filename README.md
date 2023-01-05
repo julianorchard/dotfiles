@@ -10,7 +10,7 @@ and VS Code configurations.
 
 I started my journey storing these files with a
 bare git repo (following steps
-[here](https://www.atlassian.com/git/tutorials/dotfiles).
+[here](https://www.atlassian.com/git/tutorials/dotfiles)).
 I then moved on to a [literate
 configuration](https://en.wikipedia.org/wiki/Literate_programming),
 using Emacs [Org Mode](https://orgmode.org/) (I
@@ -20,36 +20,38 @@ moved *back to using a bare repo*!
 
 Why did I change this? Using a literate
 configuration made everything reproducible, easy
-to manage, and thoroughly documented! Well, the
-main reason is because I realised I was getting
-*very* stuck into Emacs as an ecosystem. And I
-still enjoy using Vim and have even started using
-VS Code (with the Vim plugin installed, of course):
-this started to feel a little bit weird. This also
-didn't work well with my using these config files
-on remote servers (I'd always used graphical
-Emacs, and didn't really enjoy having to install
-Emacs and use it to combine the files before
-possibly uninstalling Emacs again...).
+to manage, and thoroughly documented!
+
+Well, the main reason is because I realised I was
+getting *very* stuck into Emacs as an ecosystem.
+And I still enjoy using Vim and have even started
+using VS Code (with the Vim plugin installed, of
+course). This started to feel a little bit weird.
+This also didn't work well with my using these
+config files on remote servers (I'd always used
+graphical Emacs, and didn't really enjoy having to
+install Emacs and use it to combine the files
+before possibly uninstalling Emacs again...).
 
 Using a literate configuration made it feel like I
 was working on a large text document rather than
 with a computer. I didn't write scripts to improve
 workflow, like I had previously: I started to
 write everything in Emacs, and even that started
-to feel annoyingly far from writing proper code.
+to feel annoyingly far from writing whole files. I
+wanted to get to know Elisp better, and it felt
+like I was a step removed from that process, even.
 
 ## Deploy
 
-As previously mentioned, I use a [bare git repo](https://www.atlassian.com/git/tutorials/dotfiles) to
-manage these files. This is probably the most
+As previously mentioned, I use a [bare git
+repo](https://www.atlassian.com/git/tutorials/dotfiles)
+to manage these files. This is probably the most
 system-agnostic way of doing it. It does mean you
 need Cygwin or Git Bash on Windows (I mainly use
 the latter).
 
-```sh
-$ install.sh
-```
+```sh $ install.sh ```
 
 (TODO: Add some more detail here!)
 
@@ -62,12 +64,12 @@ probably won't be accepting PRs.
 
 ## License
 
-Everything here, unless otherwise stated[^1], is under
-the MIT License. See [License](/LICENSE) for more
-information.
+Everything here, unless otherwise stated[^1], is
+under the MIT License. See [License](/LICENSE) for
+more information.
 
-[^1]: Although Emacs typically uses GPLv3+, these are both
-compatible.
+[^1]: Although Emacs typically uses GPLv3+, these
+  are both compatible.
 
 ## Credits
 
