@@ -1,10 +1,13 @@
+; Home Path
+HOME := "C:\Users\" username
+
 ; "Alt + Spacebar", Toggles Window 'Always on top' status
 ^SPACE::  Winset, Alwaysontop, , A
 
 ; Add Sound to Volume Keys
 ~Volume_Up::
 ~Volume_Down::
-SoundPlay, C:\cmd\ahk\res\bing-1.wav
+SoundPlay, %HOME%\.ahk\res\bing-1.wav
 Return
 
 ; "Alt + q", to close current window
@@ -15,7 +18,7 @@ Return
 
 ; "Alt + Enter", to run CMDrc
 #IfWinNotActive, ahk_class Microsoft Excel
-!Enter:: Run, "C:\cmd\cmdrc.bat"
+!Enter:: Run, "%HOME%\cmdrc.bat"
 
 ; "Win + Enter", to run Powershell
 #Enter:: Run, "C:\Windows\System32\WindowsPowerShell\v1.0\powershell.exe"
@@ -29,7 +32,7 @@ Return
 ; "Alt + c", to get "MouseMove, X, Y" positions to the clipboard
 !c::
 MouseGetPos, xpos, ypos
-Clipboard := "MouseMove, " xpos ",  " ypos 
+Clipboard := "MouseMove, " xpos ",  " ypos
 Return
 
 ;; Snipping Tools
@@ -98,7 +101,7 @@ Send, {space}o{space}-{space}
 Return
 
 #!i::
-FileRead, Clipboard, C:\cmd\ahk\res\wt.txt
+FileRead, Clipboard, %HOME%\.ahk\res\wt.txt
 Clipwait, 1
 Send, %clipboard%
 Clipboard:=""
@@ -120,7 +123,7 @@ Return
 !F7::
 serious := []
 lines := 0
-Loop, Read, C:\cmd\ahk\res\serious.txt
+Loop, Read, %HOME%\.ahk\res\serious.txt
 {
         serious.Push(A_LoopReadLine)
         lines++
@@ -133,7 +136,7 @@ Return
 !F8::
 silly := []
 lines := 0
-Loop, Read, C:\cmd\ahk\res\silly.txt
+Loop, Read, %HOME%\.ahk\res\silly.txt
 {
         silly.Push(A_LoopReadLine)
         lines++
@@ -161,7 +164,7 @@ Return
 !F9::
 linkedin := []
 lines := 0
-Loop, Read, C:\cmd\ahk\res\linkedin.txt
+Loop, Read, %HOME%\.ahk\res\linkedin.txt
 {
         linkedin.Push(A_LoopReadLine)
         lines++
