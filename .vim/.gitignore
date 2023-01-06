@@ -1,0 +1,6 @@
+plugged/**
+.netrwhist
+autoload/**
+viminfo
+gist.vim
+backups/**
