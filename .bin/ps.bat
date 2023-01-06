@@ -6,10 +6,10 @@
 
 ::: Description:
 
-:: I need to open PowerShell with -ExecutionPolicy bypass
+:: I need to open PowerShell with `-ExecutionPolicy bypass`
 :: when I'm at work, because *REASONS*.
 
-:: This also adds the -NoLogo flag when opening. It also
+:: This also adds the `-NoLogo` flag when opening. It also
 :: makes sure the PowerShell profile is loaded.
 
 ::: License:

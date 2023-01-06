@@ -4,14 +4,14 @@
 
 ## Description:
 
-# This was created for a colleague to help them print things more easily. 
+# This was created for a colleague to help them print things more easily.
 
 # It works in tandem with spooler.ahk (which can be found, seperately, in the
 # ./ahk/ directory). It requires an external AutoHotkey script to run (you can
 # read more about this in the AutoHotkey part of the file).
 
-# This part of the project handles some of the printing part. It prints PDF's, 
-# so we needed to route it through the default PDF reader. 
+# This part of the project handles some of the printing part. It prints
+# PDF's, so we needed to route it through the default PDF reader.
 
 ## License:
 
