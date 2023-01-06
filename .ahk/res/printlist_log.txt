@@ -1,0 +1,8 @@
+Error occurred when spooling at 08/03/2022 13:11:21 for the file: 
+
+
+
+Error occurred when spooling at 08/03/2022 13:11:25 for the file: 
+ERROR
+
+

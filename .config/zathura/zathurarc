@@ -1,0 +1,11 @@
+# Setting:
+set statusbar-h-padding 0
+set statusbar-v-padding 0
+set page-padding 1
+# Colouring:
+set default-bg      "#FF0000"
+set default-fg      "#00FFFF"
+set statusbar-bg    "#00FFFF"
+set statusbar-fg    "#000000"
+# Mapping:
+map i recolor
