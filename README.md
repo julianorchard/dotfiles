@@ -101,6 +101,10 @@ This is the script that generates what you might be reading *now*! It scrapes th
 
 The main use case for this being whenever we change Git profiles. This isn't something I do as often as I used to.
 
+#### `rm.bat`:
+
+Because del is not in my muscle memory.
+
 #### `seo-kw-audit`:
 
 This is a simple tool used to generate a little CSV report on keywords. The only places it looks (at the moment) are in `<title>` and `<h1>` tags. It is also mainly configured to look at .php files, as this is what was required for my work.

@@ -4,6 +4,10 @@
 
 :: Copyright (c) 2022   Julian Orchard <jorchard@pm.me>
 
+::: Description:
+
+:: Because del is not in my muscle memory.
+
 ::: License:
 
 :: See /LICENSE file in the root of this repository.
