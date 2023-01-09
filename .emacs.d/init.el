@@ -1,56 +1,23 @@
-;;; init.el --- My Emacs Configuration. -*- lexical-binding: t; -*-
+;;;   init.el  ---  My Emacs Configuration. -*- lexical-binding: t; -*-
 
-;; Copyright (C) 2022 Julian Orchard
+;; Copyright (c) 2023   Julian Orchard <jorchard@pm.me>
 
-;; Author: Julian Orchard <git@julianorchard.co.uk>
-;; Keywords: lisp, init, configuration
-
+;; Author:       Julian Orchard <jorchard@pm.me>
+;; Keywords:     lisp, init, configuration
 ;; Date Created: 2022-11-02
-;; Date Updated: 2022-12-07
+;; Date Updated: 2023-01-09
 
-;;; License: 
+;;; Description:
 
-;; This program is free software; you can redistribute it and/or modify
-;; it under the terms of the GNU General Public License as published by
-;; the Free Software Foundation, either version 3 of the License, or
-;; (at your option) any later version.
+;; Main Emacs init file. Most of the functionality is here.
 
-;; This program is distributed in the hope that it will be useful,
-;; but WITHOUT ANY WARRANTY; without even the implied warranty of
-;; MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-;; GNU General Public License for more details.
+;;; License:
 
-;; You should have received a copy of the GNU General Public License
-;; along with this program.  If not, see <http://www.gnu.org/licenses/>.
-
-
-;;; Commentary:
-
-;; I'm not sure if I'm the first to move from a literate version
-;; of my Emacs configuration to a normal code version, but it's
-;; certainly strange.
-
-;; Thre reasons for doing so are basically along the lines of
-;; wanting to feel closer to my config, and also that I've never
-;; actually experienced what it's like to work directly with the
-;; Emacs files... I feel like that left me initially a little
-;; stunted in my Emacs journey. 
-
-;; As I've been writing more, and more, custom Elisp, I've been
-;; getting more and more annoyed with having to work within the
-;; constraints of a single, massive org document...
-
-;; These constraints are pretty self-imposed; there's no reason
-;; for me to be using a single Org document. But splitting it all
-;; up just feels a bit annoying.
-
-;; That's why you're reading this now!
-
+;; See /LICENSE file in the root of this repository.
 
 ;;; Code:
 
-
-;;; Initial Setup Stuff ----------
+;;; Initial -------------------------------
 
 ;; Version check
 (let ((minver "26.1"))
@@ -79,7 +46,7 @@
 
 ;; Startup Message
 (setq inhibit-startup-message t)
-(setq initial-scratch-message ";; Emacs")
+(setq initial-scratch-message ";; Welcome to Emacs")
 
 ;; My details, pretty unused
 (setq user-full-name "Julian Orchard")
@@ -100,7 +67,6 @@
 ;; Yes No => y/n
 (defalias 'yes-or-no-p 'y-or-n-p)
 
-
 ;; Quit with Esc Key
 (global-set-key (kbd "<escape>") 'keyboard-escape-quit)
 
@@ -112,7 +78,7 @@
 (setq default-buffer-file-coding-system 'utf-8)
 
 ;; Scroll
-(setq mouse-wheel-scroll-amount '(1 ((shift) . 1))) 
+(setq mouse-wheel-scroll-amount '(1 ((shift) . 1)))
 (setq mouse-wheel-progressive-speed nil)
 (setq mouse-wheel-follow-mouse 't)
 (setq scroll-step 1)
@@ -133,7 +99,19 @@
 (setq use-package-always-ensure t)
 
 
-;; Aesthetics -----------------
+;;; Includes ------------------------------
+
+;; Misc. Custom Funtions
+(require 'jdo)
+
+;; Language Specific Settings
+(require 'lang)
+
+;; Org Mode Settings
+(require 'org-config)
+
+
+;; Aesthetics -----------------------------
 
 ;; General Guff Removal
 (scroll-bar-mode -1)
@@ -158,34 +136,30 @@
   (add-hook rm-ln-hook (lambda () (display-line-numbers-mode 0))))
 
 ;; Default and Italic
-(set-face-attribute 'default nil :font "Fira Code Retina" :height 105)
-(set-face-attribute 'italic nil :font "Fira Mono" :height 105)
+(defvar global-text-height 90)
+(set-face-attribute 'default nil :font "Fira Code Retina" :height global-text-height)
+(set-face-attribute 'italic nil :font "Fira Mono" :height global-text-height)
 
 ;; Emoji
 (use-package emojify
   :hook (after-init . global-emojify-mode))
 
+;; Modus Theme
 (use-package modus-themes)
-
 (defun set-dark-theme ()
     (interactive)
     "Sets the dark version of the default theme"
-    ;; (set-background-color "black")
-    ;; (set-foreground-color "white")
     (load-theme 'modus-vivendi))
-
 (defun set-light-theme ()
     (interactive)
     "Sets the light version of the default theme"
-    ;; (set-background-color "white")
-    ;; (set-foreground-color "black")
     (load-theme 'modus-operandi))
-
 (if (member (string-to-number (substring (current-time-string) 11 13))
             (number-sequence 7 20))
     (set-light-theme)
     (set-dark-theme))
 
+;; Modeline
 (use-package doom-modeline
   :ensure t
   :init (doom-modeline-mode 1)
@@ -199,12 +173,10 @@
 (use-package all-the-icons
   :ensure t)
 
-
-;;; Ivy
-
+;; Ivy
 (use-package ivy
   :bind (:map ivy-minibuffer-map
-              ("TAB" . ivy-alt-done)	
+              ("TAB" . ivy-alt-done)
               ("C-j" . ivy-next-line)
               ("C-k" . ivy-previous-line))
   :config
@@ -215,7 +187,6 @@
 
 
 ;; Company
-
 (use-package company
   :custom
   (company-global-modes '(not shell-mode eaf-mode))
@@ -225,14 +196,12 @@
 
 
 ;;; Evil
-
 (use-package evil
   :ensure t
   :demand
-  ;; :require undo-fu
   :init
-  (setq evil-want-integration t)
   (setq evil-want-keybinding nil)
+  (setq evil-want-integration t)
   (setq evil-want-C-u-scroll t)
   (setq evil-want-C-i-jump nil)
   (setq evil-undo-system 'undo-fu)
@@ -248,57 +217,46 @@
   (evil-set-initial-state 'messages-buffer-mode 'normal)
   (evil-set-initial-state 'dashboard-mode 'normal))
 
-
 ;; Evil Collection, Surroud, Commentary
 (use-package evil-collection
   :after evil
   :config
   (evil-collection-init))
-
 (use-package evil-commentary
   :after evil
   :config (evil-commentary-mode +1))
-
 (use-package evil-surround
   :ensure t
   :config
   (global-evil-surround-mode 1))
 
+;; Undo Fu
 (use-package undo-fu)
 
-
-;;; Avy Bindings
+;; Avy Bindings
 (use-package avy
   :ensure t
   :bind
-  ("C-c C-a" . avy-goto-char))
+  ("C-c C-f" . avy-goto-char))
 
-
-;;; Eshell
-
-(defalias 'ff 'find-file-other-window)
-(defalias 'e 'find-file-other-window)
-;;(defalias 'vim 'find-file) ;; afaik this isn't working 
-
-(defalias 'less 'find-file-read-only-other-window)
-
-(defalias 'cls '(clear 1))
-(defalias 'd 'dired)
-(defalias 'll '(ls -la))
-
+;; Eshell
 (use-package eshell-prompt-extras
   :ensure t
   :bind
   ("C-x C-e" . eshell)
   :config
+  (defalias 'ff 'find-file-other-window)
+  (defalias 'e 'find-file-other-window)
+  (defalias 'less 'find-file-read-only-other-window)
+  (defalias 'cls '(clear 1))
+  (defalias 'd 'dired)
+  (defalias 'll '(ls -la))
   (with-eval-after-load "esh-opt"
     (autoload 'epe-theme-lambda "eshell-prompt-extras")
     (setq eshell-highlight-prompt nil
           eshell-prompt-function 'epe-theme-lambda)))
 
-
-;;; Yasnippet
-
+;; Yasnippet
 (use-package yasnippet
   :ensure t
   :init
@@ -308,29 +266,16 @@
   :config
   (add-to-list 'yas-snippet-dirs (locate-user-emacs-file "snippets")))
 
-
-;;; Dired
-
+;; Dired
 (use-package dired-subtree :ensure t
   :after dired
   :config
   (bind-key "<tab>" #'dired-subtree-toggle dired-mode-map)
   (bind-key "<backtab>" #'dired-subtree-cycle dired-mode-map))
 
-
-;;; Elcord
-
+;; Elcord
 (if (and (eq system-type 'windows-nt)
          (equal user-login-name "julia"))
     (use-package elcord
       :config
       (elcord-mode 1)))
-
-
-;;; Other
-
-;; Misc Custom Funtions
-(require 'jdo)
-
-;; Language Mode Settings
-(require 'lang)

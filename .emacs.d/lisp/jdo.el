@@ -1,10 +1,27 @@
-;;; jdo.el --- My Stuff  -*- lexical-binding: t; -*-
+;;;   jdo.el  ---  Custom functions. -*- lexical-binding: t; -*-
 
-;; Copyright (C) 2022 Julian Orchard
+;; Copyright (c) 2023   Julian Orchard <jorchard@pm.me>
 
-;; Author: Julian Orchard <git@julianorchard.co.uk>
+;; Author:       Julian Orchard <jorchard@pm.me>
+;; Keywords:     lisp, functions
+;; Date Created: 2022-11-02
+;; Date Updated: 2023-01-09
 
-;;; Code
+;;; Description:
+
+;; Contains custom functions I use occasionally for various things.
+
+;; Also for more Elisp learning than my main `init.el` file.
+
+;;; License:
+
+;; See /LICENSE file in the root of this repository.
+
+;;; Code:
+
+;; * TODO: Add MIT License as snippet
+;;   SCHEDULED: <2023-01-09>
+;;   Julian <jorchard@pm.me>
 
 (defvar gplv3-preambles
     "This file is part of NAME_OF_SOFTWARE.
@@ -24,7 +41,7 @@ You should have received a copy of the GNU General Public License along with NAM
     (insert (replace-in-string "NAME_OF_SOFTWARE" (read-string "Enter software name: ") gplv3-preambles)))
 
 (defun jdo/insert-license ()
-  "Check if there's a LICENSE file defined in root and, if so, 
+  "Check if there's a LICENSE file defined in root and, if so,
                get the text from the file as a commented out region."
   (interactive)
   (if (jdo/license-exist)

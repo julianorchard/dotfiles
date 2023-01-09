@@ -55,7 +55,11 @@ I use a [bare git repo](https://www.atlassian.com/git/tutorials/dotfiles) to man
 You can execute a command like this to install the dotfiles from a remote source:
 
 ```sh
+<<<<<<< HEAD
 $ curl -Lks https://julianorchard.co.uk/bin/install.sh
+=======
+$ curl -Lks https://julianorchard.co.uk/bin/install.sh | /bin/bash
+>>>>>>> 4dcd7dec95ed65432cc4da23630df75420024ee7
 ```
 
 ## Featured Scripts
@@ -129,7 +133,7 @@ def main():
             if " Description:" in line:
 
                 # Title of the file we're getting the details of:
-                output = f"{output}### `{filename}`:\n\n"
+                output = f"{output}#### `{filename}`:\n\n"
                 description_active = True
             elif description_active == True  \
                 and " License:"      in line \

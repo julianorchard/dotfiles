@@ -1,3 +1,25 @@
+;;;   org-config.el  ---  Org Mode configuration. -*- lexical-binding: t; -*-
+
+;; Copyright (c) 2023   Julian Orchard <jorchard@pm.me>
+
+;; Author:       Julian Orchard <jorchard@pm.me>
+;; Keywords:     lisp, init, configuration
+;; Date Created: 2022-11-02
+;; Date Updated: 2023-01-09
+
+;;; Description:
+
+;; My settings for Emacs Org Mode, including Org Capture,
+;; export settings, and prettifying settings.
+
+;;; License:
+
+;; See /LICENSE file in the root of this repository.
+
+;;; Code:
+
+
+
 (use-package org
   :pin org
   :commands (org-capture org-agenda)
@@ -6,12 +28,12 @@
   ;; (org-mode . here/org-font-setup)
   ;; (org-mode . here/org-capture-workflow)
   :bind
-  ("C-c C-x C-a" . org-agenda)
-  ("C-c C-x C-c" . org-capture)
+  ("C-x C-a" . org-agenda)
+  ("C-x C-c" . org-capture)
   :config
   (setq org-ellipsis "  ⌄ ")
   (set-face-underline 'org-ellipsis nil)
-  (set-face-attribute 'italic nil :font "Fira Mono" :height 105)
+  (set-face-attribute 'italic nil :font "Fira Mono" :height global-text-height)
   (set-face-attribute 'org-quote nil :inherit 'default :slant 'italic)
   (setq header-line-format " ")
 
@@ -55,9 +77,9 @@
 
 Metrics ------------------------------------------
 
-Height: 
+Height:
 
-Weight: 
+Weight:
 
 
 Questions ----------------------------------------
