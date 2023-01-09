@@ -7,9 +7,17 @@
 # Use this script to fix commit dates on recent git commits. You can
 # specify looking at more historic commits by inputting an integer as
 # an argument, for example, this will show 20 of the most recent
-# commits for you to select from (default is 10):
+# commits for you to select from (default is 5):
+
+# ```sh
 
 # $ ./git-commit-date-fix.sh 20
+
+# ```
+
+# The other thing you can do is include a string argument. This will be
+# used to change the git command used (for example, my `config` custom
+# bash function).
 
 ## License:
 
@@ -17,24 +25,50 @@
 
 ## Code:
 
+n=5
+c=''
+verbose='false'
+
+print_usage() {
+  printf "Usage: ..."
+}
+
+while getopts 'nc:v' flag; do
+  case "${flag}" in
+    n) case ${OPTARG} in
+           ''|*[!0-9]*) echo "Error, `-n ${OPTARG}`: Value not a number." && exit 0 ;;
+           *) DEFAULT_RESULTS=${OPTARG} ;;
+       esac
+    ;;
+    c) GIT_COMMAND="${OPTARG}";;
+    v) verbose='true' ;;
+    *) print_usage
+       exit 1 ;;
+  esac
+done
+echo "${GIT_COMMAND}"
+
 # If there's an argument that's an int,
 # we should use that as the default results
-[ "${1}" ] && DEFAULT_RESULTS=$1 || DEFAULT_RESULTS=5
+# [ "${1}" ] && DEFAULT_RESULTS=$1 || DEFAULT_RESULTS=5
+# case "${1}" in
+#     ''|*[!0-9]*) DEFAULT_RESULTS=$5
+#     *) DEFAULT_RESULTS=$5
 
 LOG_OUTPUT="$TMPDIR/git-commit-date-fix-temp-output.txt"
 COMMIT_LINE="commit "
 
 function main() {
-  if ! git rev-parse --git-dir > /dev/null 2>&1; then
+  if ! ${GIT_COMMAND} rev-parse --git-dir > /dev/null 2>&1; then
     echo "Error: We're not in a Git repository right now."
     exit 0
-  elif ! git log | grep -q commit ; then
+  elif ! ${GIT_COMMAND} log | grep -q commit ; then
     echo "Error: There are no commits in this git repository at the moment."
     exit 0
   fi
 
   # Get the current `git log` to output
-  git log>"${LOG_OUTPUT}"
+  ${GIT_COMMAND} log>"${LOG_OUTPUT}"
 
   match_counter=0
 
@@ -95,7 +129,7 @@ function main() {
   read date_string
 
   # Make the git change
-  git filter-branch -f --env-filter \
+  ${GIT_COMMAND} filter-branch -f --env-filter \
     "if [ \$GIT_COMMIT = ${commit_id_array[$((${input_number} - 1))]} ] ; then
        export GIT_AUTHOR_DATE=\"${date_string}\"
        export GIT_COMMITTER_DATE=\"${date_string}\"

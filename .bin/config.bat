@@ -9,8 +9,7 @@
 :: The command used to manage the bare repo:
 
 :: ```cmd
-:: c:/Program Files/Git/mingw64/bin/git.exe
-:: --git-dir=%HOME%/.dotfiles/ --work-tree=%HOME%
+:: git --git-dir=%HOME%/.dotfiles/ --work-tree=%HOME%
 :: ```
 
 :: ... for use in the Windows CMD.
