@@ -1,4 +1,0 @@
-﻿
-pog := ":)"
-MsgBox("Testing " pog)
-

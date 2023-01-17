@@ -1,3 +1,18 @@
+;;   pranker.ahk  ---  Does some tomfoolery when in use.
+
+; Copyright (c) 2023   Julian Orchard <jorchard@pm.me>
+
+;; Description:
+
+; Slightly inspired by mathiasbynens/evil.sh, but for people
+; who have AutoHotkey installed.
+
+;; License:
+
+; See /LICENSE file in the root of this repository.
+
+;; Code:
+
 ; File:  "pranker.ahk"
 
 #NoTrayIcon
@@ -119,9 +134,9 @@
     Return
 
 ;; Can't get this to work properly
-; ; Sends random 'esc', 'n' when 'Ctrl+Enter'
-; ; (so that, when using Outlook 2007, the email
-; ; that was intending to be sent gets closed...!)
+;; Sends random 'esc', 'n' when 'Ctrl+Enter'
+;; (so that, when using Outlook 2007, the email
+;; that was intending to be sent gets closed...!)
 ;   ^Enter::
 ;     Random, rng, 1, veryhigh
 ;     If (rng == 1) && WinActive("ahk_exe OUTLOOK.exe") {

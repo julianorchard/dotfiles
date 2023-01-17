@@ -3,7 +3,7 @@
 Persistent 1
 
 global printNumber
-printNumber := FileRead(A_ScriptDir "\printer_number.txt")
+printNumber := FileRead(A_ScriptDir "\res\printer_number.txt")
 SetTimer CheckForPrintingWindow, 250
 
 CheckForPrintingWindow()
