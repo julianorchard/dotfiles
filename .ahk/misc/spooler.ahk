@@ -1,6 +1,6 @@
 #Include C:\cmd\ahk\res\Explorer_Get.ahk
 
-^+p:: 
+^+p::
 sel := Explorer_GetSelected()
 FileAppend, %sel%`n, C:\cmd\ahk\res\printlist.txt
 ; Let user know what's been added
@@ -11,12 +11,12 @@ Return
 
 ^+o::
 FileRead, PLContent, C:\cmd\ahk\res\printlist.txt
-if (PLContent = "") 
+if (PLContent = "")
 {
         MsgBox, 0,, There is no content to print.
         Return
 }
 MsgBox, 4,, File Contents: `n%PLContent%`nWould you like to print?
-IfMsgBox Yes 
+IfMsgBox Yes
         Run, "C:\cmd\bin\spooler.bat"
 Return

@@ -1,4 +1,4 @@
-;;;;  ico_getter.ahk  ---  Scrape ICO numbers and find lift details
+#Requires AutoHotkey v2.0+ ;;;;  ico_getter.ahk  ---  Scrape ICO numbers and find lift details
 
 ;; Copyright (c) Wessex Lift Co. Ltd. <marketing@wessexlifts.co.uk>
 
@@ -29,39 +29,39 @@ inputCRM(i) {
 ;; mouse movements.
 
 ;; F10 opens the search window
-  Send, {F12}
-  Sleep, 500
+  Send("{F12}")
+  Sleep(500)
 
 ;; Send Ctrl + f to find, then tab
-  Send, ^{f}
-  Sleep, 500
-  Send, {Tab 18}
-  Sleep, 500
+  Send("^{f}")
+  Sleep(500)
+  Send("{Tab 18}")
+  Sleep(500)
 
 ;; Enter the ICO number
-  Send, % i
-  Sleep, 500
-  Send, {Enter}
+  Send(i)
+  Sleep(500)
+  Send("{Enter}")
   ;; TODO: No record found error handle (if winactive(err window))
-  Sleep, 2000
+  Sleep(2000)
 
 ;; F5, get to Quotes Data Entry Page... could we do it from this page anyway...
 ;; dunno
-  Send, {F5}
-  Sleep, 2000
+  Send("{F5}")
+  Sleep(2000)
 
 ;; Send 31 tabs to get to the right field...
-  Send, {Tab 31}
-  Sleep, 1000
+  Send("{Tab 31}")
+  Sleep(1000)
 
 ;; Copy to clipboard, check if the model contains LR (or whatever, eventually)
-  clipboard := ""
-  Sleep, 500
-  Send, ^+{Right}
-  Sleep, 500
-  Send, ^{c}
+  A_Clipboard := ""
+  Sleep(500)
+  Send("^+{Right}")
+  Sleep(500)
+  Send("^{c}")
   ClipWait
-  if (InStr(clipboard, "LR"))
+  if (InStr(A_Clipboard, "LR"))
   {
     Return true
   }
@@ -75,16 +75,16 @@ inputCRM(i) {
 }
 
 !#t::
-  folder_to_search=P:\Instal\Site Photos\Stannah\*
-  Loop, Files, %folder_to_search%, D
+  folder_to_search := "P:\Instal\Site Photos\Stannah\*"
+  Loop Files, folder_to_search, D
     if !(SubStr(A_LoopFileName, 5, 6) ~= "^\d{6}$")
     {
-      not_parsed = % not_parsed "- " A_LoopFileName "`n"
+      not_parsed := not_parsed "- " A_LoopFileName "`n"
       Continue
     } else {
 
       ;; TODO: Regex this bit
-      file_list = % file_list SubStr(A_LoopFileName, 5, 6) "`n"
+      file_list := file_list SubStr(A_LoopFileName, 5, 6) "`n"
 
       ;; here, we start doing the inputting into CRM bit
       ; if (inputCRM(SubStr(A_LoopFileName, 5, 6)))
@@ -95,11 +95,9 @@ inputCRM(i) {
     }
   ; FileDelete, C:\Users\jorchard\tester.txt
   ; FileAppend, % matched_list, ./tester.txt
-  FileDelete, C:\Users\jorchard\all.txt
-  FileAppend, % file_list, ./all.txt
+  FileDelete("C:\Users\jorchard\all.txt")
+  FileAppend("% file_list, ./all.txt")
 
   ;; Notify of errors
-  MsgBox, % "The following folders not be identified by this command: `n`n" not_parsed
+  MsgBox("The following folders not be identified by this command: `n`n" not_parsed)
 Return
-
-;;;; Provide ico_getter.ahk
