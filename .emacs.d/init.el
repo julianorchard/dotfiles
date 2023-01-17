@@ -5,7 +5,7 @@
 ;; Author:       Julian Orchard <jorchard@pm.me>
 ;; Keywords:     lisp, init, configuration
 ;; Date Created: 2022-11-02
-;; Date Updated: 2023-01-09
+;; Date Updated: 2023-01-10
 
 ;;; Description:
 
@@ -106,9 +106,6 @@
 
 ;; Language Specific Settings
 (require 'lang)
-
-;; Org Mode Settings
-(require 'org-config)
 
 
 ;; Aesthetics -----------------------------
@@ -229,6 +226,9 @@
   :ensure t
   :config
   (global-evil-surround-mode 1))
+
+;; Org Mode Settings
+(require 'org-config)
 
 ;; Undo Fu
 (use-package undo-fu)

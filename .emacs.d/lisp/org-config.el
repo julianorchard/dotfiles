@@ -5,7 +5,7 @@
 ;; Author:       Julian Orchard <jorchard@pm.me>
 ;; Keywords:     lisp, init, configuration
 ;; Date Created: 2022-11-02
-;; Date Updated: 2023-01-09
+;; Date Updated: 2023-01-17
 
 ;;; Description:
 
@@ -17,8 +17,6 @@
 ;; See /LICENSE file in the root of this repository.
 
 ;;; Code:
-
-
 
 (use-package org
   :pin org
@@ -38,7 +36,7 @@
   (setq header-line-format " ")
 
   (setq org-agenda-files
-        '("~/org/" "~/config/"))
+        '("~/org/" "~/local-notes.org"))
 
   (setq org-duration-format (quote h:mm))
   (setq org-hide-emphasis-markers t)
@@ -58,8 +56,10 @@
         '(("w" "Wessex")
           ("wt" "Task" entry (file+headline "~/org/wessex.org" "Tasklist")
            "* TODO  %?\nDEADLINE: %t" :prepend t)
-          ("wm" "Meeting" entry (file+headline "~/org/wessex-meetings.org" "On-going")
+          ("wm" "Meeting" entry (file+headline "~/org/meetings.org" "On-going")
            "* %U %?\n** (Rough) Minutes\n- What we talked about\n- What someone said\n** Tasks\n*** TODO Something to work on\nDEADLINE: %t\n" :prepend t)
+	  ("wn" "Note" entry (file "~/local-notes.org")
+	   "* %?\n/Time:/ %T\n/Name:/ \n/Tel:/ \n/Email:/ \n/Address:/\n\n/Notes:/\n\n" :prepend t)
 
           ("p" "Personal")
           ("pt" "General Task" entry (file+headline "~/org/personal.org" "Tasklist")
@@ -70,9 +70,9 @@
            "* %(config/org-capture-prompt \"Person's Name\" 'persons-name)\nSCHEDULED: %(org-read-date)")
 
           ("j" "Journal")
-          ("jj" "Journal" entry (file+olp+datetree "~/org/journal.org")
+          ("jj" "Journal" entry (file+olp+datetree "~/org/journal/journal.org")
            "* Entry for %U\n%?")
-          ("jt" "T Weekly" entry (file+olp+datetree "~/org/t-journal.org")
+          ("jt" "T Weekly" entry (file+olp+datetree "~/org/journal/t-journal.org")
            "* %U
 
 Metrics ------------------------------------------
@@ -98,8 +98,8 @@ Questions ----------------------------------------
 Notes --------------------------------------------\n\n%?"
 
            :tree-type week)
-          )
-        )
+          ))
+  ;; End of Org-Capture
   )
 
 ;; By Storax, https://storax.github.io/blog/2016/05/02/org-capture-tricks/
@@ -168,6 +168,8 @@ Notes --------------------------------------------\n\n%?"
     </footer>
     <script src=\"/src/script.js\"></script>"
          :force t)))
+
+;; Main org block ends here
 
 (defun here/org-mode-symbols-setup ()
   "Prettify Symbols Setup for Org Documents"

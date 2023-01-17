@@ -5,7 +5,7 @@
 ;; Author:       Julian Orchard <jorchard@pm.me>
 ;; Keywords:     lisp, functions
 ;; Date Created: 2022-11-02
-;; Date Updated: 2023-01-09
+;; Date Updated: 2023-01-16
 
 ;;; Description:
 
@@ -149,5 +149,15 @@ You should have received a copy of the GNU General Public License along with NAM
   (yas-new-snippet)
   (if (not file-directory-p "~/config/snippets/")
       (copy-directory (locate-user-emacs-file "snippets") "~/config/snippets")))
+
+(defun new-hour-track ()
+  "Generate a new set of hours for weekly."
+  (interactive)
+  (if (eq major-mode 'org-mode)
+      (insert
+       (concat
+	"* " (format-time-string "%d/%m/%Y")
+	"\n** Monday\n** Tuesday\n** Wednesday\n** Thursday\n** Friday"))
+    (message "We're not in a Org buffer right now.")))
 
 (provide 'jdo)
