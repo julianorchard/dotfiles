@@ -59,7 +59,7 @@ The command used to manage the bare repo: ```cmd git --git-dir=%HOME%/.dotfiles/
 
 #### `git-commit-date-fix.sh`:
 
-Use this script to fix commit dates on recent git commits. You can specify looking at more historic commits by inputting an integer as an argument, for example, this will show 20 of the most recent commits for you to select from (default is 10): $ ./git-commit-date-fix.sh 20
+Use this script to fix commit dates on recent git commits. You can specify looking at more historic commits by inputting an integer as an argument, for example, this will show 20 of the most recent commits for you to select from (default is 5): ```sh $ ./git-commit-date-fix.sh 20 ``` The other thing you can do is include a string argument. This will be used to change the git command used (for example, my `config` custom bash function).
 
 #### `Install-Fonts.ps1`:
 

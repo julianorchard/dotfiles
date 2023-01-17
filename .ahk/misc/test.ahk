@@ -1,0 +1,4 @@
+﻿
+pog := ":)"
+MsgBox("Testing " pog)
+
