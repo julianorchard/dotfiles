@@ -12,6 +12,18 @@ alias l='ls -CF'
 # PS1
 export PS1=" \w > \[$(tput sgr0)\]"
 
+# Git Commands (using config; managing dotfiles)
+function config-fix-date {
+  # change the date of a commit
+  config filter-branch -f --env-filter "if [[ \$GIT_COMMIT == $1 ]] ; then export GIT_AUTHOR_DATE=\"$2\" ; export GIT_COMMITTER_DATE=\"$2\"; fi ;"
+  unset GIT_AUTHOR_DATE
+  unset GIT_COMMITTER_DATE
+}
+function config-remove-history {
+  # remove a commit from git history
+  config filter-branch -f --index-filter 'git rm -rf --cached --ignore-unmatch $1' HEAD
+}
+
 function exec_windows() {
 
     # Aliases
@@ -58,15 +70,6 @@ function exec_linux() {
 }
 
 syst=$(uname)
-
-function config-fix-date {
-  # change the date of a commit
-  config filter-branch -f --env-filter "if [[ \$GIT_COMMIT == $1 ]] ; then export GIT_AUTHOR_DATE=\"$2\" ; export GIT_COMMITTER_DATE=\"$2\"; fi ;"
-}
-function config-remove-history {
-  # remove a commit from git history
-  config filter-branch -f --index-filter 'git rm -rf --cached --ignore-unmatch $1' HEAD
-}
 
 case "${syst}" in
     # TODO: Linux Needs Testing
