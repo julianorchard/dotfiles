@@ -1,7 +1,8 @@
 #Requires AutoHotkey v2.0+
+DetectHiddenWindows true
 
 ; Home Path
-; HOME := "C:\Users\%A_UserName%"
+global UserHome := "C:\Users\" A_UserName
 
 ; "Alt + Spacebar", Toggles Window 'Always on top' status
 ^SPACE::WinsetAlwaysOnTop -1, WinGetTitle("A")
@@ -14,14 +15,17 @@
 !q::WinKill(WinGetTitle("A"))
 
 ; "Alt + Enter", to run CMDrc
-!Enter::
+$!Enter::
 {
-  if not WinActive("ahk_class Microsoft Excel")
+  if not WinActive("ahk_exe EXCEL.EXE")
   {
-    Run("C:\Users\jorchard\cmdrc.bat")
+    Run(UserHome "\cmdrc.bat")
+  }
+  else
+  {
+    Send("!{enter}")
   }
 }
-
 
 ; "Win + Enter", to run Powershell
 #Enter::Run("C:\Windows\System32\WindowsPowerShell\v1.0\powershell.exe")
@@ -53,35 +57,66 @@ $PrintScreen::
   }
 }
 
-; Alt + U (U for Underline)
-!u::
+;; Function to return the coordinates of two points.
+;; Used by !u::, underline, and !b::, box drawing
+;; hotkeys, mainly alongside Snipping Tool
+GetDrawingCoords()
 {
   KeyWait("LButton", "D")
-  MouseGetPos(&X1, &Y1)
+  MouseGetPos(&xa, &ya)
 
   KeyWait("LButton", "U")
   KeyWait("LButton", "D")
-  MouseGetPos(&X2, &Y2)
+  MouseGetPos(&xb, &yb)
 
-  MouseClickDrag("L", X1, Y1, X2, Y2)
-  MouseClickDrag("L", X2, Y2, X1, Y1)
+  ;; We reverse this here because we want to
+  ;; draw the lines from the point the cursor
+  ;; currently is, so b coords first (as they're
+  ;; the second set) and then the a ones.
+  c := [xb, yb, xa, ya]
+  Return c
+}
+
+; Alt + U (U for Underline)
+!u::
+{
+  c := GetDrawingCoords()
+  MouseClickDrag("L", c[1], c[2], c[3], c[4])
+  MouseClickDrag("L", c[3], c[4], c[1], c[2])
 }
 
 ; Alt + B (B for Box)
 !b::
 {
-  KeyWait("LButton", "D")
-  MouseGetPos(&X1, &Y1)
-  KeyWait("LButton", "U")
-  KeyWait("LButton", "D")
-  MouseGetPos(&X4, &Y4)
-  MouseClickDrag("L", X4, Y4, X4, Y1)
+  ;; Although this doesn't matter which
+  ;; points you click first, this is the
+  ;; basic visualisation:
+
+  ;;    x1,y1 --------------- x2,y1
+  ;;      |                     |
+  ;;      |                     |
+  ;;      |                     |
+  ;;      |                     |
+  ;;    x1,y2 --------------- x2,y2
+
+  c := GetDrawingCoords()
+  x1 := c[1]
+  y1 := c[2]
+  x2 := c[3]
+  y2 := c[4]
+
+  ;; TODO:
+  ;; I would like to do this in a loop,
+  ;; but the MouseClickDrag doesn't want
+  ;; to do that... might be able to use
+  ;; something else instead.
+  MouseClickDrag("L", x1, y1, x2, y1)
   Sleep(200)
-  MouseClickDrag("L", X4, Y1, X1, Y1)
+  MouseClickDrag("L", x2, y1, x2, y2)
   Sleep(200)
-  MouseClickDrag("L", X1, Y1, X1, Y4)
+  MouseClickDrag("L", x2, y2, x1, y2)
   Sleep(200)
-  MouseClickDrag("L", X1, Y4, X4, Y4)
+  MouseClickDrag("L", x1, y2, x1, y1)
 }
 
 ; TODO: Try making a solid fill box, could be interesting
@@ -142,7 +177,7 @@ RandomFromFile(file)
 ; F11 Select an email template to insert
 !F11::
 {
-  textToInsert := FileSelect(3, "C:\Users\jorchard\org\txt", "Insert Email Template")
+  textToInsert := FileSelect(3, UserHome "\org\txt", "Insert Email Template")
   if !(textToInsert = "")
   {
     Loop read, textToInsert
@@ -159,40 +194,48 @@ RandomFromFile(file)
 !F10::Send(FileRead("res\lipsum.txt") "{backspace 2}")
 
 ; Alt+F12 to hide the taskbar entirely
-; CheckForTaskbar() {
-;   if WinExist("ahk_class Shell_TrayWnd")
-;   {
-;     WinHide("ahk_class Shell_TrayWnd")
-;     WinHide("Start ahk_class Button")
-;   }
-; }
-; !F12::
-; {
-;   if (WinExist("ahk_class Shell_TrayWnd"))
-;   {
-;     SetTimer CheckForTaskbar, 1000
-;   }
-;   else
-;   {
-;     SetTimer CheckForTaskbar, , 0
-;     WinShow("ahk_class Shell_TrayWnd")
-;     WinShow("Start ahk_class Button")
-;   }
-; }
-
+global taskbarStatus := false
+$!F12::
+{
+  global taskbarStatus
+  HideShowTaskbar(taskbarStatus := !taskbarStatus)
+}
+HideShowTaskbar(status)
+{
+  if (status)
+  {
+    ;; Set timer
+    SetTimer(FixTaskbarHide, 500)
+  }
+  else
+  {
+    ;; Unset timer and show window
+    SetTimer(FixTaskbarHide, 0)
+    WinShow("ahk_class Shell_TrayWnd")
+  }
+}
+FixTaskbarHide()
+{
+  ;; Check if the window is visible, using DllCall
+  if DllCall("IsWindowVisible", "Ptr", WinExist("ahk_class Shell_TrayWnd"))
+  {
+    ;; If it is, hide it
+    WinHide("ahk_class Shell_TrayWnd")
+  }
+}
 
 ;; Alt + e, Start + e improved
 KeyWaitAny(Options:="")
 {
-    ih := InputHook(Options)
-    if !InStr(Options, "V")
-    {
-        ih.VisibleNonText := false
-    }
-    ih.KeyOpt("{All}", "E")
-    ih.Start()
-    ih.Wait()
-    return ih.EndKey
+  ih := InputHook(Options)
+  if !InStr(Options, "V")
+  {
+    ih.VisibleNonText := false
+  }
+  ih.KeyOpt("{All}", "E")
+  ih.Start()
+  ih.Wait()
+  Return ih.EndKey
 }
 !e::
 {
@@ -202,26 +245,26 @@ KeyWaitAny(Options:="")
   ;; script part...
 
   ;; GUI element
-  MyGui := Gui()
-  MyGui.Opt("-Caption")
-  MyGui.MarginX := 100
-  MyGui.MarginY := 30
-  MyGui.SetFont("s12", "Segoe UI")
-  MyGui.Add("Text", , "Alt+E locations you can open (bindings below):")
-  MyGui.SetFont("s10", "Consolas")
-  MyGui.Add("Text", , "- binding:    C   =     C:\Users\%A_UserName%\")
-  MyGui.Add("Text", , "- binding:    W   =     C:\Users\%A_UserName%\Documents\Website\")
-  MyGui.Add("Text", , "- binding:    J   =     J:\TSD\")
-  MyGui.Add("Text", , "- binding:    P   =     P:\Marketing Images\")
-  MyGui.Add("Text", , "- binding:    S   =     S:\")
-  MyGui.Show
+  AltEGui := Gui()
+  AltEGui.Opt("-Caption")
+  AltEGui.MarginX := 100
+  AltEGui.MarginY := 30
+  AltEGui.SetFont("s12", "Segoe UI")
+  AltEGui.Add("Text", , "Alt+E locations you can open (bindings below):")
+  AltEGui.SetFont("s10", "Consolas")
+  AltEGui.Add("Text", , "- binding:    C   =     " UserHome)
+  AltEGui.Add("Text", , "- binding:    W   =     " UserHome "\Documents\Website\")
+  AltEGui.Add("Text", , "- binding:    J   =     J:\TSD\")
+  AltEGui.Add("Text", , "- binding:    P   =     P:\Marketing Images\")
+  AltEGui.Add("Text", , "- binding:    S   =     S:\")
+  AltEGui.Show
 
   Switch KeyWaitAny()
   {
     case "c":
-      Run("C:\Users\jorchard\")
+      Run(UserHome "\")
     case "w":
-      Run("C:\Users\jorchard\Documents\Website")
+      Run(UserHome "\Documents\Website")
     case "j":
       Run("J:\TSD\")
     case "p":
@@ -230,62 +273,31 @@ KeyWaitAny(Options:="")
       Run("S:\")
     default:
   }
-  MyGui.Destroy
+  AltEGui.Destroy
 }
 
-; !i::
-; idltog := !idltog
-; If (idltog = "1")
-; {
-;         TrayTip, Screen Refresher On, The screen refresher has been enabled.
-;         SetTimer, KeepAlive, 15000
-; KeepAlive:
-;         Send, {RAlt}
-;         Return
-; }
-; Else
-; {
-;         TrayTip, Screen Refresher Off, The screen refresher has been disabled.
-;         SetTimer, KeepAlive, Off ; Turn off the timer
-; }
-; Return
 
-; lock(f=0, mouse=0, message:="🔒") {
-;         static allkeys, ExcludeKeys:=""LButton",RButton"
-;         If !allkeys
-;         {
-;                 s:="||NumpadEnter|Home|End|PgUp|PgDn|Left|Right|Up|Down|Del|Ins|"
-;                 Loop, 254
-;                         k:=GetKeyName(Format("VK{:0X}",A_Index))
-;                 , s.=InStr(s, "|" k "|") ? "" : k "|"
-;                 For k,v in {Control:"Ctrl",Escape:"Esc"}
-;                 s:=StrReplace(s, k, v)
-;                 allkeys:=Trim(s, "|")
-;         }
-;         f:=f ? "On":"Off"
-;         If mouse
-;                 ExcludeKeys:=""
-;         For k,v in StrSplit(allkeys,"|")
-;         If v not in %ExcludeKeys%
-;                 Hotkey, *%v%, Block_Input, %f% UseErrorLevel
-; Block_Input:
-;         If message!=
-;                 Progress, B1 M fs30 ZH0 W50 CTB57EB7 CW0d455e, %message%
-;         If (f="off")
-;                 Progress, Off
-;         Return
-; }
-; !l::
-; locktog := !locktog
-; If (locktog = "1")
-; {
-;         lock(1,1)
-; }
-; Else
-; {
-;         lock(0)
-; }
-; Return
+;; Alt + i : Toggle screen refresher
+Refresher()
+{
+  Send("{RAlt}")
+}
+global refresherStatus := false
+!i::
+{
+  global refresherStatus
+  refresherStatus := !refresherStatus
+  if (refresherStatus)
+  {
+    TrayTip("Screen Refresher On", "The screen refresher has been enabled.")
+    SetTimer(Refresher, 15000)
+  }
+  else
+  {
+    TrayTip("Screen Refresher Off", "The screen refresher has been disabled.")
+    SetTimer(Refresher, 0)
+  }
+}
 
 ;; Start + Alt + a: Move items from last month
 ;; into my '! Urgent" folder in Outlook 2007.

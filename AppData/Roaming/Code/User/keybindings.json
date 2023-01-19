@@ -10,5 +10,3 @@
         "when": "editorTextFocus && !editorTabMovesFocus"
     }
 ]
-
-

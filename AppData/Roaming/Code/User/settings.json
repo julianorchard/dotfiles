@@ -1,4 +1,7 @@
 {
+    "editor.tabCompletion": "on",
+    "editor.detectIndentation": false,
+    "window.zoomLevel": -1,
 
     "files.insertFinalNewline": true,
     "files.trimTrailingWhitespace": true,
@@ -66,8 +69,9 @@
         }
       },
     "terminal.integrated.defaultProfile.windows": "PowerShell",
+    "diffEditor.ignoreTrimWhitespace": false,
+    "workbench.editorAssociations": {
+        "*.jpg": "imagePreview.previewEditor"
+    },
 
-    "editor.tabCompletion": "on",
-    "editor.detectIndentation": false,
-    "window.zoomLevel": -1,
 }
