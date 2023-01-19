@@ -1,6 +1,10 @@
-##   countdown.ps1  ---  Send emails to someone every x seconds...
+##   Countdown.ps1  ---  Send emails to someone every x seconds...
 
 # Copyright (c) 2022   Julian Orchard <jorchard@pm.me>
+
+## Description:
+
+# Send annoying reminder emails every X until X (counting down until then).
 
 ## License:
 
@@ -16,7 +20,7 @@ Param (
     $Interval,
     $Recipient,
     $Description
-) 
+)
 
 Function Send-Outlook-Email {
     Param (
@@ -28,8 +32,8 @@ Function Send-Outlook-Email {
     $outlook = New-Object -ComObject Outlook.Application
     $outlookMail = $outlook.CreateItem(0)
 
-    $outlookMail.To = "$To" 
-    $outlookMail.Subject = "$Subject" 
+    $outlookMail.To = "$To"
+    $outlookMail.Subject = "$Subject"
     $outlookMail.Body = "$Body"
     $outlookMail.Send()
     $timestamp = Get-Date -Format HH:mm
@@ -61,7 +65,7 @@ If ($Description -ne "")
 
 $endTimeFormatted = (Get-Date $EndTime -Format HH:mm:ss)
 
-While ($true) 
+While ($true)
 {
     $currentTime = Get-Date -Format HH:mm:ss
 

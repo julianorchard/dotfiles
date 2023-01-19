@@ -5,7 +5,11 @@
 ## Description:
 
 # Install some of my favourite (and most relevant to this set of
-# dotfiles) fonts. 
+# dotfiles) fonts:
+
+# - [Anonymice NF](https://github.com/ryanoasis/nerd-fonts/)
+# - [Fira Code](https://github.com/tonsky/FiraCode/)
+# - [Fira Code Mono Italic](https://github.com/zwaldowski/Fira/raw/zwaldowski/mod-new/otf/)
 
 ## License:
 
@@ -31,7 +35,7 @@ ForEach ($font In $fontArray) {
 
     If ([IO.Path]::GetExtension($fontURL) -eq '.zip') {
         ## Extract a zip file first
-        Try { 
+        Try {
             $fontArchive="$env:TEMP\font-install-temp.zip"
             (New-Object System.Net.WebClient).DownloadFile($fontURL,$fontArchive)
         } Catch {
@@ -51,6 +55,6 @@ ForEach ($font In $fontArray) {
         (New-Object -comObject Shell.Application).Namespace(0x14).CopyHere($fontDownloadLocation,0x10)
         Remove-Item $fontDownloadLocation -Force
 
-    } 
+    }
 
 }

@@ -4,10 +4,11 @@
 
 ## Description:
 
-# This was created for a colleague to help them print things more easily.
+# Created for a colleague to help them print things more easily.
 
-# It works in tandem with spooler.ahk (which can be found, seperately, in the
-# ./ahk/ directory). It requires an external AutoHotkey script to run (you can
+# It works in tandem with [spooler.ahk](../.ahk/misc/spooler.ahk).
+
+# It requires an external AutoHotkey (v1.1) script to run (you can
 # read more about this in the AutoHotkey part of the file).
 
 # This part of the project handles some of the printing part. It prints

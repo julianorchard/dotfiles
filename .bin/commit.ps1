@@ -4,7 +4,8 @@
 
 ## Description:
 
-# This should just be a tool until used to doing it properly!
+# Should only be used until learnt properly (I don't really use
+# it anymore).
 
 # Used for creating semantic commits. Text taken from this Gist:
 # https://gist.github.com/joshbuchea/6f47e86d2510bce28f8e7f42ae84c716

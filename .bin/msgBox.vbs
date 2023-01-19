@@ -4,7 +4,7 @@
 
 '' Description:
 
-' This is mainly called by a few CMD scripts.
+' This is mainly called by a few CMD scripts to provide a GUI popup.
 
 '' License:
 

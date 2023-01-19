@@ -6,9 +6,8 @@
 
 ::: Description:
 
-:: Use this script to create a shortcut to the current folder you're in. 
-
-:: I've found this especially useful for CMD navigation! 
+:: Use this script to create a shortcut to the current folder you're in.
+:: I've found this especially useful for CMD navigation.
 
 ::: License:
 
@@ -43,8 +42,8 @@ if not exist %shortdir%\dev.bat (
 set sname=%1
 shift
 if [%sname%] == [] (
-    echo. 
-    echo If you are looking to set up shortcuts to this folder, 
+    echo.
+    echo If you are looking to set up shortcuts to this folder,
     echo use this command like 'shortcut NAME'.
     exit /b
 )

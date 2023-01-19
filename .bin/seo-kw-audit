@@ -9,7 +9,7 @@
 # This is a simple tool used to generate a little CSV report on keywords.
 
 # The only places it looks (at the moment) are in `<title>` and `<h1>` tags. It is
-# also mainly configured to look at .php files, as this is what was required for
+# also mainly configured to look at `.php` files, as this is what was required for
 # my work.
 
 ## License:

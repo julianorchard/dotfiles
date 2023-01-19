@@ -8,10 +8,6 @@
 
 :: Simply uses ping to check if we have an internet connection.
 
-:: Very simple script and not very intelligently implemented, but
-:: works as a quick tool to tell you notify you when you're back
-:: online.
-
 ::: License:
 
 :: See /LICENSE file in the root of this repository.

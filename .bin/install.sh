@@ -1,33 +1,12 @@
-<<<<<<< HEAD
 #!/bin/sh
 
 ## install .sh  ---  Written by durdn of Atlassian tutorial!
 
 ## Description:
 
-# Original source:
-# https://bitbucket.org/durdn/cfg/src/master/.bin/install.sh
+# Install the dotfiles. Edited from the
+# [original source](https://bitbucket.org/durdn/cfg/src/master/.bin/install.sh).
 
-=======
-#!/bin/bash
-
-## install .sh  ---  Slightly edited from the original which is (c) Nicola Paolucci.
-
-## Description:
-
-# Written by Nicola Paolucci, edited by me to install/manage my
-# dotfiles respository.
-
-# Original source:
-# https://bitbucket.org/durdn/cfg/src/master/.bin/install.sh
-
-## License:
-
-# Copyright (c) 2018 Nicola Paolucci
-
-# Copyright (c) 2023 Julian Orchard <jorchard@pm.me>
-
->>>>>>> 4dcd7dec95ed65432cc4da23630df75420024ee7
 ## Code:
 
 git clone --bare git@github.com:julianorchard/dotfiles.git $HOME/.dotfiles
@@ -42,15 +21,11 @@ config checkout
 if [ $? = 0 ]; then
   echo "Checked out config.";
 else
-<<<<<<< HEAD
-  echo "Backing up pre-existing dot files.";
-  config checkout 2>&1 | egrep "\s+\." | awk {'print $1'} | xargs -I{} mv {} .dotfiles-backup/{}
-=======
   echo "Backing up pre-existing dotfiles.";
 
   # TODO: Replace grep with sed only?
   config checkout 2>&1 | grep -E "^\s+.*$" | sed 's/\s+//g' | xargs -I{} sh -c 'mkdir -p `echo $(dirname "${HOME}/.dotfiles-backup/{}")` && mv "${HOME}/{}" "${HOME}/.dotfiles-backup/{}"'
->>>>>>> 4dcd7dec95ed65432cc4da23630df75420024ee7
+
 fi
 
 config checkout

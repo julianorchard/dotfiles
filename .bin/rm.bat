@@ -6,7 +6,7 @@
 
 ::: Description:
 
-:: Because del is not in my muscle memory.
+:: Because `del` is not in my muscle memory.
 
 ::: License:
 

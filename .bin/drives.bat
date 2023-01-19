@@ -4,6 +4,10 @@
 
 :: Copyright (c) 2022   Julian Orchard <jorchard@pm.me>
 
+::: Description:
+
+:: Add shortcuts to available drives.
+
 ::: License:
 
 :: See /LICENSE file in the root of this repository.

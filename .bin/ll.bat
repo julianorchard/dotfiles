@@ -6,7 +6,7 @@
 
 ::: Description:
 
-:: Also, DIR isn't it my muscle memory at all.
+:: `dir` isn't it my muscle memory at all.
 
 ::: License:
 
@@ -18,14 +18,14 @@ set location=%1
 shift
 
 if [%location%] == [] (
-        echo. 
+        echo.
         echo.Folders:
         dir /b /o /a:d .
         echo.
         echo.Files:
         dir /b /o /a:-d .
 ) else (
-  echo. 
+  echo.
   echo.Folders:
   dir /b /o /a:d %location%
   echo.
