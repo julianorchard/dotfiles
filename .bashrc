@@ -60,12 +60,10 @@ function exec_linux() {
 syst=$(uname)
 
 function config-fix-date {
-  config filter-branch --env-filter \
-    'if [[ \$GIT_COMMIT == $1 ]]
-     then
-         export GIT_AUTHOR_DATE="$2"
-         export GIT_COMMITTER_DATE="$2"
-     fi' --force
+  config filter-branch -f --env-filter "if [ \$GIT_COMMIT == $1 ] ; then
+         export GIT_AUTHOR_DATE=\"$2\" ;
+         export GIT_COMMITTER_DATE=\"$2\" ;
+     fi;"
 }
 
 case "${syst}" in
