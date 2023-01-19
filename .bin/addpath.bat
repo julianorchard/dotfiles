@@ -4,6 +4,10 @@
 
 :: Copyright (c) 2022   Julian Orchard <jorchard@pm.me>
 
+::: Description:
+
+:: Add current path to PATH.
+
 ::: License:
 
 :: See /LICENSE file in the root of this repository.

@@ -6,10 +6,10 @@
 
 ::: Description:
 
-:: I use this surprisingly frequently. 
+:: I use this surprisingly frequently.
 
-:: Probably not best practice because using DIR ouput (which 
-:: I *assume* would run into similar issues to doing the same with
+:: Probably not best practice because using DIR ouput (which I
+:: *assume* would run into similar issues to doing the same with
 :: bash, which I know is definitely not good practice).
 
 ::: License:

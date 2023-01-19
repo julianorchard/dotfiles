@@ -1,15 +1,14 @@
 #!/usr/bin/env python3
 
-##   callsign.py  ---  Chars to their corresponding phonetic callsigns. 
+##   callsign.py  ---  Chars to their corresponding phonetic callsigns.
 
 # Copyright (c) 2023   Julian Orchard <jorchard@pm.me>
 
 ## Description:
 
-# Slight refactor attempt of https://github.com/tahtacipolat/callsign, to
-# include things like ability to write in uppercase/lowercase. Everything 
-# is written in Turkish so I don't understand what's going on, but it was
-# an interesting script to write, if only for experience refactoring.
+# Slight refactor attempt of [this repo](https://www.zappshelter.com/wp-content/uploads/2022/01/Headshots-Stav.jpg)
+# but to include things like ability to write in uppercase/lowercase. It was
+# a fun script to write, if only for experience refactoring.
 
 ## License:
 
@@ -23,7 +22,7 @@ NUM = ["zero", "one", "two", "three", "four", "five", "six", "seven", "eight", "
 def main():
     message = input("Message: ")
     output = []
-    for letter in message: 
+    for letter in message:
         ord_value = ord(letter)
 
         # Lowercase

@@ -6,7 +6,7 @@
 
 ## Description:
 
-# MAMP, for me, seems to have an issue. This is the quickfix. 
+# MAMP, for me, seems to have an issue. This is the quickfix™.
 
 ## License:
 

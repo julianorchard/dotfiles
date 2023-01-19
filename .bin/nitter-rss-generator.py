@@ -5,23 +5,23 @@
 ## Description:
 
 # Gets a list of your Twitter followers and makes a nice little
-# Nitter formatted URL RSS feed. Uses tweepy.
+# Nitter formatted URL RSS feed. Uses [tweepy](https://www.tweepy.org/).
 
-## Instructions: 
+## Instructions:
 
 # You need to direct this script to a file where your API bearer is
-# stored. It should contain a line like this: 
+# stored. It should contain a line like this:
 
-# BEARER_TOKEN your_bearer_token_goes_here
+# `BEARER_TOKEN your_bearer_token_goes_here`
 
-# If you follow a lot of people, you will need to up the RATE_LIMIT
+# If you follow a lot of people, you will need to up the `RATE_LIMIT`
 # variable in the file below (the first variable you see). It's set
-# as 500 by default, so if you follow less than 500 people it'll 
-# capture all of them by default. 
+# as 500 by default, so if you follow less than 500 people it'll
+# capture all of them by default.
 
 # If you want to use a different Nitter instance (this script uses
-# https://nitter.net by default), you need ot change the variable 
-# NITTER_URL below.
+# https://nitter.net by default), you need to change the variable
+# `NITTER_URL` below.
 
 ## License:
 
@@ -39,16 +39,16 @@ RATE_LIMIT    = 500
 def get_key_file():
     '''
     This gets the key from a file. It looks for the line containing
-    "BEARER_TOKEN" and then gets the bearer token next to it. 
+    "BEARER_TOKEN" and then gets the bearer token next to it.
     '''
-    try: 
+    try:
         with open(KEY_FILE_PATH) as file:
             for line in file:
                 if "BEARER_TOKEN" in line:
                     return line.split(":")[1].replace("\n", "").replace(" ", "")
             # No line with BEARER_TOKEN found
             print(f"No BEARER_TOKEN line found in {KEY_FILE_PATH} file.")
-    except FileNotFoundError: 
+    except FileNotFoundError:
         print(f"Error opening file {KEY_FILE_PATH}, please try again.")
 
 def client_auth():
@@ -72,12 +72,12 @@ def get_id_from_username(client, twitter_username):
 
 def output_data_nicely(full_following_list):
     '''
-    Split output into strings with the format: 
+    Split output into strings with the format:
     https://nitter.net/user1,user2,(...),user20
 
-    It splits at 20, basically. 
-    
-    I think this is a limitation of nitter; that's 
+    It splits at 20, basically.
+
+    I think this is a limitation of nitter; that's
     the number I'm using, anyway.
     '''
     total_count = 0 # Just used in user feedback
@@ -92,7 +92,7 @@ def output_data_nicely(full_following_list):
         # Comma seperating the list
         split_list.append(f"{full_list_item},")
 
-        if split_count >= 20: 
+        if split_count >= 20:
             output_url = NITTER_URL
             for list_item in split_list:
                 output_url = f"{output_url}{list_item}"
@@ -113,11 +113,11 @@ def main():
     BEARER = get_key_file()
 
     client = client_auth()
-    
+
     # Get username input
     username = input("Enter a username: ")
     user_id = get_id_from_username(client, username)
-    
+
     following_list = following_list_nitter_rss(client, user_id)
 
     output_data_nicely(following_list)
