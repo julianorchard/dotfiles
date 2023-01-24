@@ -134,7 +134,6 @@ You should have received a copy of the GNU General Public License along with NAM
   (insert ": \n")
   (jdo/if-evil-insert-state))
 
-
 (defun jdo/create-snippet ()
   (interactive)
   (yas-new-snippet)
