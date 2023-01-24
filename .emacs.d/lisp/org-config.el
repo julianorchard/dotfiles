@@ -5,7 +5,7 @@
 ;; Author:       Julian Orchard <jorchard@pm.me>
 ;; Keywords:     lisp, init, configuration
 ;; Date Created: 2022-11-02
-;; Date Updated: 2023-01-17
+;; Date Updated: 2023-01-24
 
 ;;; Description:
 
@@ -43,16 +43,15 @@
   (setq org-startup-folded 'content)
 
   (setq org-todo-keywords
-        '((sequence "TODO(t)" "PEND(p)" "|" "DONE(d)" "CANC(c)")
-          (sequence "|" "FIVE(5)" "FOUR(4)" "THRE(3)" "TWO(2)" "ONE(1)")))
+        '(sequence "TODO(t)" "PEND(p)" "|" "DONE(d)" "CANC(c)"))
 
   (setq org-priority-faces
         '((?A . (:foreground "red"))
-          (?B . (:foreground "orange"))
-          (?C . (:foreground "yellow"))))
+          (?B . (:foreground "orange"))))
 
   (setq org-capture-templates
 
+	;; Work Related Capture Templates
         '(("w" "Wessex")
           ("wt" "Task" entry (file+headline "~/org/wessex.org" "Tasklist")
            "* TODO  %?\nDEADLINE: %t" :prepend t)
@@ -61,6 +60,7 @@
 	  ("wn" "Note" entry (file "~/local-notes.org")
 	   "* %?\n/Time:/ %T\n/Name:/ \n/Tel:/ \n/Email:/ \n/Address:/\n\n/Notes:/\n\n" :prepend t)
 
+	  ;; Personal Capture Templates
           ("p" "Personal")
           ("pt" "General Task" entry (file+headline "~/org/personal.org" "Tasklist")
            "* TODO  %?\nDEADLINE: %t" :prepend t)
@@ -69,114 +69,52 @@
           ("pb" "Birthday" entry (file "~/org/misc/birthday.org")
            "* %(config/org-capture-prompt \"Person's Name\" 'persons-name)\nSCHEDULED: %(org-read-date)")
 
+	  ;; Journal Only Capture
           ("j" "Journal")
           ("jj" "Journal" entry (file+olp+datetree "~/org/journal/journal.org")
-           "* Entry for %U\n%?")
-          ("jt" "T Weekly" entry (file+olp+datetree "~/org/journal/t-journal.org")
-           "* %U
+           "* Entry for %U\n%?")))
 
-Metrics ------------------------------------------
+  (setq org-publish-project-alist
+	;; This is where we can set the automatic publishing of website Org documents.
 
-Height:
+	;; At the moment, this isn't configured, but I do want to use it to manage my website at some
+	;; point, rather than using the bash script I've been using up until now.
 
-Weight:
+	;; The main reason for wanting to switch is because, now that I'm hosting with GitHub Pages,
+	;; I'm no longer reliant on just using Bash to make quick posts. I can just write them in
+	;; Emacs, on my local machine, and do it like this. 
+
+	;; All I need to do now is create a new branch for this new workflow (and convert old posts to
+	;; Org format, rather than Markdown).
+	'(("config"
+           :base-directory "~/config/"
+           :publishing-function org-html-publish-to-html
+           :publishing-directory "~/julianorchard.github.io/config/"
+           :section-numbers nil
+           :html-head "<link rel=\"stylesheet\" href=\"../src/org-style.css\" type=\"text/css\"/>"
+           :html-preamble "
+                     <nav>
+                       <ul>
+                         <li>
+                           <a class=\"link\" href=\"/\">Home</a>
+                         </li>
+                         <li>
+                           <a class=\"link\" href=\"/about/\">About</a>
+                         </li>
+                         <li>
+                           <a class=\"link\" href=\"/posts/\">Posts</a>
+                         </li>
+                       </ul>
+                     </nav>"
+           :html-postamble "<footer>(c) Julian Orchard</footer>"
+           :force t))))
 
 
-Questions ----------------------------------------
-
-- /How are you feeling?/:
-
-- /What have you done this week?/:
-
-- /What have you done today?/:
-
-- /What is your favourite animal?/:
-
-- /What is your favourite food?/:
-
-
-Notes --------------------------------------------\n\n%?"
-
-           :tree-type week)
-          ))
-  ;; End of Org-Capture
-  )
-
-;; By Storax, https://storax.github.io/blog/2016/05/02/org-capture-tricks/
-  (defvar org-capture-hist nil
-    "History of prompt answers for org capture.")
-  (defun config/org-capture-prompt (prompt variable)
-    "PROMPT for string, save it to VARIABLE and insert it."
-    (make-local-variable variable)
-    (set variable (read-string (concat prompt ": ") nil org-capture-hist)))
-
-  (defun org-document-new (path)
-    "Create a new document and prompt for a file name."
-    (interactive)
-    (let ((name (read-string "Document Name: ")))
-      (expand-file-name (format "%s.org" name) path))
-    (find-file (insert-file "~/Documents/org-pdf/template.org")))
-
-(setq org-publish-project-alist
-      '(("config"
-         :base-directory "~/config/"
-         :publishing-function org-html-publish-to-html
-         :publishing-directory "~/julianorchard.github.io/config/"
-         :section-numbers nil
-         :html-head "
-<link rel=\"stylesheet\" href=\"../src/org-style.css\" type=\"text/css\"/>"
-         :html-preamble "
-  <nav>
-    <ul>
-      <li>
-        <a class=\"link\" href=\"/\">Home</a>
-      </li>
-      <li>
-        <a class=\"link\" href=\"/about/\">About</a>
-      </li>
-      <li>
-        <a class=\"link\" href=\"/posts/\">Posts</a>
-      </li>
-      <li>
-        <a class=\"link\" href=\"/config/\">Config</a>
-      </li>
-    </ul>
-  </nav>"
-         :html-postamble "
-    <footer>
-      <div class=\"left\">
-        <p>
-          Email: <a href=\"mailto:hello@julianorchard.co.uk\" class=\"highlight\">hello@julianorchard.co.uk</a>
-          <br />
-          LinkedIn: <a href=\"https://linkedin.com/in/JulianOrchard\" class=\"highlight\">julianorchard</a>
-          <br />
-          Twitter: <a href=\"https://twitter.com/jdorchard/\">@jdorchard</a>
-          <br />
-          Mastodon: <a rel=\"me\" href=\"https://mastodon.social/@jdo\" class=\"highlight\">@jdo</a>
-        </p>
-      </div><!--
-    --><div class=\"right\">
-        <p>
-          Check out this site on <a href=\"https://github.com/julianorchard/julianorchard.github.io\" class=\"highlight\" target=\"_blank\">GitHub</a>!
-          <br />
-          About <a href=\"/privacy/\" class=\"highlight\">Privacy Policy</a>.
-        </p>
-        <p>
-          Copyright Julian Orchard, 2022
-        </p>
-      </div>
-    </footer>
-    <script src=\"/src/script.js\"></script>"
-         :force t)))
-
-;; Main org block ends here
-
+;; Document Symbol Bits
 (defun here/org-mode-symbols-setup ()
-  "Prettify Symbols Setup for Org Documents"
-
-  (push '("[ ]" . "☐") prettify-symbols-alist)
-  (push '("[X]" . "☑" ) prettify-symbols-alist)
-  (push '("[-]" . "○" ) prettify-symbols-alist)
+  (push '("[ ]" . "🔲") prettify-symbols-alist)
+  (push '("[X]" . "✔" ) prettify-symbols-alist)
+  (push '("[-]" . "❌" ) prettify-symbols-alist)
   (push '("#+BEGIN_SRC" . "→" ) prettify-symbols-alist)
   (push '("#+END_SRC" . "←" ) prettify-symbols-alist)
   (push '("#+begin_src" . "→" ) prettify-symbols-alist)
@@ -203,33 +141,34 @@ Notes --------------------------------------------\n\n%?"
   (push '("#+RESULTS:" . " result ⇒ ") prettify-symbols-alist)
   (push '("#+property:" . "∷") prettify-symbols-alist)
   (push '("#+PROPERTY:" . "∷") prettify-symbols-alist)
-  (push '("[#A]" . "⬆") prettify-symbols-alist)
-  (push '("[#B]" . "■") prettify-symbols-alist)
-  (push '("[#C]" . "⬇") prettify-symbols-alist)
+  (push '("[#A]" . "‼") prettify-symbols-alist)
+  (push '("[#B]" . "❗") prettify-symbols-alist)
   (prettify-symbols-mode)
 
-  ;; Nicer Org Bullets
+  ;; Nicer Bullet Points
   (font-lock-add-keywords 'org-mode
                           '(("^ *\\([-]\\) "
-                             (0 (prog1 () (compose-region (match-beginning 1) (match-end 1) "•")))))))
+                             (0 (prog1 ()
+				  (compose-region (match-beginning 1) (match-end 1) "•")))))))
 
 (defun here/org-mode-setup ()
-   (org-indent-mode)
-   (visual-line-mode 1))
+  (org-indent-mode)
+  (visual-line-mode 1))
 
 (defun here/org-mode-visual-fill ()
-   (setq visual-fill-column-width 100
-         visual-fill-column-center-text t)
-   (visual-fill-column-mode 1))
+  (setq visual-fill-column-width 100
+        visual-fill-column-center-text t)
+  (visual-fill-column-mode 1))
+
 (use-package visual-fill-column
-   :hook (org-mode . here/org-mode-visual-fill))
+  :hook (org-mode . here/org-mode-visual-fill))
 
 (use-package org-bullets
   :hook (org-mode . org-bullets-mode)
   :custom
   ;; (org-bullets-bullet-list '("◉" "○" "●" "○" "●" "○" "●")))
   ;; (org-bullets-bullet-list '("\u200b" " " "◉" "-")))
- (org-bullets-bullet-list '("●" "○")))
+  (org-bullets-bullet-list '("●" "○")))
 
 (use-package evil-org
   :ensure t
@@ -239,10 +178,10 @@ Notes --------------------------------------------\n\n%?"
   (require 'evil-org-agenda)
   (evil-org-agenda-set-keys))
 
-;; (progn
-;;   (add-to-list 'load-path "~/.emacs.d/site-lisp")
-;;   (require 'org-pretty-table)
-;;   (add-hook 'org-mode-hook (lambda () (org-pretty-table-mode))))
+(progn
+  (add-to-list 'load-path "~/.emacs.d/site-lisp")
+  (require 'org-pretty-table)
+  (add-hook 'org-mode-hook (lambda () (org-pretty-table-mode))))
 
 (require 'org-tempo)
 
