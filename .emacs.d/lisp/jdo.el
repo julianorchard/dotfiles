@@ -5,7 +5,7 @@
 ;; Author:       Julian Orchard <jorchard@pm.me>
 ;; Keywords:     lisp, functions
 ;; Date Created: 2022-11-02
-;; Date Updated: 2023-01-16
+;; Date Updated: 2023-01-24
 
 ;;; Description:
 
@@ -115,8 +115,8 @@ You should have received a copy of the GNU General Public License along with NAM
 (defun jdo/org-subheading ()
   "A custom insert-subheading for Org Mode."
   (interactive)
-  (if (eq major-mode 'org-mode)
-      (org-insert-subheading t))
+  (org-only-function)
+  (org-insert-subheading t)
   (jdo/if-evil-insert-state))
 
 ;; Bind this to something using emacs bindings too! Could be very useful!
@@ -134,15 +134,6 @@ You should have received a copy of the GNU General Public License along with NAM
   (insert ": \n")
   (jdo/if-evil-insert-state))
 
-(defun jdo/org-copy-under-heading ()
-  "Copies text under Org subtree."
-  (interactive)
-  (org-mark-subtree)
-  (next-line 1)
-  (kill-ring-save
-   (region-beginning)
-   (region-end))
-  (deactivate-mark))
 
 (defun jdo/create-snippet ()
   (interactive)
@@ -150,14 +141,46 @@ You should have received a copy of the GNU General Public License along with NAM
   (if (not file-directory-p "~/config/snippets/")
       (copy-directory (locate-user-emacs-file "snippets") "~/config/snippets")))
 
-(defun new-hour-track ()
+
+;; Org Functions
+
+(defun org-only-function ()
+  "Check if we're in an Org buffer: exit if not. Sometimes we don't want this, but often we do."
+  (if (not (eq major-mode 'org-mode))
+      (user-error "ERROR: We're not in an Org buffer right now.")))
+
+(defun jdo/org-copy-under-heading ()
+  "Copies text under Org subtree."
+  (interactive)
+  (org-only-function)
+  (org-mark-subtree)
+  (next-line 1)
+  (kill-ring-save
+   (region-beginning)
+   (region-end))
+  (deactivate-mark))
+
+;; Weekly Specific Org Document Functions (how I track my hours)
+
+(defun weekly/new-hour-track ()
   "Generate a new set of hours for weekly."
   (interactive)
-  (if (eq major-mode 'org-mode)
-      (insert
-       (concat
-	"* " (format-time-string "%d/%m/%Y")
-	"\n** Monday\n** Tuesday\n** Wednesday\n** Thursday\n** Friday"))
-    (message "We're not in a Org buffer right now.")))
+  (org-only-function)
+  (insert
+   (concat
+    "* " (format-time-string "[%d/%m/%Y]")
+    "\n** Monday\n** Tuesday\n** Wednesday\n** Thursday\n** Friday")))
+
+(defun weekly/new-holiday-day ()
+  "Insert a standard day of holiday on the given Org point."
+  (interactive)
+  (org-only-function)
+  (org-end-of-line)
+  (org-newline-and-indent)
+  (insert (concat ":LOGBOOK:\nCLOCK: ["
+		  (format-time-string "%Y-%m-%d %a")
+		  " 09:00]--["
+		  (format-time-string "%Y-%m-%d %a")
+		  " 16:30]\n:END:")))
 
 (provide 'jdo)

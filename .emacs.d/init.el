@@ -5,7 +5,7 @@
 ;; Author:       Julian Orchard <jorchard@pm.me>
 ;; Keywords:     lisp, init, configuration
 ;; Date Created: 2022-11-02
-;; Date Updated: 2023-01-10
+;; Date Updated: 2023-01-24
 
 ;;; Description:
 
@@ -279,3 +279,6 @@
     (use-package elcord
       :config
       (elcord-mode 1)))
+
+(use-package nyan-mode
+  :ensure t)
