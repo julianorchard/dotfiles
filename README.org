@@ -6,7 +6,7 @@
 #+title: My Configuration Files
 #+description: I manage all my configuration files literately through Emacs Org Mode. This is the index page for all my different configs for Emacs, Vim, Windows 10, and Arch Linux (btw).
 
-**These are my old, literate config files. See the [[https://github.com/julianorchard/dotfiles][main branch]] for the most up-to-date version.**
+*These are my old, literate config files. See the [[https://github.com/julianorchard/dotfiles][main branch]] for the most up-to-date version.*
 
 #+begin_quote
 
