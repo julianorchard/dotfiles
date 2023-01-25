@@ -5,7 +5,7 @@
 ;; Author:       Julian Orchard <jorchard@pm.me>
 ;; Keywords:     lisp, init, configuration
 ;; Date Created: 2022-11-02
-;; Date Updated: 2023-01-24
+;; Date Updated: 2023-01-25
 
 ;;; Description:
 
@@ -102,73 +102,16 @@
 ;;; Includes ------------------------------
 
 ;; Misc. Custom Funtions
-(require 'jdo)
+(require 'init-custom)
 
 ;; Language Specific Settings
-(require 'lang)
+(require 'init-lang)
 
 
-;; Aesthetics -----------------------------
+;; Aesthetics/Theme 
+(require 'init-aesthetics)
 
-;; General Guff Removal
-(scroll-bar-mode -1)
-(tool-bar-mode -1)
-(tooltip-mode -1)
-(set-fringe-mode 5)
-(menu-bar-mode -1)
-(show-paren-mode t)
-(setq visible-bell t
-      split-width-threshold 1)
-
-;; Lines and Columns
-(column-number-mode)
-(setq display-line-numbers-type 'relative)
-(dolist (mode '(text-mode-hook
-                prog-mode-hook
-                conf-mode-hook))
-  (add-hook mode (lambda ()
-		   (display-line-numbers-mode 1))))
-
-(dolist (rm-ln-hook '(org-mode-hook))
-  (add-hook rm-ln-hook (lambda () (display-line-numbers-mode 0))))
-
-;; Default and Italic
-(defvar global-text-height 90)
-(set-face-attribute 'default nil :font "Fira Code Retina" :height global-text-height)
-(set-face-attribute 'italic nil :font "Fira Mono" :height global-text-height)
-
-;; Emoji
-(use-package emojify
-  :hook (after-init . global-emojify-mode))
-
-;; Modus Theme
-(use-package modus-themes)
-(defun set-dark-theme ()
-    (interactive)
-    "Sets the dark version of the default theme"
-    (load-theme 'modus-vivendi))
-(defun set-light-theme ()
-    (interactive)
-    "Sets the light version of the default theme"
-    (load-theme 'modus-operandi))
-(if (member (string-to-number (substring (current-time-string) 11 13))
-            (number-sequence 7 20))
-    (set-light-theme)
-    (set-dark-theme))
-
-;; Modeline
-(use-package doom-modeline
-  :ensure t
-  :init (doom-modeline-mode 1)
-  :custom ((doom-modeline-height 20))
-  :config
-  (display-time-mode 1)
-  (if (eq system-type 'gnu/linux)
-      (display-battery-mode 1)))
-(use-package solaire-mode
-  :init (solaire-global-mode +1))
-(use-package all-the-icons
-  :ensure t)
+;;; Completion ----------------------------
 
 ;; Ivy
 (use-package ivy
@@ -182,17 +125,27 @@
 (global-set-key (kbd "C-x C-b") 'ivy-switch-buffer)
 (global-set-key (kbd "C-x C-k") 'kill-this-buffer)
 
+;; Yasnippet
+(use-package yasnippet
+  :ensure t
+  :init
+  (yas-global-mode 1)
+  :bind
+  ("C-c C-s" . 'custom/create-snippet)
+  :config
+  (add-to-list 'yas-snippet-dirs
+	       (locate-user-emacs-file "snippets")))
 
 ;; Company
 (use-package company
   :custom
   (company-global-modes '(not shell-mode eaf-mode))
   :config
-  (global-company-mode 1))
-;; (setq company-backends (mapcar #'company-mode/backend-with-yas company-backends)))
+  (global-company-mode 1)
+  (setq company-backends '((company-capf :with company-yasnippet))))
 
+;;; Evil ----------------------------------
 
-;;; Evil
 (use-package evil
   :ensure t
   :demand
@@ -209,8 +162,8 @@
   (setq evil-vsplit-window-right t)
   (evil-global-set-key 'motion "j" 'evil-next-visual-line)
   (evil-global-set-key 'motion "k" 'evil-previous-visual-line)
-  ;; (evil-define-key 'normal 'global (kbd "<leader>k") 'jdo/test)
-  ;; (evil-define-key 'normal 'global (kbd "<leader>w") 'jdo/lol)
+  ;; (evil-define-key 'normal 'global (kbd "<leader>k") 'custom/test)
+  ;; (evil-define-key 'normal 'global (kbd "<leader>w") 'custom/lol)
   (evil-set-initial-state 'messages-buffer-mode 'normal)
   (evil-set-initial-state 'dashboard-mode 'normal))
 
@@ -228,7 +181,7 @@
   (global-evil-surround-mode 1))
 
 ;; Org Mode Settings
-(require 'org-config)
+(require 'init-org)
 
 ;; Undo Fu
 (use-package undo-fu)
@@ -256,15 +209,6 @@
     (setq eshell-highlight-prompt nil
           eshell-prompt-function 'epe-theme-lambda)))
 
-;; Yasnippet
-(use-package yasnippet
-  :ensure t
-  :init
-  (yas-global-mode 1)
-  :bind
-  ("C-c C-s" . 'jdo/create-snippet)
-  :config
-  (add-to-list 'yas-snippet-dirs (locate-user-emacs-file "snippets")))
 
 ;; Dired
 (use-package dired-subtree :ensure t
@@ -280,5 +224,3 @@
       :config
       (elcord-mode 1)))
 
-(use-package nyan-mode
-  :ensure t)

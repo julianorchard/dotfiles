@@ -1,4 +1,4 @@
-;;;   org-config.el  ---  Org Mode configuration. -*- lexical-binding: t; -*-
+;;;   init-org.el  ---  Org Mode configuration. -*- lexical-binding: t; -*-
 
 ;; Copyright (c) 2023   Julian Orchard <jorchard@pm.me>
 
@@ -191,4 +191,4 @@
   :config
   (add-hook 'org-mode-hook 'toc-org-mode))
 
-(provide 'org-config)
+(provide 'init-org)
