@@ -1,4 +1,4 @@
-# Dotfiles and Configurations
+# Dotfiles & Configurations
 
 > These are my `dotfiles`. There are many like them, but these ones are mine.
 >
@@ -6,19 +6,13 @@
 >
 > My `dotfiles`, without me, are useless. Without my `dotfiles`, I am useless.
 
-They're mainly used on Windows, Ubuntu, and occasionally with Arch. They mainly contain scripts for said systems, as well as Emacs, Vim, and VS Code configurations.
+They're mainly used on Windows, Ubuntu, and occasionally with Arch on my ThinkPad x220. They contain scripts for said systems, as well as [Emacs](https://www.gnu.org/software/emacs/), [Vim](https://www.vim.org/), and [VS Code](https://code.visualstudio.com/) configurations.
 
-## History
+## Background
 
-I started my journey storing these files with a bare git repo (following steps [here](https://www.atlassian.com/git/tutorials/dotfiles)). I then moved to a [literate configuration](https://en.wikipedia.org/wiki/Literate_programming), using Emacs [Org Mode](https://orgmode.org/). Finally, I've moved *back to using a bare repo*.
+I started my journey storing these files with a bare git repo (following steps [here](https://www.atlassian.com/git/tutorials/dotfiles)). I then moved to a [literate configuration](https://en.wikipedia.org/wiki/Literate_programming) (which you can still see, [here](https://github.com/julianorchard/dotfiles/tree/literate)), which used Emacs [Org Mode](https://orgmode.org/). Finally, I've moved back to using a bare repo.
 
-Why did I change this? Using a literate configuration made everything reproducible, easy to manage, and thoroughly documented!
-
-The main reason is because I realised I was getting *slightly* too stuck into Emacs, and I still enjoy using Vim and have even started using VS Code (with the Vim plugin installed, of course). It also didn't work well on remote servers, as I'm not a fan of terminal Emacs.
-
-Using a literate configuration made it feel like I was working on a large text document rather than directly with a computer. I found I stopped writing as much code and started using Org to manage tasks and things more. This was good, but I want to do programming and scripting. I stopped writing scripts (in anything by Elisp) which improved my workflow.
-
-So I'm back to doing it like this, and I'm happy with that to be honest.
+Basically, using a literate configuration made it feel like I was working on a large text document rather than directly with a computer. I like Org mode for task management, but writing code in a literate way wasn't as fun (and the same kind of detailed documentation can be achieved with long code comments).
 
 ## Deploy
 
@@ -27,7 +21,7 @@ I use a [bare git repo](https://www.atlassian.com/git/tutorials/dotfiles) to man
 You can execute a command like this to install the dotfiles from a remote source:
 
 ```sh
-$ curl -Lks https://julianorchard.co.uk/bin/install.sh | /bin/bash
+curl -Lks https://julianorchard.co.uk/bin/install.sh | /bin/bash
 ```
 
 ## Featured Scripts
