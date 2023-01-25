@@ -5,7 +5,7 @@
 ;; Author:       Julian Orchard <jorchard@pm.me>
 ;; Keywords:     lisp, init, configuration
 ;; Date Created: 2022-11-02
-;; Date Updated: 2023-01-24
+;; Date Updated: 2023-01-25
 
 ;;; Description:
 
@@ -43,15 +43,16 @@
   (setq org-startup-folded 'content)
 
   (setq org-todo-keywords
-        '(sequence "TODO(t)" "PEND(p)" "|" "DONE(d)" "CANC(c)"))
+        '(( sequence "TODO(t)" "NEXT(n)" "PEND(p)" "|" "DONE(d)" "CANC(c)")))
 
   (setq org-priority-faces
         '((?A . (:foreground "red"))
-          (?B . (:foreground "orange"))))
+          (?B . (:foreground "orange"))
+	  (?B . (:foreground "yellow"))))
 
   (setq org-capture-templates
 
-	;; Work Related Capture Templates
+	 ;; Work Related Capture Templates
         '(("w" "Wessex")
           ("wt" "Task" entry (file+headline "~/org/wessex.org" "Tasklist")
            "* TODO  %?\nDEADLINE: %t" :prepend t)
@@ -143,6 +144,7 @@
   (push '("#+PROPERTY:" . "∷") prettify-symbols-alist)
   (push '("[#A]" . "‼") prettify-symbols-alist)
   (push '("[#B]" . "❗") prettify-symbols-alist)
+  (push '("[#C]" . " "  ) prettify-symbols-alist)
   (prettify-symbols-mode)
 
   ;; Nicer Bullet Points

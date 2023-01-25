@@ -1,6 +1,6 @@
 # -*- mode: snippet -*-
 # name: python
-# key: py_
+# key: <py
 # --
 #+begin_src python
 $0

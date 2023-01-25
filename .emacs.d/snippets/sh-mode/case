@@ -3,8 +3,8 @@
 # key: case
 # --
 case ${1:cond} in
-    ${2:pattern} )
-        ${3:stuff}
-        ;;
-    $0
+  ${2:pattern} )
+    ${3:stuff}
+    ;;
+  $0
 esac

@@ -1,0 +1,18 @@
+# -*- mode: snippet -*-
+# name: getopts-google
+# key: argparse
+# note: https://stackoverflow.com/questions/7069682/how-to-get-arguments-with-flags-in-bash
+# --
+input_value=''
+
+usage {
+  printf "Usage: ..."
+}
+
+while getopts 'abf:v' flag; do
+  case "${flag}" in
+    f) input_value="${OPTARG}" ;;
+    *) usage
+       exit 1 ;;
+  esac
+done
