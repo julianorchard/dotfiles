@@ -170,9 +170,9 @@ RandomFromFile(file)
 }
 
 ; F7 Serious
-!F7::Send(RandomFromFile(A_ScriptDir "res\serious.txt"))
+!F7::Send(RandomFromFile(A_ScriptDir "\res\serious.txt"))
 ; F8 Silly
-!F8::Send(RandomFromFile(A_ScriptDir "res\silly.txt") " regards, ")
+!F8::Send(RandomFromFile(A_ScriptDir "\res\silly.txt") " regards, ")
 
 ; F11 Select an email template to insert
 !F11::
