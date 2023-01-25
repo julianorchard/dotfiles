@@ -1,4 +1,4 @@
-;;; lang.el --- Language Mode Settings  -*- lexical-binding: t; -*-
+;;; init-lang.el --- Language Mode Settings  -*- lexical-binding: t; -*-
 
 ;; Copyright (C) 2022 Julian Orchard
 
@@ -57,4 +57,4 @@
 
 (use-package yaml-mode)
 
-(provide 'lang)
+(provide 'init-lang)
