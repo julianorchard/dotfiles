@@ -3,5 +3,5 @@
 # key: args
 # --
 if [ $# -lt ${1:2} ]
-   then $0
+  then $0
 fi

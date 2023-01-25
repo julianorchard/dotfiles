@@ -3,5 +3,5 @@
 # key: while
 # --
 while ${1:cond}; do
-    $0
+  $0
 done

@@ -146,7 +146,7 @@ GetDrawingCoords()
 !-::Send("{space}o{space}-{space}")
 
 ; Instagram Hashtags
-#!i::Send(FileRead("res\wt.txt") "{backspace 2}")
+#!i::Send(FileRead(A_ScriptDir "\res\wt.txt") "{backspace 2}")
 
 ; F5 Insert Timestamp
 !F5::Send(FormatTime(, "ddd d-MMM-yy hh:mm tt"))
@@ -170,9 +170,9 @@ RandomFromFile(file)
 }
 
 ; F7 Serious
-!F7::Send(RandomFromFile("res\serious.txt"))
+!F7::Send(RandomFromFile(A_ScriptDir "res\serious.txt"))
 ; F8 Silly
-!F8::Send(RandomFromFile("res\silly.txt") " regards, ")
+!F8::Send(RandomFromFile(A_ScriptDir "res\silly.txt") " regards, ")
 
 ; F11 Select an email template to insert
 !F11::
@@ -188,10 +188,10 @@ RandomFromFile(file)
 }
 
 ; F9 Insert a random, LinkedIn Style Message
-!F9::Send(RandomFromFile("res\linkedin.txt"))
+!F9::Send(RandomFromFile(A_ScriptDir "res\linkedin.txt"))
 
 ; Insert Lipsum Text
-!F10::Send(FileRead("res\lipsum.txt") "{backspace 2}")
+!F10::Send(FileRead(A_ScriptDir "res\lipsum.txt") "{backspace 2}")
 
 ; Alt+F12 to hide the taskbar entirely
 global taskbarStatus := false
@@ -320,4 +320,33 @@ global refresherStatus := false
   send("+{tab 14}")
   sleep(1000)
   send("{enter}{escape}")
+}
+
+!#s::
+{
+  WinGetClientPos(&x, &y, &w, &h, WinGetTitle("A"))
+  MsgBox("&" x ", &" y ", &" w ", &" h)
+  MouseMove(x, y, 99)
+  ; Run("C:\Windows\system32\SnippingTool.exe")
+  ; if not WinWait("Snipping Tool", , 5)
+  ; {
+  ;   MsgBox "Snipping tool timed out."
+  ; }
+  ; else
+  ; {
+  ;   Sleep(1000)
+  ;   Send("^n")
+  ;   Sleep(1000)
+  ;   x2 := Floor(w + x)
+  ;   y2 := Floor(h + y)
+  ;   ; MsgBox("x = " x " y = " y " x2 = " x2 " y2 = " y2)
+  ;   MouseMove(x, y, 60)
+  ;   Sleep(1000)
+  ;   Send("{LButton down}")
+  ;   Sleep(1000)
+  ;   MouseMove(x2, y2, 60)
+  ;   Sleep(1000)
+  ;   Send("{LButton up}")
+  ;   ; MouseClickDrag("L", x2, y2, x, y)
+  ; }
 }

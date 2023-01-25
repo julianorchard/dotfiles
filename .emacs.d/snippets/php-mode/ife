@@ -1,0 +1,13 @@
+# -*- mode: snippet -*-
+# name: ife
+# key: ife
+# group : control structure
+# --
+if (${2:condition}) 
+{
+  $1;
+} 
+else 
+{
+  $0;
+}
