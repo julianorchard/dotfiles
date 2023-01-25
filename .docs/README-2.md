@@ -4,9 +4,7 @@ These are my personal dotfiles. If you want to fork this repo and use them, that
 
 ## License
 
-Everything here, unless otherwise stated[^1], is under the MIT License. See [License](/LICENSE) for more information.
-
-[^1]: Emacs typically uses GPLv3+, but this is compatible with the MIT license. Chocolatey is under the Apache 2.0 license, so again, compatible.
+Everything here, unless otherwise stated, is under the MIT License. See [License](/LICENSE) for more information.
 
 ## Credits
 
@@ -15,7 +13,8 @@ These credits don't cover every resource that has helped me on my way to these c
 #### Emacs
 
 - [Daviwil's literate dotfiles](https://github.com/daviwil/dotfiles) and [his Emacs From Scratch series](https://github.com/daviwil/emacs-from-scratch) (which is what got me into Emacs in the first place!)
-- [Tecosaur's config](https://tecosaur.github.io/emacs-config/config.html); *the most beautiful literate configuration I've ever seen* - Even though I don't use it direcitly, [Doom Emacs](https://github.com/doomemacs/doomemacs) has been a massive help
+- [Tecosaur's config](https://tecosaur.github.io/emacs-config/config.html); *the most beautiful literate configuration I've ever seen*
+- Even though I don't use it direcitly, [Doom Emacs](https://github.com/doomemacs/doomemacs) has been a massive help
 - [RedGuardToo's](https://github.com/redguardtoo/emacs.d) dotfiles, plus his [Mastering Emacs in One Year](https://github.com/redguardtoo/mastering-emacs-in-one-year-guide) Guide
 - [MatthewZMD's M-Emacs](https://github.com/MatthewZMD/.emacs.d)
 - [Protesilaos'](https://protesilaos.com/emacs/dotemacs) great Emacs tips, packages (especially themes), and [YouTube videos](https://www.youtube.com/@protesilaos)
