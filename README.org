@@ -6,6 +6,8 @@
 #+title: My Configuration Files
 #+description: I manage all my configuration files literately through Emacs Org Mode. This is the index page for all my different configs for Emacs, Vim, Windows 10, and Arch Linux (btw).
 
+**These are my old, literate config files. See the [[https://github.com/julianorchard/dotfiles][main branch]] for the most up-to-date version.**
+
 #+begin_quote
 
 We do not think ourselves into new ways of living, we live ourselves into new ways of thinking.
@@ -21,7 +23,7 @@ We do not think ourselves into new ways of living, we live ourselves into new wa
   - [[#see-also][See Also]]
 #+END_QUOTE
 
-** What is this? 
+** What is this?
 
 This is a series of [[https://orgmode.org/][Org documents]] which contain all the code for *all my configurations*. To make use of it, open each file in Emacs. Then tangle all the code to the right places with:
 
@@ -33,7 +35,7 @@ I will eventually make this easier...
 
 ** What's actually here?
 
-This repo contains literate configurations for: 
+This repo contains literate configurations for:
 
 - [[file:emacs.org][Emacs]]
 - [[file:windows.org][Windows 10]]
@@ -45,13 +47,13 @@ This repo contains literate configurations for:
 
 There's a lot of credits to random snippets of code here, within the Org documents. But some of the big inspirations of large portions go to:
 
-- [[https://github.com/daviwil/dotfiles][Daviwil's literate dotfiles]], and [[https://github.com/daviwil/emacs-from-scratch][his Emacs From Scratch series]] 
+- [[https://github.com/daviwil/dotfiles][Daviwil's literate dotfiles]], and [[https://github.com/daviwil/emacs-from-scratch][his Emacs From Scratch series]]
 - [[https://tecosaur.github.io/emacs-config/config.html][Tecosaur's config]], AKA /the most beautiful literate configuration I've ever seen/
 
-For my Emacs configuration, specifically: 
+For my Emacs configuration, specifically:
 
 - [[https://github.com/doomemacs/doomemacs][Doom Emacs]], of course
-- [[https://github.com/redguardtoo/emacs.d][RedGuardToo's]] dotfiles, and also his [[https://github.com/redguardtoo/mastering-emacs-in-one-year-guide][Mastering Emacs in One Year]] Guide 
+- [[https://github.com/redguardtoo/emacs.d][RedGuardToo's]] dotfiles, and also his [[https://github.com/redguardtoo/mastering-emacs-in-one-year-guide][Mastering Emacs in One Year]] Guide
 - [[https://github.com/MatthewZMD/.emacs.d][MatthewZMD's M-Emacs]]
 
 For my Vim configuration, specifically:
