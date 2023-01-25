@@ -27,6 +27,7 @@ A literate Windows 10 configuration, set up in the folder =C:/cmd=.
     - [[#instagram-hashtags][Instagram Hashtags]]
     - [[#timestamps][Timestamps]]
     - [[#email-sign-offs][Email Sign-Offs]]
+    - [[#email-other][Email Other]]
     - [[#linkedin][LinkedIn]]
     - [[#lipsum][Lipsum]]
     - [[#taskbar][Taskbar]]
@@ -750,8 +751,8 @@ This is a Powershell function for sending outlook mail objects.
 #+begin_src powershell :tangle c:/cmd/bin/email.ps1 :mkdirp yes
   #!/c/Windows/System32/WindowsPowerShell/v1.0/powershell.exe -File
 
-  function Send-Outlook-Email {
-      param (
+  Function Send-Outlook-Email {
+      Param (
           $Subject,
           $Body
       )
@@ -871,12 +872,6 @@ Here's a rough-and-ready script that makes use of it:
   }
 #+end_src
 
-**** DONE Should use argument flags instead of by order
-**** TODO General cleanup of this script
-**** TODO Improve Param() 
-***** TODO I've not really played around with =Param= too much, but from the looks of things I should be able to use =[Mandatory]= in the Param section.
-***** TODO Use =Param= to sort out the types going on (set =[Date]=, etc.)
-
 *** Fonts
 
 I want to improve this part, at some point. The fonts I use are:
@@ -932,11 +927,6 @@ I want to improve this part, at some point. The fonts I use are:
 
 #+end_src
 
-**** TODO Refactor this at some point
-SCHEDULED: <2022-10-08 Sat>
-
-*This is untest on a new system without all these fonts installed.*
-
 ** AutoHotkey
 *** About
 
@@ -945,12 +935,12 @@ It's nice to have a reminder like this, when writing these AutoHotkey scripts:
 |------+-------------------|
 | Char | Purpose           |
 |------+-------------------|
-| =#=  | windows key       |
-| =!=  | alt key           |
-| =^=  | ctrl key          |
-| =+=  | shift key         |
-| =*=  | wildcard          |
-| =~=  | pass-through char |
+| =#=    | windows key       |
+| =!=    | alt key           |
+| =^=    | ctrl key          |
+| =+=    | shift key         |
+| =*=    | wildcard          |
+| =~=    | pass-through char |
 |------+-------------------|
 
 *** Essentials
@@ -1185,6 +1175,43 @@ Critical
   Return
 
 #+end_src
+
+*** Email Other
+
+I send the same email, often. The idea is that this script just reads from a file of different txt files. It then just input the text when you chose which file you want to input.
+
+#+begin_src ahk :tangle c:/cmd/ahk/general.ahk :mkdirp yes
+
+  !F11::
+  FileSelectFile, text_to_insert, 3, C:\Users\%A_UserName%\org\txt, Insert Email Template
+  If !(text_to_insert = "")
+  {
+          Loop, Read, %text_to_insert%
+          {
+                  Send, % A_LoopReadLine "{Enter}"
+          }
+  }
+  Return
+
+#+end_src
+
+This serves a few purposes, but a nice side effect is that it means I can have information that I'd want to be confidential in the body of emails, etc.
+
+Another nice thing is formatting can be added because we're just sending input, of course. Here's a nice example:
+
+#+begin_src txt
+
+Hi there,
+
+I'm on the case with this task{!} !{i}All under control{!}!{i}
+
+Best regards, ^+{Up 5}!hffSegoe UI Light
+
+#+end_src
+
+The =^+{Up 5}!hffSegoe UI Light= selects all the text (~Ctrl+Up, Up, Up, ...~), and then ~Alt, h, ff~ to get to the font field in Outlook 2007, and finally we type our desired font!
+
+Obviously, this is only useful for certain clients, but it's trivial to configure them for what you need, as is the case with most AutoHotkey.
 
 *** LinkedIn
 
