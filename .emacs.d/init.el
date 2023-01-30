@@ -5,11 +5,11 @@
 ;; Author:       Julian Orchard <jorchard@pm.me>
 ;; Keywords:     lisp, init, configuration
 ;; Date Created: 2022-11-02
-;; Date Updated: 2023-01-25
+;; Date Updated: 2023-01-27
 
 ;;; Description:
 
-;; Main Emacs init file. Most of the functionality is here.
+;; Main Emacs init file. 
 
 ;;; License:
 
@@ -22,9 +22,7 @@
 ;; Version check
 (let ((minver "26.1"))
   (when (version< emacs-version minver)
-    (error "Your Emacs is too old. This config requires v%s or higher" minver)))
-(when (version< emacs-version "27.1")
-  (message "Your Emacs is old. Please upgrade if possible."))
+    (error "Your Emacs is too old. This config requires v%s or higher." minver)))
 
 ;; Home setting, load path
 (cd (getenv "HOME"))
@@ -37,12 +35,39 @@
 (add-hook 'after-init-hook (lambda ()
 			     (setq gc-cons-threshold 800000)))
 
-;; Fullscreen Emacs window... I like this, but it's very slow, and I
-;; often find myself manually resizing it far quicker than it loads
-;; (especially on Windows 10, where I use Emacs a lot).
-;; (add-hook 'emacs-startup-hook 'toggle-frame-maximized)
+;; Set custom-file to keep it out of init.el
 (setq custom-file "~/.emacs.d/custom.el")
 (load custom-file)
+
+;; START from init-aesthetics.el ---
+
+;; General Guff Removal
+(scroll-bar-mode -1)
+(tool-bar-mode -1)
+(tooltip-mode -1)
+(set-fringe-mode 5)
+(menu-bar-mode -1)
+(show-paren-mode t)
+(setq visible-bell t
+      split-width-threshold 1)
+
+;; Lines and Columns
+(column-number-mode)
+(setq display-line-numbers-type 'relative)
+(dolist (mode '(text-mode-hook
+                prog-mode-hook
+                conf-mode-hook))
+  (add-hook mode (lambda ()
+		   (display-line-numbers-mode 1))))
+
+(dolist (rm-ln-hook '(org-mode-hook))
+  (add-hook rm-ln-hook (lambda () (display-line-numbers-mode 0))))
+
+(defvar global-text-height 90)
+(set-face-attribute 'default nil :font "Fira Code Retina" :height global-text-height)
+(set-face-attribute 'italic nil :font "Fira Mono" :height global-text-height)
+
+;; END from init-aesthetics.el -----
 
 ;; Startup Message
 (setq inhibit-startup-message t)

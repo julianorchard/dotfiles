@@ -5,7 +5,7 @@
 ;; Author:       Julian Orchard <jorchard@pm.me>
 ;; Keywords:     lisp, functions
 ;; Date Created: 2022-11-02
-;; Date Updated: 2023-01-25
+;; Date Updated: 2023-01-27
 
 ;;; Description:
 
@@ -170,19 +170,28 @@ You should have received a copy of the GNU General Public License along with NAM
     "* " (format-time-string "[%d/%m/%Y]")
     "\n** Monday\n** Tuesday\n** Wednesday\n** Thursday\n** Friday")))
 
+(defun org-time-stamp-string ()
+  "Basically, I think this creates a temp-buffer to copy the string from.
+
+   https://emacs.stackexchange.com/questions/69009/
+   how-to-get-org-time-stamp-to-return-timestamp-rather-than-inserting
+  "
+  (with-temp-buffer
+    (org-mode)
+    (org-time-stamp-inactive nil)
+    (buffer-substring (point-min) (point-max))))
+
+;; TODO: Somehow replace the [ and ]... \\[ or \\]?
 (defun weekly/new-holiday-day ()
   "Insert a standard day of holiday on the given Org point."
   (interactive)
   (org-only-function)
   (org-end-of-line)
   (org-newline-and-indent)
-  (insert (concat ":LOGBOOK:\nCLOCK: ["
-		  (format-time-string "%Y-%m-%d %a")
-		  " 09:00]--["
-		  (format-time-string "%Y-%m-%d %a")
-		  " 16:30]\n:END:")))
+  (setq ts ((org-time-stamp-string)))
+  (insert (format ":LOGBOOK:\nCLOCK: [%s 09:00]--[%s 16:30]\n:END:" ts)))
 
-;; Org push and pull files from remote. Not working on my work machine. 
+;; Org push and pull files from remote. Not working on my work machine: 
 
 (defun org-push ()
   "Org push files to remote, using a shell command."
