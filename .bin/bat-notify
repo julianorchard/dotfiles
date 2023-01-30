@@ -1,0 +1,23 @@
+#!/bin/bash
+
+# Title:	      bat-notify
+# By: 		      Julian Orchard <jorchard@pm.me>
+# Tag Added:	  17-06-2020
+# Description:  Notify the user when the battery percentage 
+#               gets low
+#               01-2023 note: This is quite old now, 
+#               but I might want to use some of it in 
+#               the future... not sure yet.
+
+while true ; do
+  bat=$(upower -i /org/freedesktop/UPower/devices/battery_BAT0 | grep "percentage" | sed -e 's/ //g;s/percentage://g;s/\%//g')
+  prevbat=$(cat ${HOME}/.bin/currbat)
+
+  if [[ ${bat} != ${prevbat} ]] && [[ ${bat} < 10 ]] ; then
+    notify-send "Battery Alert!" "Battery is ${bat}%"
+  fi
+
+  echo ${bat}>${HOME}/.bin/currbat
+  sleep 30
+done
+
