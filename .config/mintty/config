@@ -1,0 +1,57 @@
+# General
+Transparency=low
+CursorType=block
+CursorBlinks=yes
+Font=Anonymice NF
+FontHeight=11
+FontSmoothing=full
+AllowBlinking=yes
+BoldAsFont=yes
+Printer=
+Columns=166
+Rows=45
+Scrollbar=none
+Padding=20
+RowSpacing=5
+FontWeight=400
+
+# Dracula Colour Scheme
+ForegroundColour=248,248,242
+BackgroundColour=40,42,54
+Black=0,0,0
+BoldBlack=104,104,104
+Red=255,85,85
+BoldRed=255,110,103
+Green=80,250,123
+BoldGreen=90,247,142
+Yellow=241,250,140
+BoldYellow=244,249,157
+Blue=202,169,250
+BoldBlue=202,169,250
+Magenta=255,121,198
+BoldMagenta=255,146,208
+Cyan=139,233,253
+BoldCyan=154,237,254
+White=191,191,191
+BoldWhite=230,230,230
+
+# Colour Scheme
+# BackgroundColour=234,234,234
+# ForegroundColour=41,41,41
+# CursorColour=41,41,41
+# Black=41,41,41
+# BoldBlack=128,128,128
+# Red=178,97,77
+# BoldRed=211,164,152
+# Green=77,178,97
+# BoldGreen=152,211,164
+# Yellow=158,178,77
+# BoldYellow=199,211,152
+# Blue=97,77,178
+# BoldBlue=164,152,211
+# Magenta=178,77,158
+# BoldMagenta=211,152,199
+# Cyan=77,158,178
+# BoldCyan=152,199,211
+# White=234,234,234
+# BoldWhite=255,255,255
