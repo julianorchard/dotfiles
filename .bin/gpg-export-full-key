@@ -1,0 +1,8 @@
+#!/bin/sh
+
+[ -z $1 ] && echo "This command requires the email associated with the key as an argument." && exit 0
+
+current_datetime=$(date +"%Y-%m-%d_%I-%M-%S")
+
+gpg --output "public_${current_datetime}_${1}.gpg" --armor --export ${1}
+gpg --output "private_${current_datetime}_${1}.gpg" --armor --export-secret-key ${1}
