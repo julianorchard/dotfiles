@@ -352,7 +352,7 @@ global refresherStatus := false
 }
 
 ;; Right Click in Signal Desktop to
-;; quickly react to the message clicked
+;; react to message clicked
 ~RButton::
 {
   Sleep(200)
