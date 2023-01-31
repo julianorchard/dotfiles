@@ -12,6 +12,9 @@
 "                  AUTO-COPY VIMRC TO WIN LOCATION, IF CYGWIN                  "
 " ~~~~~~~~~~~~~~~~~~~ AND IF IT'S A VIM FILE BEING EDITED ~~~~~~~~~~~~~~~~~~~~ "
     if expand('%:p:h') =~ '.vim' && has('win32unix')
+      if !isdirectory($HOME . "/vimfiles/")
+        call mkdir($HOME . "/vimfiles/", "p")
+      en
       silent !cp ~/.vim/vimrc ~/vimfiles/vimrc
       silent !cp ~/.vim/gvimrc ~/vimfiles/gvimrc
     en
@@ -247,8 +250,8 @@
   iab rubyenv #!/c/MAMP/bin/ruby/bin/ruby.exe
   iab pythonenv #!/c/MAMP/bin/python/bin/python.exe
   iab ~~ Julian Orchard <hello@julianorchard.co.uk>
-  iab <expr> ~g substitute(system('git config --global user.name') . " <" .
-     \system('git config --global user.email') . ">", '\n', '', 'g')
+  let gcfg = "git config --global "
+  iab <expr> ~g substitute(system(gcfg . 'user.name') . " <" . system(gcfg . 'user.email') . ">", '\n', '', 'g')
   iab lipsum
 \ Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
 \ eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim
@@ -256,3 +259,4 @@
 \ commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit
 \ esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat
 \ non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+
