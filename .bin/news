@@ -1,0 +1,19 @@
+#!/bin/bash
+
+# File:        news
+# Author:      Julian Orchard <hello@julianorchard.co.uk
+# Tag Added:   2023-01-31
+# Description: This was probably written in like 2019 initially...
+
+# Gets News
+echo ""
+echo "  BBC News:"
+# Comes from this extremely long url: https://securitronlinux.com/bejiitaswrath/
+# how-to-print-out-a-list-of-all-bbc-news-headlines-with-the-command-line-this-is-very-cool/
+for i in {1..20} ; do 
+  printf "    "
+  curl -s http://feeds.bbci.co.uk/news/rss.xml | grep "<title>" | sed \
+   "s/            <title><\!\[CDATA\[//g;s/\]\]><\/title>//;" \
+   | grep -v "BBC News" | sed -ne "${i},${i}p;${i}q"
+done
+echo ""
