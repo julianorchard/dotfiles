@@ -350,3 +350,14 @@ global refresherStatus := false
   ;   ; MouseClickDrag("L", x2, y2, x, y)
   ; }
 }
+
+;; Right Click in Signal Desktop to
+;; quickly react to the message clicked
+~RButton::
+{
+  Sleep(200)
+  if WinActive("ahk_exe Signal.exe")
+  {
+    Send("{down 2}{enter}")
+  }
+}
