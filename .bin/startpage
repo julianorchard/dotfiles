@@ -1,0 +1,9 @@
+#!/bin/bash
+
+# Title:	startpage
+# By: 		kingjuliando
+# Tag Added:	08-06-2020
+# Description:  Moves the startpage to live location
+
+cp ${HOME}/.config/startpage/* /srv/http/.
+
