@@ -1,3 +1,5 @@
+# .zshrc, only for use on *nix
+#
 # Trying to fix this
 # chown root:root $(tty)
 # export GPG_TTY=$(tty)

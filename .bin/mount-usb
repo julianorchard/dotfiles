@@ -1,0 +1,8 @@
+#!/bin/sh
+
+# File:        mount-usb
+# Author:      Julian Orchard <jorchard@pm.me>
+# Tag Added:   2023-01-31
+# Description: Quick mounting udiskie.
+
+sudo udiskie &
