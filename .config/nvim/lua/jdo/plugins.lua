@@ -1,81 +1,59 @@
-return require('packer').startup(
-  function()
+return require("packer").startup(
+  function(use)
 
--- Packer Nvim
-    use {
-      'wbthomason/packer.nvim'
-    }
+    -- Packer Nvim
+    use({ "wbthomason/packer.nvim" })
 
--- Treesitter
-    use {
-      'nvim-treesitter/nvim-treesitter'
-    }
+    -- Treesitter
+    use({ "nvim-treesitter/nvim-treesitter",
+      run = ":TSUpdate"
+    })
 
--- Telescope
-    use {
-      'nvim-telescope/telescope.nvim', tag = '0.1.0',
-      requires = { {'nvim-lua/plenary.nvim' } }
-    }
--- Apperance
-    use {
-      'ap/vim-css-color'
-    }
+    -- Telescope, File Switching
+    use({ "nvim-telescope/telescope.nvim", tag = "0.1.0",
+      requires = {
+        { "nvim-lua/plenary.nvim" }
+      }
+    })
 
-    use {
-      'flazz/vim-colorschemes'
-    }
+    -- Theme, Catppuccin
+    use({ "catppuccin/nvim", as = "catppuccin" })
 
--- Bar
-    use {
-      'itchyny/lightline.vim'
-    }
+    -- Bar TODO: Replace
+    use({ "feline-nvim/feline.nvim" })
 
--- Treesitter
-    use {
-      'nvim-treesitter/nvim-treesitter', 
-      {run = ':TSUpdate'}
-    }
+    -- Devicons
+    use({ "nvim-tree/nvim-web-devicons" })
 
--- LSP
-    use {
-      'VonHeikemen/lsp-zero.nvim',
+    -- Adds Hex Colour Support
+    use({ "ap/vim-css-color" })
+
+    -- LSP Zero
+    use({
+      "VonHeikemen/lsp-zero.nvim",
       requires = {
         -- LSP Support
-        {'neovim/nvim-lspconfig'},
-        {'williamboman/mason.nvim'},
-        {'williamboman/mason-lspconfig.nvim'},
+        { "neovim/nvim-lspconfig" },
+        { "williamboman/mason.nvim" },
+        { "williamboman/mason-lspconfig.nvim" },
 
         -- Autocompletion
-        {'hrsh7th/nvim-cmp'},
-        {'hrsh7th/cmp-nvim-lsp'},
-        {'hrsh7th/cmp-buffer'},
-        {'hrsh7th/cmp-path'},
-        {'saadparwaiz1/cmp_luasnip'},
-        {'hrsh7th/cmp-nvim-lua'},
+        { "hrsh7th/nvim-cmp" },
+        { "hrsh7th/cmp-nvim-lsp" },
+        { "hrsh7th/cmp-buffer" },
+        { "hrsh7th/cmp-path" },
+        { "saadparwaiz1/cmp_luasnip" },
+        { "hrsh7th/cmp-nvim-lua" },
 
         -- Snippets
-        {'L3MON4D3/LuaSnip'},
-        {'rafamadriz/friendly-snippets'},
+        { "L3MON4D3/LuaSnip" },
+        { "rafamadriz/friendly-snippets" },
       }
-    }
+    })
 
-    use {
-      'junegunn/limelight.vim'
-    }
-    use {
-      'lambdalisue/battery.vim'
-    }
-    use {
-      'rakr/vim-two-firewatch'
-    }
-
-    use {
-      'tpope/vim-commentary'
-    }
-
-    use {
-      'julianorchard/desc.vim'
-    }
-
+    -- TODO: replace
+    use({ "lambdalisue/battery.vim" })
+    use({ "tpope/vim-commentary" })
+    use({ "julianorchard/desc.vim" })
   end
 )

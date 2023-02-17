@@ -6,7 +6,7 @@ vim.keymap.set("n", "k", "gk")
 
 -- TODO: Set <leader>x to execute script if shell, python, etc.
 
--- netrw Opener
+-- netrw Open
 vim.keymap.set("n", "<leader>d", vim.cmd.Ex)
 
 -- Double Space to CMD
