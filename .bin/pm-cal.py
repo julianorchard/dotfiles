@@ -36,6 +36,7 @@ def format_event_string(event_string):
     '''
     date_part = re.findall("[0-9]{4}-[0-9]{2}-[0-9]{2}", event_string)[0]
     date_part = date_part.replace("-", "/")
+    date_part = date_part.replace(date.today().strftime("%Y/%m/%d"), "")
 
     time_part = re.findall("[0-9]{2}:[0-9]{2}", event_string)[0]
 
