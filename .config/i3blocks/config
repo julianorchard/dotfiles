@@ -6,6 +6,10 @@ interval=60
 command=! ping -q -c1 google.com &>/dev/null && echo "No Internet "
 interval=5
 
+[calendar]
+command=~/.bin/pm-cal.py
+interval=300
+
 [battery]
 command=p=$(cat /sys/class/power_supply/BAT0/capacity); ! grep -q "Dischar" /sys/class/power_supply/BAT0/status && echo " ${p}%" && exit 0 || [ $p -gt 80 ] && echo " ${p}%" && exit 0 || [ $p -gt 60 ] && echo " ${p}%" && exit 0 || [ $p -gt 40 ] && echo " ${p}%" && exit 0 || [ $p -gt 20 ] && echo " ${p}%" && exit 0 || echo " ${p}%"
 interval=5
