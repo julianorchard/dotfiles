@@ -45,45 +45,57 @@ def print_without_comments(line):
 def main():
 
     # Start of the file, title, etc.
-    with open("../.docs/README-1.md") as preamble_file:
+    with open(f"{HOME_PATH}/.docs/README-1.md") as preamble_file:
         output = preamble_file.read()
 
     for file in os.listdir(os.fsencode(BIN_PATH)):
         filename = os.fsdecode(file)
 
-        current_file = open(f"{BIN_PATH}{filename}", 'r')
-        lines = current_file.readlines()
+        print(filename)
+        try:
+            current_file = open(f"{BIN_PATH}{filename}", "r")
+            try:
+                lines = current_file.read()
 
-        description_active = False
+                description_active = False
 
-        for line in lines:
-            if " Description:" in line:
+                for line in lines:
+                    if " Description:" in line:
 
-                # Title of the file we're getting the details of:
-                output = f"{output}### {filename} <sup>[file](.bin/{filename})</sup>\n\n"
-                description_active = True
-            elif description_active == True  \
-                and " License:"      in line \
-                 or " Code:"         in line \
-                 or " Instructions:" in line:
+                        # Title of the file we're getting the details of:
+                        output = f"{output}### {filename} <sup>[file](.bin/{filename})</sup>\n\n"
+                        description_active = True
+                    elif description_active == True  \
+                        and " License:"      in line \
+                         or " Code:"         in line \
+                         or " Instructions:" in line:
 
-                # We're no longer dealing with the description:
-                description_active = "False"
-                output = f"{output}\n\n"
-                break
-            elif description_active == True and line != "\n":
+                        # We're no longer dealing with the description:
+                        description_active = "False"
+                        output = f"{output}\n\n"
+                        break
+                    elif description_active == True and line != "\n":
 
-                # Output the line without the comment, ideally:
-                output = f"{output}{print_without_comments(line)}"
+                        # Output the line without the comment, ideally:
+                        output = f"{output}{print_without_comments(line)}"
 
-    # Finish the file off!
-    with open("../.docs/README-2.md") as postamble_file:
-        output = f"{output}{postamble_file.read()}"
+                current_file.close
 
-    # Write to the file
-    with open(README_FILE, "w") as out_file:
-        # Regex replace if more than three line breaks + multiple spaces
-        out_file.write(re.sub("[\r\n]{3,}|[\s]{2,}", "\n\n", output))
+            except UnicodeError:
+                continue
 
-if __name__ == '__main__':
+        except IsADirectoryError:
+            continue
+
+        # Finish the file off!
+        with open(f"{HOME_PATH}/.docs/README-2.md") as postamble_file:
+            output = f"{output}{postamble_file.read()}"
+
+        # Write to the file
+        with open(README_FILE, "w") as out_file:
+            # Regex replace if more than three line breaks + multiple spaces
+            out_file.write(re.sub("[\r\n]{3,}|[ ]{2,}", "\n\n", output))
+
+
+if __name__ == "__main__":
     main()
