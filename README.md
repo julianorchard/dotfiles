@@ -65,13 +65,7 @@ Run sxiv with an alias command.
 
 The command used to manage the bare repo: ```cmd git --git-dir=%HOME%/.dotfiles/ --work-tree=%HOME% ``` ... for use in the Windows CMD.
 
-### brightness <sup>[file](.bin/brightness)</sup>
-
-file=/sys/class/backlight/intel_backlight/brightness if [ ! -z ${1} ] && [ ${1} -lt 100 ] && [ ${1} -gt 0 ] ; then
-
-echo $(((3000/100)*${1})) > ${file} else
-
-echo "This command requires a value between 1 and 100." fi ### pm-cal.py <sup>[file](.bin/pm-cal.py)</sup>
+### pm-cal.py <sup>[file](.bin/pm-cal.py)</sup>
 
 Simply returns your next ical event from Proton Calendar.
 
@@ -92,10 +86,6 @@ send notifications when someone you're 'following' posts. Uses [Proxitok](https:
 ### cp.bat <sup>[file](.bin/cp.bat)</sup>
 
 In case I forget I'm using CMD.
-
-### multi-screen.sh <sup>[file](.bin/multi-screen.sh)</sup>
-
-dual monitor setup. xrandr --output VGA-1 --mode "1920x1080_60.00" --output LVDS-1 --auto --left-of VGA-1
 
 ### numberddomainseach.bat <sup>[file](.bin/numberddomainseach.bat)</sup>
 
@@ -148,10 +138,6 @@ Should only be used until learnt properly (I don't really use it anymore). Used 
 ### countdown.ps1 <sup>[file](.bin/countdown.ps1)</sup>
 
 Send annoying reminder emails every X until X (counting down until then).
-
-### screenshot <sup>[file](.bin/screenshot)</sup>
-
-Define Name name=${1} if [[ name = "" ]] ; then name="test" ; fi Capture scrot ${HOME}/%Y-%m-%d-${name}.jpg -e $(notify-send "Screenshot Captured" "%Y-%m-%d-$name")
 
 ### rm.bat <sup>[file](.bin/rm.bat)</sup>
 
