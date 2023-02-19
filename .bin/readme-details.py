@@ -22,9 +22,9 @@ from pathlib import Path
 import os
 import re
 
-HOME_PATH = str(Path.home())
+HOME_PATH   = str(Path.home())
 README_FILE = f"{HOME_PATH}/README.md"
-BIN_PATH = f"{HOME_PATH}/.bin/"
+BIN_PATH    = f"{HOME_PATH}/.bin/"
 
 def print_without_comments(line):
     '''
@@ -51,11 +51,10 @@ def main():
     for file in os.listdir(os.fsencode(BIN_PATH)):
         filename = os.fsdecode(file)
 
-        print(filename)
         try:
             current_file = open(f"{BIN_PATH}{filename}", "r")
             try:
-                lines = current_file.read()
+                lines = current_file.readlines()
 
                 description_active = False
 
@@ -87,14 +86,14 @@ def main():
         except IsADirectoryError:
             continue
 
-        # Finish the file off!
-        with open(f"{HOME_PATH}/.docs/README-2.md") as postamble_file:
-            output = f"{output}{postamble_file.read()}"
+    # Finish the file off!
+    with open(f"{HOME_PATH}/.docs/README-2.md") as postamble_file:
+        output = f"{output}{postamble_file.read()}"
 
-        # Write to the file
-        with open(README_FILE, "w") as out_file:
-            # Regex replace if more than three line breaks + multiple spaces
-            out_file.write(re.sub("[\r\n]{3,}|[ ]{2,}", "\n\n", output))
+    # Write to the file
+    with open(README_FILE, "w") as out_file:
+        # Regex replace if more than three line breaks + multiple spaces
+        out_file.write(re.sub("[\r\n]{3,}|[\s]{2,}", "\n\n", output))
 
 
 if __name__ == "__main__":
