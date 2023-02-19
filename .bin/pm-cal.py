@@ -66,8 +66,6 @@ def main():
         except:
             continue
 
-    # TODO: This is only getting the date right, not the time
-    # for some reason... so fix that at some point:
     time_now = datetime.now().strftime(f"%Y-%m-%dT%H:%M:%S+00:00 {SEARCH_MARKER}")
     event_list.append(time_now)
     event_list = sorted(event_list)
