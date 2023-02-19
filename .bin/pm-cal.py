@@ -1,12 +1,22 @@
 #!/usr/bin/env python
 
-# File:        pm-cal.py
-# Author:      Julian Orchard <hello@julianorchard.co.uk
-# Tag Added:   2023-02-16
-# Description: Very simple script to get my calendar data to my i3 bar.
+
+##   pm-cal.py  ---  Return next calendar event.
+
+# Copyright (c) 2023  Julian Orchard <jorchard@pm.me>
+
+## Description:
+
+# Simply returns your next ical event from Proton Calendar.
+
+## License:
+
+# See /LICENSE file in the root of this repository.
+
+## Code:
 
 
-from datetime import date
+from datetime import datetime
 from ics import Calendar
 import re
 import requests
@@ -36,6 +46,7 @@ def format_event_string(event_string):
     '''
     date_part = re.findall("[0-9]{4}-[0-9]{2}-[0-9]{2}", event_string)[0]
     date_part = date_part.replace("-", "/")
+    date_part = date_part.replace(datetime.now().strftime("%Y/%m/%d"), "")
 
     time_part = re.findall("[0-9]{2}:[0-9]{2}", event_string)[0]
 
@@ -55,9 +66,7 @@ def main():
         except:
             continue
 
-    # TODO: This is only getting the date right, not the time
-    # for some reason... so fix that at some point:
-    time_now = date.today().strftime(f"%Y-%m-%dT%H:%M:%S+00:00 {SEARCH_MARKER}")
+    time_now = datetime.now().strftime(f"%Y-%m-%dT%H:%M:%S+00:00 {SEARCH_MARKER}")
     event_list.append(time_now)
     event_list = sorted(event_list)
 
