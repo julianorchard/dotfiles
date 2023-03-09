@@ -7,7 +7,7 @@ exec --no-startup-id picom -b
 for_window [class="^.*"] border pixel 0
 
 # Wallpapers
-exec nitrogen --set-auto ~/Images/senjougahara.jpg
+exec feh --bg-fill ~/Images/senjougahara.jpg
 
 # Notification Daemon
 exec_always --no-startup-id dunst -config ~/.config/dunst/dunstrc
@@ -30,9 +30,15 @@ bindsym $mod+j focus up
 bindsym $mod+l focus right
 
 bindsym $mod+Shift+h move left
-bindsym $mod+Shift+k move down
-bindsym $mod+Shift+j move up
+bindsym $mod+Shift+j move down
+bindsym $mod+Shift+k move up
 bindsym $mod+Shift+l move right
+
+# Multiple Monitors
+bindsym $mod+Shift+Ctrl+k move container to output up ; focus output up
+bindsym $mod+Shift+Ctrl+j move container to output down ; focus output down
+bindsym $mod+Ctrl+k focus output up
+bindsym $mod+Ctrl+j focus output down
 
 bindsym $mod+a focus parent
 bindsym $mod+e layout toggle split
@@ -64,6 +70,8 @@ bindsym $mod+Shift+c reload
 bindsym $mod+Shift+r restart
 bindsym $mod+Shift+e exec "i3-nagbar -t warning -m 'You pressed the exit shortcut. Do you really want to exit i3? This will end your X session.' -B 'Yes, exit i3' 'i3-msg exit'"
 
+for_window [class="Signal" instance="signal-desktop"] floating enable sticky
+
 assign [class="Firefox"] $ws2
 assign [class="Emacs"]   $ws4
 assign [class="Spotify"] $ws5
@@ -91,7 +99,7 @@ bar {
   strip_workspace_numbers yes
   status_command i3blocks
   hidden_state show
-  font pango:file-icons-10 10
+  font pango:file-icons-10, Noto Mono 10
   colors {
     background         #1E1E1EEE
     statusline         #FF0088
