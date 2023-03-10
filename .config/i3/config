@@ -7,7 +7,10 @@ exec --no-startup-id picom -b
 for_window [class="^.*"] border pixel 0
 
 # Wallpapers
-exec feh --bg-fill ~/Images/senjougahara.jpg
+exec ~/.bin/layout laptop
+bindsym Ctrl+Shift+1 exec ~/.bin/layout laptop
+bindsym Ctrl+Shift+2 exec ~/.bin/layout desktop
+bindsym Ctrl+Shift+3 exec ~/.bin/layout deskonly
 
 # Notification Daemon
 exec_always --no-startup-id dunst -config ~/.config/dunst/dunstrc
