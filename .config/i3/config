@@ -6,7 +6,7 @@ exec --no-startup-id nm-applet
 exec --no-startup-id picom -b
 for_window [class="^.*"] border pixel 0
 
-# Wallpapers
+# Screen Layouts
 exec ~/.bin/layout laptop
 bindsym Ctrl+Shift+1 exec ~/.bin/layout laptop
 bindsym Ctrl+Shift+2 exec ~/.bin/layout desktop
