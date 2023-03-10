@@ -1,0 +1,58 @@
+#!/bin/sh
+
+##   layout  ---  Set default screen layouts.
+
+# Copyright (c) 2023 Julian Orchard <jorchard@pm.me>
+
+## Description:
+
+# Set default screen layouts using xrandr and resetting the
+# wallpaper, basically.
+
+## License:
+
+# See /LICENSE file in the root of this repository.
+
+## Code:
+
+DEFAULT_BACKGROUND="${HOME}/Images/senjougahara.jpg"
+
+laptop() {
+  xrandr --output LVDS1 --primary --mode 1366x768 --pos 0x0 --rotate normal --output DP1 --off --output DP2 --off --output DP3 --off --output HDMI1 --off --output HDMI2 --off --output HDMI3 --off --output VGA1 --off --output VIRTUAL1 --off
+}
+
+desktop() {
+  xrandr --output LVDS1 --primary --mode 1366x768 --pos 157x1050 --rotate normal --output DP1 --off --output DP2 --off --output DP3 --off --output HDMI1 --off --output HDMI2 --off --output HDMI3 --off --output VGA1 --mode 1680x1050 --pos 0x0 --rotate normal --output VIRTUAL1 --off
+}
+
+desktop_only() {
+  xrandr --output LVDS1 --off --output DP1 --off --output DP2 --off --output DP3 --off --output HDMI1 --off --output HDMI2 --off --output HDMI3 --off --output VGA1 --mode 1680x1050 --pos 0x0 --rotate normal --output VIRTUAL1 --off
+}
+
+set_background() {
+  feh --bg-fill $DEFAULT_BACKGROUND
+}
+
+usage() {
+  echo "Accepted arguments for this command are 'laptop', 'desktop', and 'deskonly'."
+}
+
+[ -z $1 ] && usage && exit 0
+
+case $1 in
+  laptop)
+    laptop
+    set_background
+    ;;
+  desktop)
+    desktop
+    set_background
+    ;;
+  deskonly)
+    desktop_only
+    set_background
+    ;;
+  *)
+    usage
+esac
+
