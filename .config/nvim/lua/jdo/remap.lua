@@ -16,3 +16,11 @@ vim.keymap.set("n", "<leader> ", ":")
 vim.keymap.set("v", "<tab>", ">vgv")
 vim.keymap.set("v", "<s-tab", "<vgv")
 
+-- ... partly because fun, but also to learn
+vim.keymap.set("v", "<leader>r13", function ()
+  vim.cmd("'<,'>s/t/p/g")
+end)
+
+-- this is a test
+
+
