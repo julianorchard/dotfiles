@@ -45,8 +45,9 @@ def format_event_string(event_string):
     yyyy-mm-dd HH:mm - Title of Event
     '''
     date_part = re.findall("[0-9]{4}-[0-9]{2}-[0-9]{2}", event_string)[0]
-    date_part = date_part.replace("-", "/")
-    date_part = date_part.replace(datetime.now().strftime("%Y/%m/%d"), "")
+    date_as_date = datetime.strptime(date_part, '%Y-%m-%d')
+    date_as_string = date_as_date.strftime("%m<span font='Reggae One'>月</span>%d<span font='Reggae One'>日</span>")
+    date_part = date_as_string
 
     time_part = re.findall("[0-9]{2}:[0-9]{2}", event_string)[0]
 

@@ -2,12 +2,12 @@
 -- comments, plus some Primaegeans stuff
 
 require'nvim-treesitter.configs'.setup {
-  ensure_installed = { "javascript", 
-                       "typescript", 
-                       "python", 
-                       "c", 
-                       "lua", 
-                       "vim", 
+  ensure_installed = { "javascript",
+                       "typescript",
+                       "python",
+                       "c",
+                       "lua",
+                       "vim",
                        "help"
                      },
   sync_install = false,
@@ -15,4 +15,8 @@ require'nvim-treesitter.configs'.setup {
   highlight = {
     enable = true,
   },
+  require "nvim-treesitter.configs".setup {
+    tree_docs = {enable = true}
+  },
 }
+

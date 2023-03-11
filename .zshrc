@@ -25,16 +25,16 @@ export PATH="$NPM_PACKAGES"/bin:"$PATH"
 export PASSWORD_STORE_DIR="$XDG_DATA_HOME"/pass
 # X11
 export XAUTHORITY="$XDG_RUNTIME_DIR"/Xauthority
-export XINITRC="$XDG_CONFIG_HOME"/X11/xinitrc 
+export XINITRC="$XDG_CONFIG_HOME"/X11/xinitrc
 # HISTFILE
 HISTFILE=~/.cache/zsh/zsh_histfile
-# ZDOTDIR (not sure if this changes the HISTFILE, 
+# ZDOTDIR (not sure if this changes the HISTFILE,
 # so setting it for zcompdump anyway)
 ZDOTDIR=~/.cache/zsh/
 
 HISTSIZE=1000
 SAVEHIST=2000
-# AutoCD (cd without cd) and 
+# AutoCD (cd without cd) and
 # Notify of background processes
 setopt autocd notify
 bindkey -e
@@ -42,8 +42,10 @@ zstyle :compinstall filename '/home/ju/.zshrc'
 autoload -Uz compinit
 compinit
 
-PROMPT=" △  %1~  "
+autoload -U colors && colors
+PROMPT=" %{$fg[red]%}▲%{$reset_color%}  %1~  "
 
+setxkbmap gb
 export LANG=en_GB.UTF8
 export LANGUAGE=en_GB.UTF8
 export LC_CTYPE=en_GB.UTF8
@@ -53,6 +55,9 @@ export BROWSER="firefox"
 export FILE="ranger"
 export TERMINAL="kitty"
 
+# Aliases:
+
+alias s='kitty +kitten ssh'
 alias config='git --git-dir=$HOME/.dotfiles/ --work-tree=$HOME'
 alias cls='clear'
 alias free="free -h"
@@ -60,7 +65,7 @@ alias md="mkdir -p"
 alias xc="xclip -sel c <"
 alias site='cd /srv/http/'
 alias home='cd ${HOME}'
-[ -x /usr/bin/bat ] && alias cat="bat" 
+[ -x /usr/bin/bat ] && alias cat="bat"
 [ -x /usr/bin/hue ] && alias lights='hue lights'
 [ -x /usr/bin/kitty ] && alias iv="kitty +kitten icat"
 if [ -x /usr/bin/lsd ] ; then
@@ -74,10 +79,22 @@ else
 fi
 [ -x /usr/bin/neomutt ] && alias mutt='neomutt'
 [ -x /usr/bin/nvim ] && alias vim='nvim'
-[ -x /usr/bin/protonvpn ] && alias vpn="protonvpn"  
+[ -x /usr/bin/protonvpn ] && alias vpn="protonvpn"
 [ -x /usr/bin/ranger ] && alias r="ranger"
+alias fix_keyboard="setxkbmap -layout gb"
 [ -x /usr/bin/sxiv ] && [ -z "${HOME}/.bin/sxiv.sh" ] && alias sxiv="${HOME}/.bin/sxiv.sh"
 [ -x /usr/bin/zathura ] && [ -z "${HOME}/.bin/zath.sh" ] && alias z="${HOME}/.bin/zath.sh"
+
+# Bind Keys:
+
+bindkey -v
+bindkey "^H" backward-kill-word
+# This, annoyingly, doesn't work, as I need to be
+# able to type capical D and capital C... Not sure
+# if this is a known issue, but it's very annoying:
+#bindkey "\e[1;3D" backward-word
+#bindkey "\e[1;3C" forward-word
+
 
 export PATH=${PATH}:${HOME}/.local/bin/
 systemctl -q is-active graphical.target && [[ ! $DISPLAY && $XDG_VTNR -eq 1 ]] && exec startx ${HOME}/.config/X11/xinitrc

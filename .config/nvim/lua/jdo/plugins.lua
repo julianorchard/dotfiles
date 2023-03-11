@@ -36,6 +36,7 @@ return require("packer").startup(
         { "neovim/nvim-lspconfig" },
         { "williamboman/mason.nvim" },
         { "williamboman/mason-lspconfig.nvim" },
+        { "nvim-treesitter/nvim-tree-docs" },
 
         -- Autocompletion
         { "hrsh7th/nvim-cmp" },
@@ -50,6 +51,17 @@ return require("packer").startup(
         { "rafamadriz/friendly-snippets" },
       }
     })
+
+    -- Vim Doge (Documentation)
+    use {
+      "kkoomen/vim-doge",
+      run = ":call doge#install()"
+    }
+
+    -- Org Mode
+    use({'nvim-orgmode/orgmode', config = function()
+      require('orgmode').setup{}
+    end})
 
     -- TODO: replace
     use({ "lambdalisue/battery.vim" })
