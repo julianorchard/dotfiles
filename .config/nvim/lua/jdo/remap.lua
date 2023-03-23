@@ -21,6 +21,13 @@ vim.keymap.set("v", "<leader>r13", function ()
   vim.cmd("'<,'>s/t/p/g")
 end)
 
--- this is a test
+vim.keymap.set("n", "<leader>sv", function ()
+  vim.api.nvim_command("botright vsplit new")
+end)
 
+vim.keymap.set("n", "<leader>h", "<C-w>h")
+vim.keymap.set("n", "<leader>j", "<C-w>j")
+vim.keymap.set("n", "<leader>k", "<C-w>k")
+vim.keymap.set("n", "<leader>l", "<C-w>l")
+vim.keymap.set("n", "<leader>r", "<C-w>r")
 

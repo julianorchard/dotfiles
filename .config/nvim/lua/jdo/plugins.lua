@@ -53,15 +53,18 @@ return require("packer").startup(
     })
 
     -- Vim Doge (Documentation)
-    use {
+    use({
       "kkoomen/vim-doge",
       run = ":call doge#install()"
-    }
+    })
 
     -- Org Mode
-    use({'nvim-orgmode/orgmode', config = function()
-      require('orgmode').setup{}
+    use({"nvim-orgmode/orgmode", config = function()
+      require("orgmode").setup{}
     end})
+
+    -- Submode
+    use({"kana/vim-submode"})
 
     -- TODO: replace
     use({ "lambdalisue/battery.vim" })
