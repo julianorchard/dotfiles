@@ -9,3 +9,7 @@ bookmarks
 tramp
 etc
 emojis
+# This is by other people
+site-lisp/
+# Most of these are snippets from the snippet repo
+snippets/
