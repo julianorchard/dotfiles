@@ -1,15 +1,29 @@
--- Pretty much from the README minus
--- comments, plus some Primaegeans stuff
-
 require'nvim-treesitter.configs'.setup {
-  ensure_installed = { "javascript",
-                       "typescript",
-                       "python",
-                       "c",
-                       "lua",
-                       "vim",
-                       "help"
-                     },
+  ensure_installed = {
+    "bash",
+    "c",
+    "css",
+    "help",
+    "html",
+    "javascript",
+    "jsdoc",
+    "jsonc",
+    "latex",
+    "lua",
+    "markdown",
+    "org",
+    "php",
+    "python",
+    "ruby",
+    "scss",
+    "tsx",
+    "typescript",
+    "vim",
+    -- "ahk",
+    -- "bat",
+    -- "elisp",
+    -- "powershell",
+  },
   sync_install = false,
   auto_install = true,
   highlight = {

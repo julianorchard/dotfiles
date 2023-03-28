@@ -22,7 +22,7 @@ return require("packer").startup(
     use({ "catppuccin/nvim", as = "catppuccin" })
 
     -- Bar TODO: Replace
-    use({ "feline-nvim/feline.nvim" })
+    use({ "freddiehaddad/feline.nvim" })
 
     -- Devicons
     use({ "nvim-tree/nvim-web-devicons" })
@@ -68,9 +68,11 @@ return require("packer").startup(
     -- Submode
     use({"kana/vim-submode"})
 
-    -- TODO: replace
-    use({ "lambdalisue/battery.vim" })
-    use({ "tpope/vim-commentary" })
-    use({ "julianorchard/desc.vim" })
+    -- Commentary
+    use({"tpope/vim-commentary"})
+    use({"tpope/vim-fugitive"})
+
+    -- use({"julianorchard/desc.vim"})
+
   end
 )
