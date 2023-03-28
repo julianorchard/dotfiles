@@ -1,12 +1,12 @@
+vim.g.submode_always_show_submode = 1
+vim.g.submode_timeout = false
+vim.g.submode_timeoutlen = 1000
+
 -- Rewritten from https://ddrscott.github.io/blog/2016/making-a-window-submode/
 -- but with neovim and lua in mind
 
-vim.g.submode_always_show_submode = 1
-vim.g.submode_timeout = true
-vim.g.submode_timeoutlen = 1000
-
 vim.fn["submode#enter_with"](
-  "window", "n", "", "<C-w>"
+  "window", "n", "", "<leader>w"
 )
 vim.fn["submode#leave_with"](
   "window", "n", "", "<Esc>"
@@ -26,6 +26,4 @@ local symbols = { "=", "_", "+", "-", "<", ">" }
 for _, v in ipairs(symbols) do
   vim.fn["submode#map"]("window", "n", "", v, "<C-w" .. v)
 end
-
-
 

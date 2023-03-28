@@ -16,6 +16,8 @@ return require("packer").startup(
       }
     })
 
+    use({ "ThePrimeagen/harpoon" })
+
     -- Theme, Catppuccin
     use({ "catppuccin/nvim", as = "catppuccin" })
 

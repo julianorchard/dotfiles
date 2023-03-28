@@ -56,7 +56,6 @@ export FILE="ranger"
 export TERMINAL="kitty"
 
 # Aliases:
-
 alias s='kitty +kitten ssh'
 alias config='git --git-dir=$HOME/.dotfiles/ --work-tree=$HOME'
 alias cls='clear'
