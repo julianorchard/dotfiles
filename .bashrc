@@ -9,6 +9,10 @@ alias ll='ls -alF'
 alias la='ls -A'
 alias l='ls -CF'
 
+# If these exist...
+[ -x /usr/bin/nvim ] && alias vim='nvim'
+
+
 # PS1
 export PS1=" \w > \[$(tput sgr0)\]"
 
@@ -67,6 +71,11 @@ function exec_linux() {
 	export XAUTHORITY="$XDG_RUNTIME_DIR"/Xauthority
 	export XINITRC="$XDG_CONFIG_HOME"/X11/xinitrc
 
+  # Node Version Manager
+  export NVM_DIR="$HOME/.nvm"
+  [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
+  [ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"
+
 }
 
 syst=$(uname)
@@ -81,6 +90,5 @@ case "${syst}" in
         ;;
     *)  ;;
 esac
-
 
 
