@@ -45,13 +45,13 @@ compinit
 autoload -U colors && colors
 PROMPT=" %{$fg[red]%}▲%{$reset_color%}  %1~  "
 
-setxkbmap gb
+[ -x setxkbmap ] && setxkbmap gb
 export LANG=en_GB.UTF8
 export LANGUAGE=en_GB.UTF8
 export LC_CTYPE=en_GB.UTF8
 
 export BROWSER="firefox"
-[ -x /usr/bin/nvim ] && export EDITOR="nvim" || export EDITOR="vim"
+[ -x nvim ] && export EDITOR="nvim" & alias vim="nvim" || export EDITOR="vim"
 export FILE="ranger"
 export TERMINAL="kitty"
 
@@ -77,7 +77,6 @@ else
     alias ls="ls --color=tty"
 fi
 [ -x /usr/bin/neomutt ] && alias mutt='neomutt'
-[ -x /usr/bin/nvim ] && alias vim='nvim'
 [ -x /usr/bin/protonvpn ] && alias vpn="protonvpn"
 [ -x /usr/bin/ranger ] && alias r="ranger"
 alias fix_keyboard="setxkbmap -layout gb"
