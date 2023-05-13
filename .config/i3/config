@@ -104,13 +104,25 @@ bar {
   hidden_state show
   font pango:file-icons-10, Noto Mono 10
   colors {
-    background         #1E1E1EEE
-    statusline         #FF0088
-    separator          #FF75BF
-    focused_workspace  #D12480AA #D12480   #1E1E1E
-    active_workspace   #D12480AA #D12480   #1E1E1E
-    inactive_workspace #1E1E1EEE #1E1E1EEE #555555
-    urgent_workspace   #1E1E1EEE #FF0088   #FFFFFF
-    binding_mode       #1E1E1E00 #FF75BFEE #000000
+    background #000000
+    statusline #f38ba8
+    separator #CBA6F7
+    focused_workspace #F5C2E7 #000000 #F5C2E7
+    active_workspace #CBA6F7 #000000 #CBA6F7
+    inactive_workspace #000000 #CDD6F4 #000000
+    urgent_workspace #000000 #f38ba8 #CDD6F4
   }
+
+
+  # colors {
+  #   background         #1E1E1EEE
+  #   statusline         #FF0088
+  #   separator          #ff75bf
+  #   focused_workspace  #D12480AA #D12480   #1E1E1E
+  #   active_workspace   #D12480AA #D12480   #1E1E1E
+  #   inactive_workspace #1E1E1EEE #1E1E1EEE #555555
+  #   urgent_workspace   #1E1E1EEE #FF0088   #FFFFFF
+  #   binding_mode       #1E1E1E00 #FF75BFEE #000000
+  # }
+
 }

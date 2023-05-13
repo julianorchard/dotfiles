@@ -1,0 +1,21 @@
+window:
+  dynamic_padding: true
+  padding:
+    x: 3
+    y: 3
+  opacity: 0.9
+
+font:
+  size: 8.0
+  normal:
+#   family: Noto Sans Mono
+    family: FiraCode Nerd Font Mono
+    style: Light
+
+key_bindings:
+  - { key: Equals, mods: Command, action: IncreaseFontSize }
+  - { key: Minus,  mods: Command, action: DecreaseFontSize }
+
+cursor:
+  style: Underline
+  vi_mode_style: Block
