@@ -98,6 +98,7 @@ alias l='ls -CF'
 # Editors
 
 [ -x /usr/bin/nvim ] && alias vim='nvim'
+[ -x /snap/bin/nvim ] && alias vim='nvim'
 [ -x /usr/bin/emacs ] && alias e="/usr/bin/emacs &"
 
 
@@ -174,7 +175,8 @@ alias ss="sudo systemctl"
 if [ -x /usr/bin/exa ] ; then
 
   alias ls="exa --icons"
-  alias ll="exa -la --icons"
+  alias ll="exa -l --icons"
+  alias la="exa -la --icons"
   alias tree="exa -laT"
   alias treegit="exa -laT --git-ignore"
 
@@ -183,7 +185,7 @@ fi
 
 # Batcat
 
-[ -x /usr/bin/batcat ] && alias cat=batcat
+[ -x $HOME/.cargo/bin/bat ] && alias cat=bat
 
 
 # Tmux
@@ -196,6 +198,8 @@ function ta() {
 
 
 # Exports
+
+XDG_CONFIG_HOME="$HOME/.config/"
 
 export BUNDLE_USER_CONFIG="$XDG_CONFIG_HOME"/bundle
 export BUNDLE_USER_CACHE="$XDG_CACHE_HOME"/bundle
@@ -224,6 +228,10 @@ export NVM_DIR="$HOME/.nvm"
 [ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"
 
 export PATH=$PATH:$HOME/.local/bin
+export PATH=$PATH:$HOME/.bin
+export PATH=$PATH:$HOME/.cargo/bin
+
+export BROWSER=/usr/bin/firefox
 
 
 # Git Bash / Cygwin Only
@@ -250,3 +258,4 @@ esac
 
 
 complete -C /usr/bin/terraform terraform
+. "$HOME/.cargo/env"

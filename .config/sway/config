@@ -1,14 +1,24 @@
 set $mod Mod4
-font pango:file-icons:Fira Code:monospace 12
+font pango:file-icons:Fira Code:monospace 10
+exec systemctl --user import-environment
 exec --no-startup-id dex --autostart --environment i3
-exec --no-startup-id xss-lock --transfer-sleep-lock -- i3lock --nofork --bar-indicator
+exec --no-startup-id xss-lock --transfer-sleep-lock -- swaylock
 exec --no-startup-id nm-applet
 exec --no-startup-id picom -b
-exec --no-startup-id syncthing
 for_window [class="^.*"] border pixel 0
+default_border none
+default_floating_border none
+font pango:monospace 0
+titlebar_padding 1
+titlebar_border_thickness 0
+
+input * {
+  xkb_layout "gb"
+  xkb_options "ctrl:nocaps"
+}
 
 # Screen Layouts
-exec ~/.bin/layout laptop
+#exec ~/.bin/layout laptop
 bindsym Ctrl+Shift+1 exec ~/.bin/layout laptop
 bindsym Ctrl+Shift+2 exec ~/.bin/layout desktop
 bindsym Ctrl+Shift+3 exec ~/.bin/layout deskonly
@@ -16,22 +26,23 @@ bindsym Ctrl+Shift+3 exec ~/.bin/layout deskonly
 # Notification Daemon
 exec_always --no-startup-id dunst -config ~/.config/dunst/dunstrc
 
-set $refresh_i3status killall -SIGUSR1 i3status
-# Brightness
 bindsym XF86MonBrightnessDown exec light -U 5
 bindsym XF86MonBrightnessUp exec light -A 5
 bindsym Ctrl+XF86MonBrightnessDown exec light -S 2
 bindsym Ctrl+XF86MonBrightnessUp exec light -S 100
-# Volume
+
+
+set $refresh_i3status killall -SIGUSR1 i3status
 bindsym XF86AudioRaiseVolume exec --no-startup-id pactl set-sink-volume @DEFAULT_SINK@ +10% && $refresh_i3status
 bindsym XF86AudioLowerVolume exec --no-startup-id pactl set-sink-volume @DEFAULT_SINK@ -10% && $refresh_i3status
 bindsym XF86AudioMute exec --no-startup-id pactl set-sink-mute @DEFAULT_SINK@ toggle && $refresh_i3status
 bindsym XF86AudioMicMute exec --no-startup-id pactl set-source-mute @DEFAULT_SOURCE@ toggle && $refresh_i3status
 floating_modifier $mod
 
-bindsym $mod+Return exec alacritty
+bindsym $mod+Return exec /home/julian/.cargo/bin/alacritty
 bindsym $mod+q kill
 bindsym $mod+d exec dmenu_run -nb '#1e1e1e' -sf '#1e1e1e' -sb '#F4800D' -nf '#F4800D' -b
+bindsym $mod+semicolon exec swaylock -c 000000EE -i ~/Pictures/bg.png -F
 
 bindsym $mod+h focus left
 bindsym $mod+k focus down
@@ -44,7 +55,7 @@ bindsym $mod+Shift+k move up
 bindsym $mod+Shift+l move right
 
 # Multiple Monitors
-bindsym $mod+Shift+Ctrl+k move container to output up   ; focus output up
+bindsym $mod+Shift+Ctrl+k move container to output up ; focus output up
 bindsym $mod+Shift+Ctrl+j move container to output down ; focus output down
 bindsym $mod+Ctrl+k focus output up
 bindsym $mod+Ctrl+j focus output down
@@ -57,17 +68,11 @@ bindsym $mod+Shift+space floating toggle
 bindsym $mod+space focus mode_toggle
 bindsym $mod+v split v
 
-bindsym Print exec flameshot gui -p ~/Pictures/Screenshots/
-
-# gaps inner 5px
-# bindsym $mod+g gaps outer 10px
-# bindsym $mod+Mod1 gaps outer 0px
-
 set $ws1 "1:一"
 set $ws2 "2:二"
 set $ws3 "3:三"
 set $ws4 "4:四"
-set $ws5 "5:五"
+set $ws5 "9:五"
 
 bindsym $mod+1 workspace number $ws1
 bindsym $mod+2 workspace number $ws2
@@ -83,7 +88,7 @@ bindsym $mod+Shift+5 move container to workspace number $ws5
 
 bindsym $mod+Shift+c reload
 bindsym $mod+Shift+r restart
-
+bindsym $mod+Shift+e exec "i3-nagbar -t warning -m 'You pressed the exit shortcut. Do you really want to exit i3? This will end your X session.' -B 'Yes, exit i3' 'i3-msg exit'"
 
 for_window [class="Signal" instance="signal-desktop"] floating enable sticky
 
@@ -91,27 +96,12 @@ assign [class="Firefox"] $ws2
 assign [class="Emacs"]   $ws4
 assign [class="Spotify"] $ws5
 assign [class="Signal"]  $ws5
-assign [class="Slack"]  $ws5
-
-
-set $system_mode System (l) lock, (e) logout, (r) reboot, (s) shutdown
-mode "$system_mode" {
-    bindsym l exec i3lock-fancy
-    bindsym e exec i3-msg exit
-    bindsym r exec systemctl reboot
-    bindsym s exec systemctl poweroff
-
-    bindsym Return mode "default"
-    bindsym Escape mode "default"
-}
-bindsym $mod+Shift+e mode "$system_mode"
-
 
 mode "Resize" {
-  bindsym h resize shrink width  10 px or 10 ppt
-  bindsym j resize grow   height 10 px or 10 ppt
+  bindsym h resize shrink width 10 px or 10 ppt
+  bindsym j resize grow height 10 px or 10 ppt
   bindsym k resize shrink height 10 px or 10 ppt
-  bindsym l resize grow   width  10 px or 10 ppt
+  bindsym l resize grow width 10 px or 10 ppt
 
   bindsym Return mode "default"
   bindsym Escape mode "default"
@@ -119,44 +109,19 @@ mode "Resize" {
 
 bindsym $mod+r mode "Resize"
 
-# bindsym $mod+Shift+b exec --no-startup-id $HOME/.bin/i3bartoggle.sh
-# bindsym $mod+Shift+t exec --no-startup-id $HOME/.bin/i3bartoggle.sh
+bindsym $mod+m exec --no-startup-id $HOME/.bin/i3bartoggle.sh
 
 bar {
-# This bar is just for the systray icons!
-  id tray
-  workspace_buttons no
-  position top
-  mode hide
-  i3bar_command i3bar --transparency
-  hidden_state hide
-  modifier Mod1
-  tray_output primary
-  font pango:file-icons-10, Noto Mono 12
-  colors {
-    background #000000AA
-    statusline #f38ba8
-    separator #CBA6F7
-    focused_workspace #F5C2E7 #000000 #F5C2E7
-    active_workspace #CBA6F7 #000000 #CBA6F7
-    inactive_workspace #000000 #CDD6F4 #000000
-    urgent_workspace #000000 #f38ba8 #CDD6F4
-  }
-}
-
-bar {
-  id main
   # mode invisible
   # binding_mode_indicator no
-  tray_output none
-  i3bar_command i3bar --transparency
+  #i3bar_command i3bar --transparency
   separator_symbol " • "
   strip_workspace_numbers yes
   status_command i3blocks
   hidden_state show
-  font pango:file-icons-10, Noto Mono 12
+  font pango:file-icons-10, Noto Mono 10
   colors {
-    background #000000AA
+    background #000000
     statusline #f38ba8
     separator #CBA6F7
     focused_workspace #F5C2E7 #000000 #F5C2E7
@@ -178,3 +143,6 @@ bar {
   # }
 
 }
+
+exec swaybg -i /home/julian/Pictures/bg.png -m fill
+

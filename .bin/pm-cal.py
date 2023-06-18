@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 
 
 ##   pm-cal.py  ---  Return next calendar event.
@@ -22,7 +22,7 @@ import re
 import requests
 
 
-ICAL_URL_FROM_FILE = "/home/ju/Documents/misc/pm-cal-url.txt"
+ICAL_URL_FROM_FILE = "/home/julian/Documents/secrets/pmcal.txt"
 SEARCH_MARKER      = "THIS_MARKER"
 
 
