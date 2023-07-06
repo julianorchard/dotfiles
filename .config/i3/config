@@ -1,31 +1,36 @@
 set $mod Mod4
-font pango:file-icons:Fira Code:monospace 10
+
+# Monitors
+set $m1 HDMI-1-0
+set $m2 eDP-1
+
+font pango:file-icons:Fira Code:monospace 12
 exec --no-startup-id dex --autostart --environment i3
 exec --no-startup-id xss-lock --transfer-sleep-lock -- i3lock --nofork --bar-indicator
 exec --no-startup-id nm-applet
 exec --no-startup-id picom -b
+exec --no-startup-id syncthing
 for_window [class="^.*"] border pixel 0
-
-# Screen Layouts
-exec ~/.bin/layout laptop
-bindsym Ctrl+Shift+1 exec ~/.bin/layout laptop
-bindsym Ctrl+Shift+2 exec ~/.bin/layout desktop
-bindsym Ctrl+Shift+3 exec ~/.bin/layout deskonly
 
 # Notification Daemon
 exec_always --no-startup-id dunst -config ~/.config/dunst/dunstrc
 
 set $refresh_i3status killall -SIGUSR1 i3status
+# Brightness
+bindsym XF86MonBrightnessDown exec light -U 5
+bindsym XF86MonBrightnessUp exec light -A 5
+bindsym Ctrl+XF86MonBrightnessDown exec light -S 2
+bindsym Ctrl+XF86MonBrightnessUp exec light -S 100
+# Volume
 bindsym XF86AudioRaiseVolume exec --no-startup-id pactl set-sink-volume @DEFAULT_SINK@ +10% && $refresh_i3status
 bindsym XF86AudioLowerVolume exec --no-startup-id pactl set-sink-volume @DEFAULT_SINK@ -10% && $refresh_i3status
 bindsym XF86AudioMute exec --no-startup-id pactl set-sink-mute @DEFAULT_SINK@ toggle && $refresh_i3status
 bindsym XF86AudioMicMute exec --no-startup-id pactl set-source-mute @DEFAULT_SOURCE@ toggle && $refresh_i3status
 floating_modifier $mod
 
-bindsym $mod+Return exec i3-sensible-terminal
+bindsym $mod+Return exec alacritty
 bindsym $mod+q kill
-bindsym $mod+d exec dmenu_run -nb '#1e1e1e' -sf '#1e1e1e' -sb '#F4800D' -nf '#F4800D' -b
-bindsym $mod+semicolon exec i3lock-fancy -p -f "Fira-Code-Regular" -t "Password"
+bindsym $mod+d exec dmenu_run -nb '#181825' -sf '#f38ba8' -sb '#11111b' -nf '#89dceb' -i -p " Run: "
 
 bindsym $mod+h focus left
 bindsym $mod+k focus down
@@ -38,7 +43,7 @@ bindsym $mod+Shift+k move up
 bindsym $mod+Shift+l move right
 
 # Multiple Monitors
-bindsym $mod+Shift+Ctrl+k move container to output up ; focus output up
+bindsym $mod+Shift+Ctrl+k move container to output up   ; focus output up
 bindsym $mod+Shift+Ctrl+j move container to output down ; focus output down
 bindsym $mod+Ctrl+k focus output up
 bindsym $mod+Ctrl+j focus output down
@@ -50,79 +55,182 @@ bindsym $mod+s split h
 bindsym $mod+Shift+space floating toggle
 bindsym $mod+space focus mode_toggle
 bindsym $mod+v split v
+bindsym $mod+Shift+s sticky toggle
+
+# Screenshot
+bindsym Print exec flameshot gui -p ~/Pictures/captures/
+
+exec i3-msg gaps inner all set 15px
+bindsym $mod+g gaps inner all toggle 15px
+
+workspace 1 output $m1
+workspace 2 output $m1
+workspace 3 output $m1
+workspace 4 output $m1
+workspace 5 output $m1
+workspace 6 output $m2
+workspace 7 output $m2
+workspace 8 output $m2
+workspace 9 output $m2
+workspace 0 output $m2
 
 set $ws1 "1:一"
 set $ws2 "2:二"
 set $ws3 "3:三"
 set $ws4 "4:四"
-set $ws5 "9:五"
+set $ws5 "5:五"
+set $ws6 "6:六"
+set $ws7 "7:七"
+set $ws8 "8:八"
+set $ws9 "9:九"
+set $ws0 "0:十"
 
 bindsym $mod+1 workspace number $ws1
 bindsym $mod+2 workspace number $ws2
 bindsym $mod+3 workspace number $ws3
 bindsym $mod+4 workspace number $ws4
 bindsym $mod+5 workspace number $ws5
+bindsym $mod+6 workspace number $ws6
+bindsym $mod+7 workspace number $ws7
+bindsym $mod+8 workspace number $ws8
+bindsym $mod+9 workspace number $ws9
+bindsym $mod+0 workspace number $ws0
 
 bindsym $mod+Shift+1 move container to workspace number $ws1
 bindsym $mod+Shift+2 move container to workspace number $ws2
 bindsym $mod+Shift+3 move container to workspace number $ws3
 bindsym $mod+Shift+4 move container to workspace number $ws4
 bindsym $mod+Shift+5 move container to workspace number $ws5
+bindsym $mod+Shift+6 move container to workspace number $ws6
+bindsym $mod+Shift+7 move container to workspace number $ws7
+bindsym $mod+Shift+8 move container to workspace number $ws8
+bindsym $mod+Shift+9 move container to workspace number $ws9
+bindsym $mod+Shift+0 move container to workspace number $ws0
 
 bindsym $mod+Shift+c reload
 bindsym $mod+Shift+r restart
-bindsym $mod+Shift+e exec "i3-nagbar -t warning -m 'You pressed the exit shortcut. Do you really want to exit i3? This will end your X session.' -B 'Yes, exit i3' 'i3-msg exit'"
-
-for_window [class="Signal" instance="signal-desktop"] floating enable sticky
 
 assign [class="Firefox"] $ws2
 assign [class="Emacs"]   $ws4
-assign [class="Spotify"] $ws5
-assign [class="Signal"]  $ws5
+assign [class="Signal"]  $ws6
+assign [class="Slack"]   $ws6
+# assign [class="Chrome"]  $ws7
+assign [class="Spotify"] $ws9
 
-mode "Resize" {
-  bindsym h resize shrink width 10 px or 10 ppt
-  bindsym j resize grow height 10 px or 10 ppt
-  bindsym k resize shrink height 10 px or 10 ppt
-  bindsym l resize grow width 10 px or 10 ppt
+# Startup Applications
+exec --no-startup-id i3-msg 'workspace $ws7; exec firefox https://outlook.office365.com/mail/'
+exec_always pkill spotify && /snap/bin/spotify
+exec_always pkill slack && /snap/bin/slack
+exec_always --no-startup-id notify-send "Your i3 config file has been reloaded!"
+
+# Screen Layouts
+exec ~/.bin/layout laptop
+set $layout_mode Layouts: (1) Laptop, (2) Home, (3) Work
+mode "$layout_mode" {
+  bindsym 1 exec ~/.bin/layout laptop
+  bindsym 2 exec ~/.bin/layout home
+  bindsym 3 exec ~/.bin/layout work
+# bindsym Ctrl+Shift+2 exec ~/.bin/layout desktop
+# bindsym Ctrl+Shift+3 exec ~/.bin/layout deskonly
+  bindsym Return mode "default"
+  bindsym Escape mode "default"
+}
+bindsym Ctrl+Shift+1 mode "$layout_mode"
+
+# System Commands
+set $system_mode System: (l) Lock, (e) Logout, (r) Reboot, (s) Shutdown
+mode "$system_mode" {
+  bindsym l mode "default" ; exec i3lock-fancy
+  bindsym e exec i3-msg exit
+  bindsym r exec systemctl reboot
+  bindsym s exec systemctl poweroff
 
   bindsym Return mode "default"
   bindsym Escape mode "default"
 }
+bindsym $mod+Shift+e mode "$system_mode"
 
+# Resize
+mode "Resize" {
+  bindsym h resize shrink width  10 px or 10 ppt
+  bindsym j resize grow   height 10 px or 10 ppt
+  bindsym k resize shrink height 10 px or 10 ppt
+  bindsym l resize grow   width  10 px or 10 ppt
+
+  bindsym Return mode "default"
+  bindsym Escape mode "default"
+}
 bindsym $mod+r mode "Resize"
 
-bindsym $mod+m exec --no-startup-id $HOME/.bin/i3bartoggle.sh
+# Colours
+set $rosewater #f6e0dc
+set $flamingo  #f2cdcd
+set $pink      #f5c2e7
+set $mauve     #cba6f7
+set $red       #f38ba8
+set $maroon    #eba0ac
+set $peach     #fab387
+set $green     #a6e3a1
+set $teal      #94e2d5
+set $sky       #89dceb
+set $sapphire  #74c7ec
+set $blue      #89b4fa
+set $lavender  #b4befe
+set $text      #cdd6f4
+set $subtext1  #bac2de
+set $subtext0  #a6adc8
+set $overlay2  #9399b2
+set $overlay1  #7f849c
+set $overlay0  #6c7086
+set $surface2  #585b70
+set $surface1  #45475a
+set $surface0  #313244
+set $base      #1e1e2e
+set $mantle    #181825
+set $crust     #11111b
+
+# bindsym $mod+Shift+b exec --no-startup-id $HOME/.bin/i3bartoggle.sh
+# bindsym $mod+Shift+t exec --no-startup-id $HOME/.bin/i3bartoggle.sh
 
 bar {
+# This bar is just for the systray icons!
+  id tray
+  workspace_buttons no
+  position top
+  mode hide
+  i3bar_command i3bar --transparency
+  hidden_state hide
+  modifier Mod1
+  tray_output primary
+  font pango:file-icons-10, Noto Mono 12
+  colors {
+    background          $base
+    statusline          $text     $base   $text  $rosewater $crust
+    separator           $overlay0 $base   $text  $overlay0  $crust
+    focused_workspace   $crust    $blue   $crust $crust     $crust
+    inactive_workspace  $mantle   $mantle $text  $rosewater $crust
+    urgent_workspace    $peach    $base   $peach $overlay0  $crust
+  }
+}
+
+bar {
+  id main
   # mode invisible
   # binding_mode_indicator no
+  tray_output none
   i3bar_command i3bar --transparency
-  separator_symbol " • "
+  separator_symbol "  "
   strip_workspace_numbers yes
   status_command i3blocks
   hidden_state show
-  font pango:file-icons-10, Noto Mono 10
+  font pango:file-icons-10, Ubuntu Nerd Font 12
   colors {
-    background #000000
-    statusline #f38ba8
-    separator #CBA6F7
-    focused_workspace #F5C2E7 #000000 #F5C2E7
-    active_workspace #CBA6F7 #000000 #CBA6F7
-    inactive_workspace #000000 #CDD6F4 #000000
-    urgent_workspace #000000 #f38ba8 #CDD6F4
+    background          $base
+    statusline          $text     $base   $text  $rosewater $crust
+    separator           $overlay0 $base   $text  $overlay0  $crust
+    focused_workspace   $crust    $blue   $crust $crust     $crust
+    inactive_workspace  $mantle   $mantle $text  $rosewater $crust
+    urgent_workspace    $peach    $base   $peach $overlay0  $crust
   }
-
-
-  # colors {
-  #   background         #1E1E1EEE
-  #   statusline         #FF0088
-  #   separator          #ff75bf
-  #   focused_workspace  #D12480AA #D12480   #1E1E1E
-  #   active_workspace   #D12480AA #D12480   #1E1E1E
-  #   inactive_workspace #1E1E1EEE #1E1E1EEE #555555
-  #   urgent_workspace   #1E1E1EEE #FF0088   #FFFFFF
-  #   binding_mode       #1E1E1E00 #FF75BFEE #000000
-  # }
 
 }

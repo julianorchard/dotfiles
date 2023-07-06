@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 
 ##   readme-details.py  ---  Scrapes preamble descriptions from files.
 
@@ -48,7 +48,7 @@ def main():
     with open(f"{HOME_PATH}/.docs/README-1.md") as preamble_file:
         output = preamble_file.read()
 
-    for file in os.listdir(os.fsencode(BIN_PATH)):
+    for file in sorted(os.listdir(os.fsencode(BIN_PATH))):
         filename = os.fsdecode(file)
 
         try:

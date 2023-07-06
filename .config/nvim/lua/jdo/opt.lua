@@ -8,7 +8,7 @@ vim.opt.autoindent = true
 vim.opt.smartindent = true
 vim.opt.number = true
 vim.opt.relativenumber = true
-vim.opt.clipboard = "unnamedplus"
+vim.opt.clipboard = 'unnamed'
 vim.opt.lazyredraw = false
 
 -- Tab

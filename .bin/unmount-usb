@@ -1,8 +1,0 @@
-#!/bin/sh
-
-# File:        unmount-usb
-# Author:      Julian Orchard <jorchard@pm.me>
-# Tag Added:   2023-01-31
-# Description: Unmount udiskie.
-
-sudo udiskie-umount /run/media/root/JUSB/

@@ -6,9 +6,7 @@
 
 ## Description:
 
-# Slight refactor attempt of [this repo](https://www.zappshelter.com/wp-content/uploads/2022/01/Headshots-Stav.jpg)
-# but to include things like ability to write in uppercase/lowercase. It was
-# a fun script to write, if only for experience refactoring.
+# A fun script to write.
 
 ## License:
 

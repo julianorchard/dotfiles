@@ -1,0 +1,148 @@
+set $mod Mod4
+font pango:file-icons:Fira Code:monospace 10
+exec systemctl --user import-environment
+exec --no-startup-id dex --autostart --environment i3
+exec --no-startup-id xss-lock --transfer-sleep-lock -- swaylock
+exec --no-startup-id nm-applet
+exec --no-startup-id picom -b
+for_window [class="^.*"] border pixel 0
+default_border none
+default_floating_border none
+font pango:monospace 0
+titlebar_padding 1
+titlebar_border_thickness 0
+
+input * {
+  xkb_layout "gb"
+  xkb_options "ctrl:nocaps"
+}
+
+# Screen Layouts
+#exec ~/.bin/layout laptop
+bindsym Ctrl+Shift+1 exec ~/.bin/layout laptop
+bindsym Ctrl+Shift+2 exec ~/.bin/layout desktop
+bindsym Ctrl+Shift+3 exec ~/.bin/layout deskonly
+
+# Notification Daemon
+exec_always --no-startup-id dunst -config ~/.config/dunst/dunstrc
+
+bindsym XF86MonBrightnessDown exec light -U 5
+bindsym XF86MonBrightnessUp exec light -A 5
+bindsym Ctrl+XF86MonBrightnessDown exec light -S 2
+bindsym Ctrl+XF86MonBrightnessUp exec light -S 100
+
+
+set $refresh_i3status killall -SIGUSR1 i3status
+bindsym XF86AudioRaiseVolume exec --no-startup-id pactl set-sink-volume @DEFAULT_SINK@ +10% && $refresh_i3status
+bindsym XF86AudioLowerVolume exec --no-startup-id pactl set-sink-volume @DEFAULT_SINK@ -10% && $refresh_i3status
+bindsym XF86AudioMute exec --no-startup-id pactl set-sink-mute @DEFAULT_SINK@ toggle && $refresh_i3status
+bindsym XF86AudioMicMute exec --no-startup-id pactl set-source-mute @DEFAULT_SOURCE@ toggle && $refresh_i3status
+floating_modifier $mod
+
+bindsym $mod+Return exec /home/julian/.cargo/bin/alacritty
+bindsym $mod+q kill
+bindsym $mod+d exec dmenu_run -nb '#1e1e1e' -sf '#1e1e1e' -sb '#F4800D' -nf '#F4800D' -b
+bindsym $mod+semicolon exec swaylock -c 000000EE -i ~/Pictures/bg.png -F
+
+bindsym $mod+h focus left
+bindsym $mod+k focus down
+bindsym $mod+j focus up
+bindsym $mod+l focus right
+
+bindsym $mod+Shift+h move left
+bindsym $mod+Shift+j move down
+bindsym $mod+Shift+k move up
+bindsym $mod+Shift+l move right
+
+# Multiple Monitors
+bindsym $mod+Shift+Ctrl+k move container to output up ; focus output up
+bindsym $mod+Shift+Ctrl+j move container to output down ; focus output down
+bindsym $mod+Ctrl+k focus output up
+bindsym $mod+Ctrl+j focus output down
+
+bindsym $mod+a focus parent
+bindsym $mod+e layout toggle split
+bindsym $mod+f fullscreen toggle
+bindsym $mod+s split h
+bindsym $mod+Shift+space floating toggle
+bindsym $mod+space focus mode_toggle
+bindsym $mod+v split v
+
+set $ws1 "1:一"
+set $ws2 "2:二"
+set $ws3 "3:三"
+set $ws4 "4:四"
+set $ws5 "9:五"
+
+bindsym $mod+1 workspace number $ws1
+bindsym $mod+2 workspace number $ws2
+bindsym $mod+3 workspace number $ws3
+bindsym $mod+4 workspace number $ws4
+bindsym $mod+5 workspace number $ws5
+
+bindsym $mod+Shift+1 move container to workspace number $ws1
+bindsym $mod+Shift+2 move container to workspace number $ws2
+bindsym $mod+Shift+3 move container to workspace number $ws3
+bindsym $mod+Shift+4 move container to workspace number $ws4
+bindsym $mod+Shift+5 move container to workspace number $ws5
+
+bindsym $mod+Shift+c reload
+bindsym $mod+Shift+r restart
+bindsym $mod+Shift+e exec "i3-nagbar -t warning -m 'You pressed the exit shortcut. Do you really want to exit i3? This will end your X session.' -B 'Yes, exit i3' 'i3-msg exit'"
+
+for_window [class="Signal" instance="signal-desktop"] floating enable sticky
+
+assign [class="Firefox"] $ws2
+assign [class="Emacs"]   $ws4
+assign [class="Spotify"] $ws5
+assign [class="Signal"]  $ws5
+
+mode "Resize" {
+  bindsym h resize shrink width 10 px or 10 ppt
+  bindsym j resize grow height 10 px or 10 ppt
+  bindsym k resize shrink height 10 px or 10 ppt
+  bindsym l resize grow width 10 px or 10 ppt
+
+  bindsym Return mode "default"
+  bindsym Escape mode "default"
+}
+
+bindsym $mod+r mode "Resize"
+
+bindsym $mod+m exec --no-startup-id $HOME/.bin/i3bartoggle.sh
+
+bar {
+  # mode invisible
+  # binding_mode_indicator no
+  #i3bar_command i3bar --transparency
+  separator_symbol " • "
+  strip_workspace_numbers yes
+  status_command i3blocks
+  hidden_state show
+  font pango:file-icons-10, Noto Mono 10
+  colors {
+    background #000000
+    statusline #f38ba8
+    separator #CBA6F7
+    focused_workspace #F5C2E7 #000000 #F5C2E7
+    active_workspace #CBA6F7 #000000 #CBA6F7
+    inactive_workspace #000000 #CDD6F4 #000000
+    urgent_workspace #000000 #f38ba8 #CDD6F4
+  }
+
+
+  # colors {
+  #   background         #1E1E1EEE
+  #   statusline         #FF0088
+  #   separator          #ff75bf
+  #   focused_workspace  #D12480AA #D12480   #1E1E1E
+  #   active_workspace   #D12480AA #D12480   #1E1E1E
+  #   inactive_workspace #1E1E1EEE #1E1E1EEE #555555
+  #   urgent_workspace   #1E1E1EEE #FF0088   #FFFFFF
+  #   binding_mode       #1E1E1E00 #FF75BFEE #000000
+  # }
+
+}
+
+exec swaybg -i /home/julian/Pictures/bg.png -m fill
+
