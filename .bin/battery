@@ -1,9 +1,0 @@
-#!/bin/bash
-
-# Title:	      battery
-# By: 		      Julian Orchard <jorchard@pm.me>
-# Tag Added:	  17-06-2020
-# Description:  Simply print the battery percentage 
-#               (for i3 bar and terminal)
-
-echo $(cat /sys/class/power_supply/BAT0/capacity)%

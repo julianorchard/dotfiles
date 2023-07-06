@@ -1,0 +1,20 @@
+{
+  "variable": {
+    "prefix": "variable",
+    "body": [
+      "variable \"$1\"",
+      "  description = \"$2\"",
+      "  type        = $3",
+      "  default     = $0",
+      "}"
+    ]
+  },
+
+  "var": {
+    "prefix": "var",
+    "body": [
+      "var.$0"
+    ]
+  }
+
+}

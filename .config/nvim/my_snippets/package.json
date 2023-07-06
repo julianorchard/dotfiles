@@ -9,10 +9,10 @@
         "path": "./snippets/all.json"
       },
       {
-      "language": [
-        "lua"
-      ],
-      "path": "./lua.json"
+        "language": [
+          "terraform"
+        ],
+        "path": "./snippets/tf.json"
       }
     ]
   }

@@ -145,9 +145,6 @@ GetDrawingCoords()
 ; Indented non-markdown-ish "o - "
 !-::Send("{space}o{space}-{space}")
 
-; Instagram Hashtags
-#!i::Send(FileRead(A_ScriptDir "\res\wt.txt") "{backspace 2}")
-
 ; F5 Insert Timestamp
 !F5::Send(FormatTime(, "ddd d-MMM-yy hh:mm tt"))
 

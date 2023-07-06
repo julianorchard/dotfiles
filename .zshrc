@@ -78,11 +78,15 @@ source $ZSH/oh-my-zsh.sh
 
 # .local/bin
 export PATH="$HOME/.local/bin/:$PATH"
+export PATH="$HOME/.local/bin/cargo:$PATH"
+export PATH="$HOME/.config/emacs/bin:$PATH"
 
 # Bundler, Ruby
 export BUNDLE_USER_CONFIG="$XDG_CONFIG_HOME"/bundle
 export BUNDLE_USER_CACHE="$XDG_CACHE_HOME"/bundle
 export BUNDLE_USER_PLUGIN="$XDG_DATA_HOME"/bundle
+# Golang
+# export GOPATH="/snap/bin/go"
 # GPG
 export GNUPGHOME="$XDG_CONFIG_HOME"/gnupg
 # Less
@@ -100,6 +104,8 @@ export NPM_PACKAGES="$XDG_CONFIG_HOME"/npm-packages
 export PATH="$NPM_PACKAGES"/bin:"$PATH"
 # GNU Pass
 export PASSWORD_STORE_DIR="$XDG_DATA_HOME"/pass
+# Package Conf
+export PKG_CONFIG_PATH=/usr/lib/x86_64-linux-gnu/pkgconfig
 # X11
 export XAUTHORITY="$XDG_RUNTIME_DIR"/Xauthority
 export XINITRC="$XDG_CONFIG_HOME"/X11/xinitrc
@@ -110,18 +116,34 @@ export LANGUAGE=en_GB.UTF8
 export LC_CTYPE=en_GB.UTF8
 # Other
 export BROWSER="firefox"
-[ -x nvim ] && export EDITOR="nvim" & alias vim="nvim" || export EDITOR="vim"
+if [ -x /snap/bin/nvim ] ; then
+  export EDITOR="nvim"
+  alias vim="nvim"
+else
+  export EDITOR="vim"
+fi
 export FILE="ranger"
+# NVM
+export NVM_DIR="$([ -z "${XDG_CONFIG_HOME-}" ] && printf %s "${HOME}/.nvm" || printf %s "${XDG_CONFIG_HOME}/nvm")"
+[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
+
 
 # fzf+tmux Goodness
+# Converted into a function from...
+# https://github.com/ThePrimeagen/.dotfiles/pull/16
 function t() {
   if [ ! -x /usr/bin/fzf ] ; then
     echo "You do not have fzf installed."
+  elif [ ! -x /usr/bin/tmux ] ; then
+    echo "You do not have tmux installed."
   else
-    [ $# -gt 1 ] && selected=$1 || selected=$(find $HOME/Code/ -mindepth 1 -maxdepth 1 -type d | fzf)
+    [ $# -gt 1 ] && selected=$1 || selected=$(find $HOME/Code/ $HOME/.config/nvim/ -mindepth 1 -maxdepth 1 -type d | fzf)
 
     selected_name=$(basename "$selected" | tr . _)
-    tmux_running=$(pgrep tmux)
+    selected_name_t=${selected_name:0:8} # Reduce name length
+
+    echo $selected_name
+    echo $selected_name_t
 
     if [[ -n $TMUX ]]; then
       tmux switch-client -t "$selected_name_t" \
@@ -131,8 +153,6 @@ function t() {
       tmux new-session -s "$selected_name_t" -c "$selected" \
       || tmux attach -t "$selected_name_t"
     fi
-
-
   fi
 }
 
@@ -140,22 +160,23 @@ alias src="source $HOME/.zshrc"
 alias config='git --git-dir=$HOME/.dotfiles/ --work-tree=$HOME'
 alias cls='clear'
 alias free="free -h"
-alias md="mkdir -p"
 alias xc="xclip -sel c <"
-alias site='cd /srv/http/'
-alias home='cd ${HOME}'
 [ -x /usr/bin/batcat ] && alias cat="bat"
-[ -x /usr/bin/hue ] && alias lights='hue lights'
-[ -x /usr/bin/kitty ] && alias iv="kitty +kitten icat"
 [ -x /usr/bin/lesspipe ] && eval "$(SHELL=/bin/sh lesspipe)"
 if [ -x /usr/bin/lsd ] ; then
-    alias la="lsd -la"
-    alias ll="lsd -l"
-    alias ls="lsd"
+  alias la="lsd -la"
+  alias ll="lsd -l"
+  alias ls="lsd"
+elif [ -x /home/julian/.cargo/bin/exa ] ; then
+  alias ls="exa --icons"
+  alias ll="exa -l --icons"
+  alias la="exa -la --icons"
+  alias tree="exa -laT"
+  alias treegit="exa -laT --git-ignore"
 else
-    alias la="ls -la"
-    alias ll="ls -l"
-    alias ls="ls --color=tty"
+  alias la="ls -la"
+  alias ll="ls -l"
+  alias ls="ls --color=tty"
 fi
 [ -x /usr/bin/neomutt ] && alias mutt='neomutt'
 [ -x /usr/bin/protonvpn ] && alias vpn="protonvpn"
@@ -214,42 +235,82 @@ if [ -x /usr/local/bin/kubectl ] ; then
                    \n kcll = kubectl pod last logs"
 fi
 
+if [ -x /usr/local/bin/minikube ] ; then
+  alias msa="minikube start"
+  alias mso="minikube stop"
+  alias mh="printf ' msa  = minikube start\
+                  \n mso  = minikube stop\
+                  \n mh   = kubectl pod last logs"
+
+fi
+
 
 # Systemd
 
 alias jctl="journalctl"
 alias ss="sudo systemctl"
-
-
-# Exa
-
-if [ -x /usr/bin/exa ] ; then
-  alias ls="exa --icons"
-  alias ll="exa -la --icons"
-  alias tree="exa -laT"
-  alias treegit="exa -laT --git-ignore"
-fi
-
+alias sen="ss enable"
+alias sst="ss stop"
 
 # HashiCorp Terraform
-if [ -x /usr/bin/terraform ] ; then
+if [ -x /snap/bin/terraform ] ; then
+
   autoload -U +X bashcompinit && bashcompinit
   complete -o nospace -C /usr/bin/terraform terraform
-  t="terraform"
-fi
 
-# autoload -U +X bashcompinit && bashcompinit
-# complete -o nospace -C /usr/bin/terraform terraform
+  alias tf="terraform"
+  alias tfi="terraform init"
+  alias tfr="terraform init -migrate-state"
+  alias tfp="terraform plan"
+  alias tfa="terraform apply"
+  alias tfd="terraform destroy"
+  alias tfn="touch outputs.tf provider.tf main.tf terraform.tf variables.tf"
+fi
 
 # Ansible
 if [ -x /usr/bin/ansible ] ; then
-  a=ansible
-  av=ansible-vault
+  alias a=ansible
+  alias av=ansible-vault
 fi
 
+# ssh_tun
+function _ssh_tun(){
+	if [ -z $1 ]; then
+		echo -e "ERROR: no user@host provided"
+	else
+		ssh -D 1080 -q -C -N $1
+	fi
+}
+alias ssh_tun="_ssh_tun"
 
-export NVM_DIR="$([ -z "${XDG_CONFIG_HOME-}" ] && printf %s "${HOME}/.nvm" || printf %s "${XDG_CONFIG_HOME}/nvm")"
-[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
+# Tailscale
+if [ -x /usr/bin/tailscale ] ; then
+  alias  ts="sudo tailscale"
+  alias tsu="sudo tailscale up"
+  alias tsd="sudo tailscale down"
+fi
+tsssh() {
+  # Use FZF to search for Tailscale IP's to SSH to
+  [ ! -x /usr/bin/tailscale ] && return 1
+  # Get output of only 'online' machines with Tailscale
+  online_list=$(sudo tailscale status | grep -v offline | grep -v \#)
+  # Get the friendly name of the machines with FZF
+  machine_name=$(echo $online_list | awk '{ print $2 }' | fzf)
+  # Get the IP of the machine chosen with FZF
+  machine_ip=$(echo $online_list | grep ${machine_name} | awk '{ print $1 }')
+  # Prepare to SSH to the chosen machine (weird zsh syntax)
+  read "machine_username?Username for ${machine_name}: "
+  ssh ${machine_username}@${machine_ip}
+}
 
+# EKS Anywhere
+if [ -x /usr/local/bin/eksctl ] ; then
+  alias ec="eksctl"
+  alias eca="eksctl anywhere"
+fi
+
+# I can never remember these
+[ -x /usr/bin/xev ] && alias get_key="xev"
 
 if [ -e /home/julian/.nix-profile/etc/profile.d/nix.sh ]; then . /home/julian/.nix-profile/etc/profile.d/nix.sh; fi # added by Nix installer
+

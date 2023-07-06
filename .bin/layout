@@ -15,10 +15,11 @@
 
 ## Code:
 
-DEFAULT_BACKGROUND="${HOME}/Images/cat_arch.png"
+DEFAULT_BACKGROUND="${HOME}/Pictures/bg.png"
 
 laptop() {
-  xrandr --output LVDS1 --primary --mode 1366x768 --pos 0x0 --rotate normal --output DP1 --off --output DP2 --off --output DP3 --off --output HDMI1 --off --output HDMI2 --off --output HDMI3 --off --output VGA1 --off --output VIRTUAL1 --off
+  xrandr --output eDP-1 --mode 1920x1080 --pos 0x0 --rotate normal --output HDMI-1-0 --off
+  # xrandr --output LVDS1 --primary --mode 1366x768 --pos 0x0 --rotate normal --output DP1 --off --output DP2 --off --output DP3 --off --output HDMI1 --off --output HDMI2 --off --output HDMI3 --off --output VGA1 --off --output VIRTUAL1 --off
 }
 
 desktop() {
@@ -27,6 +28,15 @@ desktop() {
 
 desktop_only() {
   xrandr --output LVDS1 --off --output DP1 --off --output DP2 --off --output DP3 --off --output HDMI1 --off --output HDMI2 --off --output HDMI3 --off --output VGA1 --mode 1680x1050 --pos 0x0 --rotate normal --output VIRTUAL1 --off
+}
+
+work() {
+  xrandr --output eDP-1 --mode 1920x1080 --pos 3840x1080 --rotate normal --output HDMI-1-0 --mode 3840x2160 --pos 0x0 --rotate normal --dpi 150 # --scale 1.25x1.25
+}
+
+home() {
+  xrandr --output eDP-1 --primary --mode 1920x1080 --pos 3440x360 --rotate normal --output HDMI-1-0 --mode 3440x1440 --pos 0x0 --rotate normal
+  # xrandr --output eDP-1 --mode 1920x1080 --pos 3440x635 --rotate normal --output HDMI-1-0 --mode 3440x1440 --pos 0x0 --rotate normal
 }
 
 set_background() {
@@ -50,6 +60,14 @@ case $1 in
     ;;
   deskonly)
     desktop_only
+    set_background
+    ;;
+  work)
+    work
+    set_background
+    ;;
+  home)
+    home
     set_background
     ;;
   *)
