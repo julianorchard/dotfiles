@@ -5,7 +5,7 @@
 ;; Author:       Julian Orchard <jorchard@pm.me>
 ;; Keywords:     lisp, init, configuration
 ;; Date Created: 2022-11-02
-;; Date Updated: 2023-01-25
+;; Date Updated: 2023-07-07
 
 ;;; Description:
 
@@ -31,12 +31,12 @@
   :config
   (setq org-ellipsis "  ⌄ ")
   (set-face-underline 'org-ellipsis nil)
-  (set-face-attribute 'italic nil :font "Fira Mono" :height global-text-height)
+  (set-face-attribute 'italic nil :font "Fira Code" :height global-text-height)
   (set-face-attribute 'org-quote nil :inherit 'default :slant 'italic)
   (setq header-line-format " ")
 
   (setq org-agenda-files
-        '("~/org/" "~/local-notes.org"))
+	'("~/Documents/org/"))
 
   (setq org-duration-format (quote h:mm))
   (setq org-hide-emphasis-markers t)
@@ -53,63 +53,23 @@
   (setq org-capture-templates
 
 	 ;; Work Related Capture Templates
-        '(("w" "Wessex")
-          ("wt" "Task" entry (file+headline "~/org/wessex.org" "Tasklist")
+        '(("w" "Work")
+          ("wt" "Task" entry (file+headline "~/Documents/org/work.org" "Tasklist")
            "* TODO  %?\nDEADLINE: %t" :prepend t)
-          ("wm" "Meeting" entry (file+headline "~/org/meetings.org" "On-going")
-           "* %U %?\n** (Rough) Minutes\n- What we talked about\n- What someone said\n** Tasks\n*** TODO Something to work on\nDEADLINE: %t\n" :prepend t)
-	  ("wn" "Note" entry (file "~/local-notes.org")
-	   "* %?\n/Time:/ %T\n/Name:/ \n/Tel:/ \n/Email:/ \n/Address:/\n\n/Notes:/\n\n" :prepend t)
 
 	  ;; Personal Capture Templates
           ("p" "Personal")
-          ("pt" "General Task" entry (file+headline "~/org/personal.org" "Tasklist")
+          ("pt" "General Task" entry (file+headline "~/Documents/org/personal.org" "Tasklist")
            "* TODO  %?\nDEADLINE: %t" :prepend t)
-          ("pc" "Computing Task" entry (file+headline "~/org/personal.org" "Computer")
+          ("pc" "Computing Task" entry (file+headline "~/Documents/org/personal.org" "Computer")
            "* TODO  %?\nDEADLINE: %t\n- [[repo][" :prepend t)
-          ("pb" "Birthday" entry (file "~/org/misc/birthday.org")
+          ("pb" "Birthday" entry (file "~/Documents/org/misc/birthday.org")
            "* %(config/org-capture-prompt \"Person's Name\" 'persons-name)\nSCHEDULED: %(org-read-date)")
 
 	  ;; Journal Only Capture
           ("j" "Journal")
-          ("jj" "Journal" entry (file+olp+datetree "~/org/journal/journal.org")
-           "* Entry for %U\n%?")))
-
-  (setq org-publish-project-alist
-	;; This is where we can set the automatic publishing of website Org documents.
-
-	;; At the moment, this isn't configured, but I do want to use it to manage my website at some
-	;; point, rather than using the bash script I've been using up until now.
-
-	;; The main reason for wanting to switch is because, now that I'm hosting with GitHub Pages,
-	;; I'm no longer reliant on just using Bash to make quick posts. I can just write them in
-	;; Emacs, on my local machine, and do it like this. 
-
-	;; All I need to do now is create a new branch for this new workflow (and convert old posts to
-	;; Org format, rather than Markdown).
-	'(("config"
-           :base-directory "~/config/"
-           :publishing-function org-html-publish-to-html
-           :publishing-directory "~/julianorchard.github.io/config/"
-           :section-numbers nil
-           :html-head "<link rel=\"stylesheet\" href=\"../src/org-style.css\" type=\"text/css\"/>"
-           :html-preamble "
-                     <nav>
-                       <ul>
-                         <li>
-                           <a class=\"link\" href=\"/\">Home</a>
-                         </li>
-                         <li>
-                           <a class=\"link\" href=\"/about/\">About</a>
-                         </li>
-                         <li>
-                           <a class=\"link\" href=\"/posts/\">Posts</a>
-                         </li>
-                       </ul>
-                     </nav>"
-           :html-postamble "<footer>(c) Julian Orchard</footer>"
-           :force t))))
-
+          ("jj" "Journal" entry (file+olp+datetree "~/Documents/org/journal/journal.org")
+           "* Entry for %U\n%?"))))
 
 ;; Document Symbol Bits
 (defun here/org-mode-symbols-setup ()

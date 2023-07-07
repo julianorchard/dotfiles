@@ -1,11 +1,11 @@
-;;;   custom.el  ---  Custom functions. -*- lexical-binding: t; -*-
+;;;   deez.el  ---  Custom functions. -*- lexical-binding: t; -*-
 
 ;; Copyright (c) 2023   Julian Orchard <jorchard@pm.me>
 
 ;; Author:       Julian Orchard <jorchard@pm.me>
 ;; Keywords:     lisp, functions
 ;; Date Created: 2022-11-02
-;; Date Updated: 2023-01-27
+;; Date Updated: 2023-07-07
 
 ;;; Description:
 
@@ -23,22 +23,9 @@
 ;;   SCHEDULED: <2023-01-09>
 ;;   Julian <jorchard@pm.me>
 
-(defvar gplv3-preambles
-    "This file is part of NAME_OF_SOFTWARE.
 
-NAME_OF_SOFTWARE is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
-
-NAME_OF_SOFTWARE is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
-
-You should have received a copy of the GNU General Public License along with NAME_OF_SOFTWARE. If not, see <https://www.gnu.org/licenses/>.")
-
-  (defun replace-in-string (what with in)
-    (replace-regexp-in-string (regexp-quote what) with in nil 'literal))
-
-  (defun insert-gplv3-preamble ()
-    "Adds the GPL-v3 preamble text to a file."
-    (interactive)
-    (insert (replace-in-string "NAME_OF_SOFTWARE" (read-string "Enter software name: ") gplv3-preambles)))
+(defun replace-in-string (what with in)
+   (replace-regexp-in-string (regexp-quote what) with in nil 'literal))
 
 (defun custom/insert-license ()
   "Check if there's a LICENSE file defined in root and, if so,
@@ -191,20 +178,4 @@ You should have received a copy of the GNU General Public License along with NAM
   (setq ts ((org-time-stamp-string)))
   (insert (format ":LOGBOOK:\nCLOCK: [%s 09:00]--[%s 16:30]\n:END:" ts)))
 
-;; Org push and pull files from remote. Not working on my work machine: 
-
-(defun org-push ()
-  "Org push files to remote, using a shell command."
-  (interactive)
-  (copy-file "~/org/*" "/scp:o@sync.julianorchard.co.uk:~/org/"))
-
-(defun org-pull ()
-  "Org pull files from remote, shell command."
-  (interactive)
-  (copy-file "/scp:o@sync.julianorchard.co.uk:~/org/*" "~/org/"))
-
-(defun connect-remote ()
-  (interactive)
-  (dired "/ssh:o@sync.julianorchard.co.uk:/"))
-
-(provide 'init-custom)
+(provide 'init-deez)

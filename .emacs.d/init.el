@@ -5,11 +5,11 @@
 ;; Author:       Julian Orchard <jorchard@pm.me>
 ;; Keywords:     lisp, init, configuration
 ;; Date Created: 2022-11-02
-;; Date Updated: 2023-01-27
+;; Date Updated: 2023-07-07
 
 ;;; Description:
 
-;; Main Emacs init file. 
+;; Main Emacs init file.
 
 ;;; License:
 
@@ -28,6 +28,8 @@
 (cd (getenv "HOME"))
 (add-to-list 'load-path
              (concat (getenv "HOMEPATH") "/.emacs.d/lisp/"))
+(add-to-list 'load-path "~/.emacs.d/lisp/")
+(add-to-list 'load-path "~/.emacs.d/site-lisp/")
 
 ;; Garbage collection
 (setq gc-cons-percentage 0.6
@@ -63,9 +65,9 @@
 (dolist (rm-ln-hook '(org-mode-hook))
   (add-hook rm-ln-hook (lambda () (display-line-numbers-mode 0))))
 
-(defvar global-text-height 90)
-(set-face-attribute 'default nil :font "Fira Code Retina" :height global-text-height)
-(set-face-attribute 'italic nil :font "Fira Mono" :height global-text-height)
+(defvar global-text-height 140)
+(set-face-attribute 'default nil :font "Fira Code" :height global-text-height)
+(set-face-attribute 'italic nil :font "Fira Code" :height global-text-height)
 
 ;; END from init-aesthetics.el -----
 
@@ -127,13 +129,13 @@
 ;;; Includes ------------------------------
 
 ;; Misc. Custom Funtions
-(require 'init-custom)
+(require 'init-deez)
 
 ;; Language Specific Settings
 (require 'init-lang)
 
 
-;; Aesthetics/Theme 
+;; Aesthetics/Theme
 (require 'init-aesthetics)
 
 ;;; Completion ----------------------------
