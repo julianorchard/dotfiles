@@ -30,9 +30,11 @@ lsp.configure("lua_ls", {
   }
 })
 
--- lsp.configure("bashls", {
---   filetypes = {
---     "sh",
+-- lsp.configure("yamls", {
+--   settings = {
+--     YAML = {
+--       parseAllDocuments = true
+--     }
 --   }
 -- })
 

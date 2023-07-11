@@ -1,0 +1,12 @@
+[Unit]
+Description=Emacs
+
+[Service]
+Type=forking
+ExecStart=/snap/bin/emacs --daemon
+ExecStop=/snap/bin/emacsclient --eval "(kill-emacs)"
+Environment=SSH_AUTH_SOCK=%t/keying/ssh
+Restart=on-failure
+
+[Install]
+WantedBy=default.target

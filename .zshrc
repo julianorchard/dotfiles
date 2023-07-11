@@ -79,14 +79,17 @@ source $ZSH/oh-my-zsh.sh
 # .local/bin
 export PATH="$HOME/.local/bin/:$PATH"
 export PATH="$HOME/.local/bin/cargo:$PATH"
-export PATH="$HOME/.config/emacs/bin:$PATH"
+export XDG_CONFIG_HOME="${HOME}/.config"
+export XDG_CACHE_HOME="${HOME}/.cache"
+
 
 # Bundler, Ruby
 export BUNDLE_USER_CONFIG="$XDG_CONFIG_HOME"/bundle
 export BUNDLE_USER_CACHE="$XDG_CACHE_HOME"/bundle
 export BUNDLE_USER_PLUGIN="$XDG_DATA_HOME"/bundle
 # Golang
-# export GOPATH="/snap/bin/go"
+export PATH="${PATH}:/usr/local/go/bin"
+export GOPATH="${HOME}/Code/"
 # GPG
 export GNUPGHOME="$XDG_CONFIG_HOME"/gnupg
 # Less
@@ -222,10 +225,14 @@ fi
 # Kubernetes
 
 if [ -x /usr/local/bin/kubectl ] ; then
+  alias ks="kubectl"
   alias kca="kubectl apply -f"
   alias kcd="kubectl delete -f"
   alias kcg="kubectl get"
   alias kci="kubectl describe"
+  # Get the auto-generated argocd password (this method avoids installing the
+  # argocd command line tool!):
+  alias argo_password="kubectl -n argocd get secret argocd-initial-admin-secret -o jsonpath='{.data.password}' | base64 -d && printf '\n'"
   # alias kcll="kubectl logs `kubectl get pods | awk 'END{print $1}'`"
   # Help
   alias kch="printf ' kca  = kubectl apply -f\
@@ -311,6 +318,7 @@ fi
 
 # I can never remember these
 [ -x /usr/bin/xev ] && alias get_key="xev"
+[ -x /usr/bin/xprop ] && alias get_window_name="xprop | grep -i 'class'"
 
 if [ -e /home/julian/.nix-profile/etc/profile.d/nix.sh ]; then . /home/julian/.nix-profile/etc/profile.d/nix.sh; fi # added by Nix installer
 

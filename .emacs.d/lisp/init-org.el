@@ -5,7 +5,7 @@
 ;; Author:       Julian Orchard <jorchard@pm.me>
 ;; Keywords:     lisp, init, configuration
 ;; Date Created: 2022-11-02
-;; Date Updated: 2023-07-07
+;; Date Updated: 2023-07-11
 
 ;;; Description:
 
@@ -49,6 +49,13 @@
         '((?A . (:foreground "red"))
           (?B . (:foreground "orange"))
 	  (?B . (:foreground "yellow"))))
+
+  (org-babel-do-load-languages
+   'org-babel-load-languages
+   '((shell . t)
+     (lua . t)
+     (python . t )))
+
 
   (setq org-capture-templates
 
