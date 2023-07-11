@@ -5,7 +5,7 @@
 ;; Author:       Julian Orchard <jorchard@pm.me>
 ;; Keywords:     lisp, init, configuration
 ;; Date Created: 2022-11-02
-;; Date Updated: 2023-07-07
+;; Date Updated: 2023-07-11
 
 ;;; Description:
 
@@ -41,39 +41,29 @@
 (setq custom-file "~/.emacs.d/custom.el")
 (load custom-file)
 
-;; START from init-aesthetics.el ---
 
-;; General Guff Removal
-(scroll-bar-mode -1)
-(tool-bar-mode -1)
-(tooltip-mode -1)
-(set-fringe-mode 5)
-(menu-bar-mode -1)
-(show-paren-mode t)
-(setq visible-bell t
-      split-width-threshold 1)
+;;; Package Init ---------------------------
 
-;; Lines and Columns
-(column-number-mode)
-(setq display-line-numbers-type 'relative)
-(dolist (mode '(text-mode-hook
-                prog-mode-hook
-                conf-mode-hook))
-  (add-hook mode (lambda ()
-		   (display-line-numbers-mode 1))))
+(require 'package)
+(setq package-archives '(("melpa" . "https://melpa.org/packages/")
+                         ("org" . "https://orgmode.org/elpa/")
+                         ("elpa" . "https://elpa.gnu.org/packages/")))
+(package-initialize)
+(unless package-archive-contents
+ (package-refresh-contents))
+(unless (package-installed-p 'use-package)
+   (package-install 'use-package))
+(require 'use-package)
+(setq use-package-always-ensure t)
 
-(dolist (rm-ln-hook '(org-mode-hook))
-  (add-hook rm-ln-hook (lambda () (display-line-numbers-mode 0))))
+;; Set C-a as a keymapping key
+(setq map (make-sparse-keymap))
+(define-key map (kbd "C-a") nil)
+(global-set-key "\C-a" ctl-x-map)
 
-(defvar global-text-height 140)
-(set-face-attribute 'default nil :font "Fira Code" :height global-text-height)
-(set-face-attribute 'italic nil :font "Fira Code" :height global-text-height)
+;; Aesthetics/Theme
+(require 'init-aesthetics)
 
-;; END from init-aesthetics.el -----
-
-;; Startup Message
-(setq inhibit-startup-message t)
-(setq initial-scratch-message ";; Welcome to Emacs")
 
 ;; My details, pretty unused
 (setq user-full-name "Julian Orchard")
@@ -111,19 +101,6 @@
 (setq scroll-step 1)
 
 
-;;; Package Init ---------------------------
-
-(require 'package)
-(setq package-archives '(("melpa" . "https://melpa.org/packages/")
-                         ("org" . "https://orgmode.org/elpa/")
-                         ("elpa" . "https://elpa.gnu.org/packages/")))
-(package-initialize)
-(unless package-archive-contents
- (package-refresh-contents))
-(unless (package-installed-p 'use-package)
-   (package-install 'use-package))
-(require 'use-package)
-(setq use-package-always-ensure t)
 
 
 ;;; Includes ------------------------------
@@ -135,8 +112,6 @@
 (require 'init-lang)
 
 
-;; Aesthetics/Theme
-(require 'init-aesthetics)
 
 ;;; Completion ----------------------------
 
@@ -149,8 +124,11 @@
   :config
   (ivy-mode 1))
 
+(global-set-key (kbd "C-x b") 'ivy-switch-buffer)
 (global-set-key (kbd "C-x C-b") 'ivy-switch-buffer)
-(global-set-key (kbd "C-x C-k") 'kill-this-buffer)
+(global-set-key (kbd "C-x q") 'kill-this-buffer)
+
+;; Motion Keys (move this probably)
 
 ;; Yasnippet
 (use-package yasnippet
@@ -158,7 +136,7 @@
   :init
   (yas-global-mode 1)
   :bind
-  ("C-c C-s" . 'custom/create-snippet)
+  ("C-x C-s" . 'custom/create-snippet)
   :config
   (add-to-list 'yas-snippet-dirs
 	       (locate-user-emacs-file "snippets")))
@@ -182,15 +160,12 @@
   (setq evil-want-C-u-scroll t)
   (setq evil-want-C-i-jump nil)
   (setq evil-undo-system 'undo-fu)
-  ;; (evil-set-leader nil (kbd ","))
   :config
   (evil-mode 1)
   (setq evil-split-window-below t)
   (setq evil-vsplit-window-right t)
   (evil-global-set-key 'motion "j" 'evil-next-visual-line)
   (evil-global-set-key 'motion "k" 'evil-previous-visual-line)
-  ;; (evil-define-key 'normal 'global (kbd "<leader>k") 'custom/test)
-  ;; (evil-define-key 'normal 'global (kbd "<leader>w") 'custom/lol)
   (evil-set-initial-state 'messages-buffer-mode 'normal)
   (evil-set-initial-state 'dashboard-mode 'normal))
 
@@ -217,7 +192,7 @@
 (use-package avy
   :ensure t
   :bind
-  ("C-c C-f" . avy-goto-char))
+  ("C-x f" . avy-goto-char))
 
 ;; Eshell
 (use-package eshell-prompt-extras
@@ -250,4 +225,3 @@
     (use-package elcord
       :config
       (elcord-mode 1)))
-

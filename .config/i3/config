@@ -110,8 +110,8 @@ bindsym $mod+Shift+0 move container to workspace number $ws0
 bindsym $mod+Shift+c reload
 bindsym $mod+Shift+r restart
 
-assign [class="Firefox"] $ws2
-assign [class="Emacs"]   $ws4
+assign [class="firefox"] $ws2
+assign [class="Emacs"]   $ws3
 assign [class="Signal"]  $ws6
 assign [class="Slack"]   $ws6
 # assign [class="Chrome"]  $ws7
