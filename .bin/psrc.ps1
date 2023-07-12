@@ -12,7 +12,6 @@
 
 ## Code:
 
-
 Set-ExecutionPolicy -Scope CurrentUser Bypass
 
 function prompt {
@@ -92,88 +91,6 @@ function Set-Shortcut {
       ForEach-Object { $link.$($_.key) = $_.value }
     $link.Save()
   }
-}
-
-function Readable-Numbers($InputNumber,$NumberFormat)
-{
-    function One-Digit($in)
-    {
-        switch ( $in.Substring($in.Length - 1) )
-        {
-            0 {
-                if ($in.Length -eq 1)
-                {
-                    $ReadableNumber = "Zero"
-                }
-                else
-                {
-                    $ReadableNumber = ""
-                }
-            }
-            1 { $ReadableNumber = "One" }
-            2 { $ReadableNumber = "Two" }
-            3 { $ReadableNumber = "Three" }
-            4 { $ReadableNumber = "Four" }
-            5 { $ReadableNumber = "Five" }
-            6 { $ReadableNumber = "Six" }
-            7 { $ReadableNumber = "Seven" }
-            8 { $ReadableNumber = "Eight" }
-            9 { $ReadableNumber = "Nine" }
-        }
-        return $ReadableNumber
-    }
-    function Two-Digit($in)
-    {
-        switch -Wildcard ( $in )
-        {
-            10 { $ReadableNumber = "Ten" }
-            11 { $ReadableNumber = "Eleven" }
-            12 { $ReadableNumber = "Twelve" }
-            13 { $ReadableNumber = "Thirteen" }
-            14 { $ReadableNumber = "Fourteen" }
-            15 { $ReadableNumber = "Fifteen" }
-            16 { $ReadableNumber = "Sixteen" }
-            17 { $ReadableNumber = "Seventeen" }
-            18 { $ReadableNumber = "Eighteen" }
-            19 { $ReadableNumber = "Nineteen" }
-            "[2-9][0-9]"
-            {
-                $i = $_.ToCharArray()
-                $i1 = $i[0]
-                $i2 = $i[1]
-                switch ( $i1 )
-                {
-                    2 { $ReadableNumber = "Twenty" }
-                    3 { $ReadableNumber = "Thirty" }
-                    4 { $ReadableNumber = "Forty" }
-                    5 { $ReadableNumber = "Fifty" }
-                    6 { $ReadableNumber = "Sixty" }
-                    7 { $ReadableNumber = "Seventy" }
-                    8 { $ReadableNumber = "Eighty" }
-                    9 { $ReadableNumber = "Ninety" }
-                }
-                if ("$i2" -ne "0")
-                {
-                    $ReadableNumber += "-"
-                }
-                $ReadableNumber += One-Digit($_)
-            }
-        }
-        return $ReadableNumber
-    }
-    $in = $InputNumber.ToString()
-    switch ( $in.Length )
-    {
-        1 {
-            One-Digit($in)
-        }
-        2 {
-            Two-Digit($in)
-        }
-        default {
-            return ""
-        }
-    }
 }
 
 function dev { cd C:\CMD }
