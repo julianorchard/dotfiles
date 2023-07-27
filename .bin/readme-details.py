@@ -12,7 +12,8 @@
 # heading (above). It's pretty simple, but nice to give an overview of
 # what files are in this repo.
 
-# Run with a GitHub Action. See `.github/workflows/main.yaml` for more.
+# Often run with a GitHub Action and the `--action` flag. See
+# [.github/...](.github/workflows/main.yaml) for more!
 
 ## License:
 
