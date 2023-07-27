@@ -68,7 +68,7 @@ A small powershell configuration file with a few custom functions.
 
 ### readme-details.py <sup>[file](.bin/readme-details.py)</sup>
 
-This is the script that generates what you might be reading *now*! It scrapes the `.bin/` folder and gets the text under the *'description'* heading (above). It's pretty simple, but nice to give an overview of what files are in this repo. Run with a GitHub Action. See `.github/workflows/main.yaml` for more.
+This is the script that generates what you might be reading *now*! It scrapes the `.bin/` folder and gets the text under the *'description'* heading (above). It's pretty simple, but nice to give an overview of what files are in this repo. Often run with a GitHub Action and the `--action` flag. See [.github/...](.github/workflows/main.yaml) for more!
 
 ### refreshprompt.bat <sup>[file](.bin/refreshprompt.bat)</sup>
 
