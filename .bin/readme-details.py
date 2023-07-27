@@ -12,6 +12,8 @@
 # heading (above). It's pretty simple, but nice to give an overview of
 # what files are in this repo.
 
+# Run with a GitHub Action. See `.github/workflows/main.yaml` for more.
+
 ## License:
 
 # See /LICENSE file in the root of this repository.
@@ -21,10 +23,7 @@
 from pathlib import Path
 import os
 import re
-
-HOME_PATH   = str(Path.home())
-README_FILE = f"{HOME_PATH}/README.md"
-BIN_PATH    = f"{HOME_PATH}/.bin/"
+import sys
 
 def print_without_comments(line):
     '''
@@ -97,4 +96,10 @@ def main():
 
 
 if __name__ == "__main__":
+    if len(sys.argv) > 1 and sys.argv[1] == "--action":
+        HOME_PATH = "."
+    else:
+        HOME_PATH = str(Path.home())
+    README_FILE = f"{HOME_PATH}/README.md"
+    BIN_PATH    = f"{HOME_PATH}/.bin/"
     main()
