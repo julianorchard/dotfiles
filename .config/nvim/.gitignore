@@ -1,2 +1,4 @@
-plugin/**
-lua/user/**
+tags
+test.sh
+.luarc.json
+nvim

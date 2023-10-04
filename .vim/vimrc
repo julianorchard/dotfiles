@@ -36,6 +36,9 @@
 
 " ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ PLUGIN LIST ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ "
     call plug#begin('~/.vim/plugged')
+
+      Plug 'file://'.expand('$HOME/Code/centre-comment.vim/')
+
       Plug 'tpope/vim-sensible'
     " Appearance
       Plug 'blueyed/vim-diminactive'
@@ -75,12 +78,8 @@
       cat
         Plug 'julianorchard/desc.vim'
       endt
-      " Denote
-      try
-        so ~/denote.vim/plugin/denote.vim
-      cat
-        Plug 'julianorchard/denote.vim'
-      endt
+
+
     call plug#end()
 
 " ~~~~~~~~~~~~~~~~~~~~~~~~~~ PLUGIN CONFIGURATIONS ~~~~~~~~~~~~~~~~~~~~~~~~~~~ "
@@ -243,6 +242,9 @@
     nn comm@ :call <SID>CenterComment("@")<cr>
     nn comm! :call <SID>CenterComment("!")<cr>
     nn comm* :call <SID>CenterComment("*")<cr>
+
+    let mapleader = " "
+    nn <leader>c- :CenterComment -<cr>
 
 
 " ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ ABBREVIATIONS ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ "
