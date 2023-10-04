@@ -31,7 +31,7 @@ alias fix_keyboard="setxkbmap -layout gb"
 
 if [ -x /usr/bin/git ] ; then
   alias g="git"
-  alias gc="git commit"
+  alias gc="git c"
   alias gs="git status"
   alias gd="git diff"
   alias gdc="git diff --cached"
@@ -101,8 +101,8 @@ if [ -x /usr/bin/ansible ] ; then
   alias av=ansible-vault
 fi
 
-# ssh_tun
-function _ssh_tun(){
+# ssh
+function _ssh_tun() {
 	if [ -z $1 ]; then
 		echo -e "ERROR: no user@host provided"
 	else
@@ -110,6 +110,9 @@ function _ssh_tun(){
 	fi
 }
 alias ssh_tun="_ssh_tun"
+function ssh_debug() {
+  ssh -vvv "$@"
+}
 
 # Tailscale
 if [ -x /usr/bin/tailscale ] ; then

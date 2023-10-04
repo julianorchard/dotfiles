@@ -20,7 +20,7 @@ function t() {
   elif [ ! -x /usr/bin/tmux ] ; then
     echo "You do not have tmux installed."
   else
-    [ $# -gt 1 ] && selected=$1 || selected=$(find $HOME/Code/ $HOME/.config/nvim/ -mindepth 1 -maxdepth 1 -type d | fzf)
+    [ $# -gt 1 ] && selected=$1 || selected=$(find $HOME/Code/ $HOME/.config/nvim/ $HOME/Code/go/ /usr/local/go/src/julian/ -mindepth 1 -maxdepth 1 -type d | fzf)
 
     selected_name=$(basename "$selected" | tr . _)
     selected_name_t=${selected_name:0:8} # Reduce name length

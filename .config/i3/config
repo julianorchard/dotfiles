@@ -1,3 +1,11 @@
+ #      _       _    __ _ _
+ #   __| | ___ | |_ / _(_) | ___  ___
+ #  / _` |/ _ \| __| |_| | |/ _ \/ __|
+ # | (_| | (_) | |_|  _| | |  __/\__ \
+ #  \__,_|\___/ \__|_| |_|_|\___||___/
+ #
+ #                          by julian
+
 set $mod Mod4
 
 # Monitors
@@ -10,7 +18,7 @@ exec --no-startup-id xss-lock --transfer-sleep-lock -- i3lock --nofork --bar-ind
 exec --no-startup-id nm-applet
 exec --no-startup-id picom -b
 exec --no-startup-id syncthing
-for_window [class="^.*"] border pixel 0
+for_window [class="^.*"] border pixel 2
 
 # Notification Daemon
 exec_always --no-startup-id dunst -config ~/.config/dunst/dunstrc
@@ -30,7 +38,7 @@ floating_modifier $mod
 
 bindsym $mod+Return exec alacritty
 bindsym $mod+q kill
-bindsym $mod+d exec dmenu_run -nb '#181825' -sf '#f38ba8' -sb '#11111b' -nf '#89dceb' -i -p " Run: "
+bindsym $mod+d exec dmenu_run -nb '#181825' -sf '#F38BA8' -sb '#11111B' -nf '#89DCEB' -i -p " Run: "
 
 bindsym $mod+h focus left
 bindsym $mod+k focus down
@@ -63,64 +71,91 @@ bindsym Print exec flameshot gui -p ~/Pictures/captures/
 exec i3-msg gaps inner all set 15px
 bindsym $mod+g gaps inner all toggle 15px
 
-workspace 1 output $m1
-workspace 2 output $m1
-workspace 3 output $m1
-workspace 4 output $m1
-workspace 5 output $m1
-workspace 6 output $m2
-workspace 7 output $m2
-workspace 8 output $m2
-workspace 9 output $m2
+
+# Workspace 0 Config
 workspace 0 output $m2
-
-set $ws1 "1:一"
-set $ws2 "2:二"
-set $ws3 "3:三"
-set $ws4 "4:四"
-set $ws5 "5:五"
-set $ws6 "6:六"
-set $ws7 "7:七"
-set $ws8 "8:八"
-set $ws9 "9:九"
 set $ws0 "0:十"
-
-bindsym $mod+1 workspace number $ws1
-bindsym $mod+2 workspace number $ws2
-bindsym $mod+3 workspace number $ws3
-bindsym $mod+4 workspace number $ws4
-bindsym $mod+5 workspace number $ws5
-bindsym $mod+6 workspace number $ws6
-bindsym $mod+7 workspace number $ws7
-bindsym $mod+8 workspace number $ws8
-bindsym $mod+9 workspace number $ws9
 bindsym $mod+0 workspace number $ws0
-
-bindsym $mod+Shift+1 move container to workspace number $ws1
-bindsym $mod+Shift+2 move container to workspace number $ws2
-bindsym $mod+Shift+3 move container to workspace number $ws3
-bindsym $mod+Shift+4 move container to workspace number $ws4
-bindsym $mod+Shift+5 move container to workspace number $ws5
-bindsym $mod+Shift+6 move container to workspace number $ws6
-bindsym $mod+Shift+7 move container to workspace number $ws7
-bindsym $mod+Shift+8 move container to workspace number $ws8
-bindsym $mod+Shift+9 move container to workspace number $ws9
 bindsym $mod+Shift+0 move container to workspace number $ws0
+
+# Workspace 1 Config
+workspace 1 output $m1
+set $ws1 "1:一"
+bindsym $mod+1 workspace number $ws1
+bindsym $mod+Shift+1 move container to workspace number $ws1
+
+# Workspace 2 Config
+workspace 2 output $m1
+set $ws2 "2:二"
+bindsym $mod+2 workspace number $ws2
+bindsym $mod+Shift+2 move container to workspace number $ws2
+
+# Workspace 3 Config
+workspace 3 output $m1
+set $ws3 "3:三"
+bindsym $mod+3 workspace number $ws3
+bindsym $mod+Shift+3 move container to workspace number $ws3
+
+# Workspace 4 Config
+workspace 4 output $m1
+set $ws4 "4:四"
+bindsym $mod+4 workspace number $ws4
+bindsym $mod+Shift+4 move container to workspace number $ws4
+
+# Workspace 5 Config
+workspace 5 output $m1
+set $ws5 "5:五"
+bindsym $mod+5 workspace number $ws5
+bindsym $mod+Shift+5 move container to workspace number $ws5
+
+# Workspace 6 Config
+workspace 6 output $m2
+set $ws6 "6:六"
+bindsym $mod+6 workspace number $ws6
+bindsym $mod+Shift+6 move container to workspace number $ws6
+
+# Workspace 7 Config
+workspace 7 output $m2
+set $ws7 "7:七"
+bindsym $mod+7 workspace number $ws7
+bindsym $mod+Shift+7 move container to workspace number $ws7
+
+# Workspace 8 Config
+workspace 8 output $m2
+set $ws8 "8:八"
+bindsym $mod+8 workspace number $ws8
+bindsym $mod+Shift+8 move container to workspace number $ws8
+
+# Workspace 9 Config
+workspace 9 output $m2
+set $ws9 "9:九"
+bindsym $mod+9 workspace number $ws9
+bindsym $mod+Shift+9 move container to workspace number $ws9
 
 bindsym $mod+Shift+c reload
 bindsym $mod+Shift+r restart
 
-assign [class="firefox"] $ws2
-assign [class="Emacs"]   $ws3
+assign [class="Chrome"]  $ws7
+assign [class="Emacs"]   $ws8
 assign [class="Signal"]  $ws6
 assign [class="Slack"]   $ws6
-# assign [class="Chrome"]  $ws7
 assign [class="Spotify"] $ws9
+assign [class="firefox"] $ws2
+assign [class="obsidian"] $ws8
+assign [class="org.remmina.Remmina"] $ws5
+
+# TODO: Get this working with the Teams PWA
+for_window [class="Chromium"] floating enable
+for_window [class="Chromium"] resize set 800 600
+
+for_window [class="org.remmina.Remmina"] floating enable
+for_window [class="org.remmina.Remmina"] resize set 800 600
 
 # Startup Applications
-exec --no-startup-id i3-msg 'workspace $ws7; exec firefox https://outlook.office365.com/mail/'
-exec_always pkill spotify && /snap/bin/spotify
-exec_always pkill slack && /snap/bin/slack
+exec_always [ -z "$(pgrep spotify)" ] && i3-msg exec "/snap/bin/spotify"
+exec_always [ -z "$(pgrep slack)" ] && i3-msg exec "/snap/bin/slack"
+exec_always [ -z "$(pgrep obsidian)" ] && i3-msg exec "/bin/obsidian.AppImage"
+exec_always --no-startup-id i3-msg 'workspace $ws5; exec chromium https://teams.microsoft.com --app --new-window'
 exec_always --no-startup-id notify-send "Your i3 config file has been reloaded!"
 
 # Screen Layouts
@@ -130,8 +165,6 @@ mode "$layout_mode" {
   bindsym 1 exec ~/.bin/layout laptop
   bindsym 2 exec ~/.bin/layout home
   bindsym 3 exec ~/.bin/layout work
-# bindsym Ctrl+Shift+2 exec ~/.bin/layout desktop
-# bindsym Ctrl+Shift+3 exec ~/.bin/layout deskonly
   bindsym Return mode "default"
   bindsym Escape mode "default"
 }
@@ -152,45 +185,17 @@ bindsym $mod+Shift+e mode "$system_mode"
 
 # Resize
 mode "Resize" {
-  bindsym h resize shrink width  10 px or 10 ppt
-  bindsym j resize grow   height 10 px or 10 ppt
-  bindsym k resize shrink height 10 px or 10 ppt
-  bindsym l resize grow   width  10 px or 10 ppt
+  bindsym h resize shrink width  50 px or 50 ppt
+  bindsym j resize grow   height 50 px or 50 ppt
+  bindsym k resize shrink height 50 px or 50 ppt
+  bindsym l resize grow   width  50 px or 50 ppt
 
   bindsym Return mode "default"
   bindsym Escape mode "default"
 }
 bindsym $mod+r mode "Resize"
 
-# Colours
-set $rosewater #f6e0dc
-set $flamingo  #f2cdcd
-set $pink      #f5c2e7
-set $mauve     #cba6f7
-set $red       #f38ba8
-set $maroon    #eba0ac
-set $peach     #fab387
-set $green     #a6e3a1
-set $teal      #94e2d5
-set $sky       #89dceb
-set $sapphire  #74c7ec
-set $blue      #89b4fa
-set $lavender  #b4befe
-set $text      #cdd6f4
-set $subtext1  #bac2de
-set $subtext0  #a6adc8
-set $overlay2  #9399b2
-set $overlay1  #7f849c
-set $overlay0  #6c7086
-set $surface2  #585b70
-set $surface1  #45475a
-set $surface0  #313244
-set $base      #1e1e2e
-set $mantle    #181825
-set $crust     #11111b
-
-# bindsym $mod+Shift+b exec --no-startup-id $HOME/.bin/i3bartoggle.sh
-# bindsym $mod+Shift+t exec --no-startup-id $HOME/.bin/i3bartoggle.sh
+bindsym $mod+Shift+b exec --no-startup-id $HOME/.bin/i3bartoggle.sh
 
 bar {
 # This bar is just for the systray icons!
@@ -202,21 +207,19 @@ bar {
   hidden_state hide
   modifier Mod1
   tray_output primary
-  font pango:file-icons-10, Noto Mono 12
+  font pango:file-icons-10, Ubuntu Nerd Font 12
   colors {
-    background          $base
-    statusline          $text     $base   $text  $rosewater $crust
-    separator           $overlay0 $base   $text  $overlay0  $crust
-    focused_workspace   $crust    $blue   $crust $crust     $crust
-    inactive_workspace  $mantle   $mantle $text  $rosewater $crust
-    urgent_workspace    $peach    $base   $peach $overlay0  $crust
+    background          #1E1E2E
+    statusline          #CDD6F4     #1E1E2E   #CDD6F4  #F6E0DC #11111B
+    separator           #6C7086 #1E1E2E   #CDD6F4  #6C7086  #11111B
+    focused_workspace   #11111B    #89B4FA   #11111B #11111B     #11111B
+    inactive_workspace  #181825   #181825 #CDD6F4  #F6E0DC #11111B
+    urgent_workspace    #FAB387    #1E1E2E   #FAB387 #6C7086  #11111B
   }
 }
 
 bar {
   id main
-  # mode invisible
-  # binding_mode_indicator no
   tray_output none
   i3bar_command i3bar --transparency
   separator_symbol "  "
@@ -225,12 +228,13 @@ bar {
   hidden_state show
   font pango:file-icons-10, Ubuntu Nerd Font 12
   colors {
-    background          $base
-    statusline          $text     $base   $text  $rosewater $crust
-    separator           $overlay0 $base   $text  $overlay0  $crust
-    focused_workspace   $crust    $blue   $crust $crust     $crust
-    inactive_workspace  $mantle   $mantle $text  $rosewater $crust
-    urgent_workspace    $peach    $base   $peach $overlay0  $crust
+    background          #1E1E2E
+    statusline          #CDD6F4     #1E1E2E   #CDD6F4  #F6E0DC #11111B
+    separator           #6C7086 #1E1E2E   #CDD6F4  #6C7086  #11111B
+    focused_workspace   #11111B    #89B4FA   #11111B #11111B     #11111B
+    inactive_workspace  #181825   #181825 #CDD6F4  #F6E0DC #11111B
+    urgent_workspace    #FAB387    #1E1E2E   #FAB387 #6C7086  #11111B
   }
-
 }
+
+# vi: ft=i3config
