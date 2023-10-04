@@ -103,8 +103,9 @@ These credits don't cover every resource that has helped me on my way to these c
 - [MatthewZMD's M-Emacs](https://github.com/MatthewZMD/.emacs.d)
 - [Protesilaos'](https://protesilaos.com/emacs/dotemacs) great Emacs tips, packages (especially themes), and [YouTube videos](https://www.youtube.com/@protesilaos)
 
-#### Vim
+#### Vim/Nvim
 
+- My Neovim config is based on [kickstart.nvim](https://github.com/nvim-lua/kickstart.nvim) (I made the switch when the [Packer](https://github.com/wbthomason/packer.nvim) package manager became unmaintained)
 - [Tim Pope](https://github.com/tpope), for obvious reasons
 - The dotfiles of [Daniel Hahler](https://github.com/blueyed)
 
