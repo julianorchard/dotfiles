@@ -234,6 +234,38 @@ vim.keymap.set("n", "j", "v:count == 0 ? 'gj' : 'j'", {
   expr = true, silent = true
 })
 
+
+-- Helper function
+function InsertAtPoint(i)
+  local p = vim.api.nvim_win_get_cursor(0)[2]
+  local l = vim.api.nvim_get_current_line()
+  -- Set current line as new content
+  vim.api.nvim_set_current_line(l:sub(0, p) .. " " .. i .. l:sub(p+ 1))
+end
+
+-- Not sure if there's a better way to do this, but this is how I've done it...!
+-- Fill functionality <C-t> (this ->) ------------------------------------------
+-- Call with any char using the following command ------------------------------
+-- `:lua Fill("+")` == this -> +++++++++++++++++++++++++++++++++++++++++++++++++
+function Fill(c)
+  local n = vim.api.nvim_buf_get_option(0, 'textwidth') - #vim.fn.getline('.')
+  if n > 2 then
+    -- Default to '-' (dash) character, if nothing input
+    InsertAtPoint(string.rep((c and c or "-"), n + 1))
+  else
+    print("ERROR: Cannot fill at this point.")
+  end
+end
+
+-- Aforementioned bindings -----------------------------------------------------
+vim.keymap.set("i", "<C-t>", "<space><esc>:lua Fill()<cr>") --------------------
+vim.keymap.set("n", "<C-t>", "a<space><esc>:lua Fill()<cr>") -------------------
+
+-- Insert timestamp <C-s>
+local tstamp = vim.fn.strftime("%Y-%m-%d %H:%M")
+vim.keymap.set("i", "<C-s>", "<esc>:lua InsertAtPoint('" .. tstamp .. "')<cr>A")
+vim.keymap.set("n", "<C-s>", "a<esc>:lua InsertAtPoint('" .. tstamp .. "')<cr>A")
+
 -- Highlight on yank (very cool)
 local highlight_group = vim.api.nvim_create_augroup("YankHighlight", { clear = true })
 vim.api.nvim_create_autocmd("TextYankPost", {
@@ -263,10 +295,14 @@ require("telescope").setup {
 pcall(require("telescope").load_extension, "fzf")
 
 -- Find old files (<leader>fh == find history)
-vim.keymap.set("n", "<leader>fh", require("telescope.builtin").oldfiles, { desc = "[?] Find recently opened files" })
+vim.keymap.set("n", "<leader>fh", require("telescope.builtin").oldfiles, {
+  desc = "[?] Find recently opened files"
+})
 
 -- Find in buffers (<leader>b == buffers)
-vim.keymap.set("n", "<leader><space>", require("telescope.builtin").buffers, { desc = "[ ] Find existing buffers" })
+vim.keymap.set("n", "<leader><space>", require("telescope.builtin").buffers, {
+  desc = "[ ] Find existing buffers"
+})
 
 -- fzf in the current buffer
 vim.keymap.set("n", "<leader>/", function()
