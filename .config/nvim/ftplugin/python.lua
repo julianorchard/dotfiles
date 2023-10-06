@@ -4,7 +4,7 @@ vim.opt.colorcolumn = { "72", "79" }
 
 -- Run black formatter on save
 vim.api.nvim_create_autocmd(
-    "BufWritePost", {
-        command = [[ :silent! !black % ]]
-    }
+  "BufWritePost", {
+    command = [[ :silent! !black % ]]
+  }
 )
