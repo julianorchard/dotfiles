@@ -195,8 +195,8 @@ vim.opt.updatetime = 500
 vim.opt.colorcolumn = "80"
 
 -- Highlight cursor
--- vim.opt.cursorline = true
--- vim.opt.cursorcolumn = true
+vim.opt.cursorline = true
+vim.opt.cursorcolumn = true
 
 -- Remove blank line endings on save
 vim.api.nvim_create_autocmd(
@@ -240,7 +240,7 @@ function InsertAtPoint(i)
   local p = vim.api.nvim_win_get_cursor(0)[2]
   local l = vim.api.nvim_get_current_line()
   -- Set current line as new content
-  vim.api.nvim_set_current_line(l:sub(0, p) .. " " .. i .. l:sub(p+ 1))
+  vim.api.nvim_set_current_line(l:sub(0, p) .. " " .. i .. l:sub(p + 1))
 end
 
 -- Not sure if there's a better way to do this, but this is how I've done it...!
@@ -248,15 +248,14 @@ end
 -- Call with any char using the following command ------------------------------
 -- `:lua Fill("+")` == this -> +++++++++++++++++++++++++++++++++++++++++++++++++
 function Fill(c)
-  local n = vim.api.nvim_buf_get_option(0, 'textwidth') - #vim.fn.getline('.')
+  local n = vim.api.nvim_win_get_option(0, 'cc') - #vim.fn.getline('.')
   if n > 2 then
     -- Default to '-' (dash) character, if nothing input
-    InsertAtPoint(string.rep((c and c or "-"), n + 1))
+    InsertAtPoint(string.rep((c and c or "-"), n))
   else
     print("ERROR: Cannot fill at this point.")
   end
 end
-
 -- Aforementioned bindings -----------------------------------------------------
 vim.keymap.set("i", "<C-t>", "<space><esc>:lua Fill()<cr>") --------------------
 vim.keymap.set("n", "<C-t>", "a<space><esc>:lua Fill()<cr>") -------------------
