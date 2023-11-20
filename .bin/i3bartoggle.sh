@@ -6,3 +6,4 @@ then
 else
   i3-msg bar mode dock
 fi
+i3-msg bar mode invisible tray

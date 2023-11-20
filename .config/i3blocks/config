@@ -1,23 +1,24 @@
-# [syncthing]
-# command=[ ! $(ps ax | grep -v "grep syncthing" | grep "syncthing" | wc -c) -ne 0 ] && echo "No Syncthing "
-# interval=60
-
 markup=pango
 
-[tailscale]
-command=tscmd=$(tailscale status | awk 'NR==1{ print $1}'); [ $tscmd=="Tailscale" ] && [ $tscmd=="USAGE" ] && echo "   ${tscmd} "
-interval=30
-color=#585b70
+[keyboard]
+command=setxkbmap -print -verbose 10 | awk '/layout/{print $2}'
+interval=5
+color=#ffffff
 
-[light]
-command=echo ${$(light)%.00}
-interval=2
-color=#585b70
+[tailscale]
+command=/home/julian/.bin/i3tailscale.sh
+interval=30
+color=#585B70
+
+# [light]
+# command=echo ${$(light)%.00}
+# interval=2
+# color=#585b70
 
 [tmux]
 command=sessions=$(tmux ls | wc -l) ; echo $sessions | grep -q 'no session' && echo "   0 " || echo "   $sessions "
 interval=5
-color=#cba6f7
+color=#CBA6F7
 
 [internet]
 command=[ ! ping -q -c1 google.com &>/dev/null ] && echo "No Internet "
@@ -34,10 +35,15 @@ interval=60
 [time]
 command=echo " $(date '+%H:%M') "
 interval=5
-color=#89b4fa
-
-[screens]
-command=echo "$(/home/julian/.bin/automatic-xrandr.sh)  "
-interval=5
+color=#89B4FA
 
 
+# [screens]
+# command=echo "$(/home/julian/.bin/automatic-xrandr.sh)"
+# interval=5
+
+[dotfiles]
+full_text=<span> f9c7117    </span>
+color=#F2CDCD
+
+# vi: ft=ini

@@ -17,6 +17,25 @@ require("lazy").setup({
   -- {
   --   "ap/vim-css-color",
   -- },
+  -- {
+  --   "jackMort/pommodoro-clock.nvim",
+  --   dependencies = {
+  --     "MunifTanjim/nui.nvim",
+  --   },
+  --   opts = {
+  --     modes = {
+  --       ["work"] = { "POMMODORO", 25 },
+  --       ["short_break"] = { "SHORT BREAK", 5 },
+  --       ["long_break"] = { "LONG BREAK", 30 },
+  --     },
+  --   }
+  -- },
+  {
+    "ThePrimeagen/vim-be-good",
+  },
+  {
+    "mg979/vim-visual-multi",
+  },
   {
     "tpope/vim-commentary",
   },
@@ -204,6 +223,19 @@ vim.api.nvim_create_autocmd(
   { command = [[ :%s/\s\+$//ge ]] }
 )
 
+-- Return-cursor
+vim.api.nvim_create_autocmd(
+  "BufReadPost",
+  { command = [[ if line("'\"") > 1 && line("'\"") <= line("$") | exe "normal! g`\"" | endif ]] }
+  -- {
+  --   command = function()
+  --     line = vim.api.nvim_get_current_line()
+  --     if (line > 1 and line )
+  --     end
+  --   end
+  -- }
+)
+
 -- Save undo history
 vim.o.undofile = true
 
@@ -220,6 +252,10 @@ vim.o.timeoutlen = 300
 
 -- Set completeopt to have a better completion experience
 vim.o.completeopt = "menuone,noselect"
+
+-- Keep cursor in the centre when C-d'ing and C-u'ing (thanks @bertiewhite)
+vim.keymap.set("n", "<C-d>", "<C-d>zz")
+vim.keymap.set("n", "<C-u>", "<C-u>zz")
 
 -- Keymaps
 

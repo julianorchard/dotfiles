@@ -38,8 +38,8 @@ if [ -x /usr/bin/dircolors ] ; then
   alias grep='grep --color=auto'
 fi
 
-. ~/.config/aliases/aliases.sh
-. ~/.config/aliases/bash-only.sh
-. ~/.config/aliases/env.sh
-. ~/.config/aliases/func.sh
+. ~/.config/sh/aliases.sh
+. ~/.config/sh/bash-only.sh
+. ~/.config/sh/env.sh
+. ~/.config/sh/func.sh
 

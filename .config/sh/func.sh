@@ -23,18 +23,16 @@ function t() {
     [ $# -gt 1 ] && selected=$1 || selected=$(find $HOME/Code/ $HOME/.config/nvim/ $HOME/Code/go/ /usr/local/go/src/julian/ -mindepth 1 -maxdepth 1 -type d | fzf)
 
     selected_name=$(basename "$selected" | tr . _)
-    selected_name_t=${selected_name:0:8} # Reduce name length
 
     echo $selected_name
-    echo $selected_name_t
 
     if [[ -n $TMUX ]]; then
-      tmux switch-client -t "$selected_name_t" \
-      || tmux new-session -ds "$selected_name_t" -c "$selected" \
-      && tmux switch-client -t "$selected_name_t"
+      tmux switch-client -t "$selected_name" \
+      || tmux new-session -ds "$selected_name" -c "$selected" \
+      && tmux switch-client -t "$selected_name"
     elif [[ -z $TMUX ]]; then
-      tmux new-session -s "$selected_name_t" -c "$selected" \
-      || tmux attach -t "$selected_name_t"
+      tmux new-session -s "$selected_name" -c "$selected" \
+      || tmux attach -t "$selected_name"
     fi
   fi
 }

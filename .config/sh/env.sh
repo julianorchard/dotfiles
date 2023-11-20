@@ -1,10 +1,12 @@
+our_tty=$(tty)
+
 # .local/bin
 export PATH="$HOME/.local/bin/:$PATH"
+export PATH="$HOME/.bin:$PATH"
 export PATH="$HOME/.local/bin/cargo:$PATH"
 export PATH="$HOME/.pulumi/bin:$PATH"
 export XDG_CONFIG_HOME="${HOME}/.config"
 export XDG_CACHE_HOME="${HOME}/.cache"
-
 
 # Bundler, Ruby
 export BUNDLE_USER_CONFIG="$XDG_CONFIG_HOME"/bundle
@@ -16,6 +18,7 @@ export GOPATH="${HOME}/Code/"
 export GOROOT="/usr/local/go/"
 # GPG
 export GNUPGHOME="$XDG_CONFIG_HOME"/gnupg
+export GPG_TTY=$our_tty
 # Less
 export LESSHISTFILE="$XDG_CACHE_HOME"/less/history
 export LESSKEY="$XDG_CONFIG_HOME"/less/lesskey
@@ -34,7 +37,7 @@ export PASSWORD_STORE_DIR="$XDG_DATA_HOME"/pass
 # Package Conf
 export PKG_CONFIG_PATH=/usr/lib/x86_64-linux-gnu/pkgconfig
 # X11
-export XAUTHORITY="$XDG_RUNTIME_DIR"/Xauthority
+export XAUTHORITY="$HOME/.Xauthority"
 export XINITRC="$XDG_CONFIG_HOME"/X11/xinitrc
 # Lang
 [ -x setxkbmap ] && setxkbmap gb
@@ -50,6 +53,12 @@ else
   export EDITOR="vim"
 fi
 export FILE="ranger"
+# IM
+export GTK_IM_MODULE="fcitx"
+export QT_IM_MODULE="fcitx"
+export XMODIFIERS="@im=fcitx"
 # NVM
 export NVM_DIR="$([ -z "${XDG_CONFIG_HOME-}" ] && printf %s "${HOME}/.nvm" || printf %s "${XDG_CONFIG_HOME}/nvm")"
 [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
+# GHCUP
+[ -f "$HOME/.ghcup/env" ] && source "$HOME/.ghcup/env"

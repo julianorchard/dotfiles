@@ -6,6 +6,8 @@
 >
 > My `dotfiles`, without me, are useless. Without my `dotfiles`, I am useless.
 
+![.docs/example.png](Example image.)
+
 ## Deploy
 
 I use a [bare git repo](https://www.atlassian.com/git/tutorials/dotfiles) to manage these files, as I think it's simply and *fairly* system agnostic:
