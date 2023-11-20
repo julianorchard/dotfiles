@@ -6,7 +6,7 @@
 >
 > My `dotfiles`, without me, are useless. Without my `dotfiles`, I am useless.
 
-![.docs/example.png](Example image.)
+![A screenshot of my configuration on Linux.](.docs/example.png)
 
 ## Deploy
 
