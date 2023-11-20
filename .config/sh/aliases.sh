@@ -129,7 +129,11 @@ fi
 
 [ -x /usr/bin/netstat ] && alias ports="sudo netstat -plnt"
 
+alias spotifyd="/home/julian/Code/spotifyd/target/release/spotifyd"
+
 # I can never remember these
 [ -x /usr/bin/xev ] && alias get_key="xev"
 [ -x /usr/bin/xprop ] && alias get_window_name="xprop | grep -i 'class'"
 
+# THANKS @ALESSIOMINERVA XD
+alias cdb="dirs | sed -e 's/\s/\n/g' | fzf"

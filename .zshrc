@@ -5,18 +5,15 @@ if [[ -r "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh" ]]
   source "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh"
 fi
 
-# Hello Alessio
 # OMZ Config
 export ZSH="$HOME/.oh-my-zsh"
 ZSH_THEME="powerlevel10k/powerlevel10k"
 HYPHEN_INSENSITIVE="true"
 zstyle ':omz:update' mode reminder
-ENABLE_CORRECTION="true"
+ENABLE_CORRECTION="false"
 COMPLETION_WAITING_DOTS="true"
 HIST_STAMPS="yyyy-mm-dd"
 plugins=(git)
-
-# alias vim="/snap/bin/nvim"
 
 source $ZSH/oh-my-zsh.sh
 
@@ -25,9 +22,9 @@ source $ZSH/oh-my-zsh.sh
 . ~/.config/sh/env.sh
 . ~/.config/sh/func.sh
 . ~/.config/sh/zsh-only.sh
-. ~/.zshrc-aliases # Not in the dotfiles
-
-# vi: ft=bash
+. ~/.zshrc-aliases # Not in the dotfiles please
 
 # To customize prompt, run `p10k configure` or edit ~/.p10k.zsh.
 [[ ! -f ~/.p10k.zsh ]] || source ~/.p10k.zsh
+
+# vi: ft=bash

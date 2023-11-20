@@ -16,6 +16,8 @@
 ## Code:
 
 DEFAULT_BACKGROUND="${HOME}/Pictures/bg.jpg"
+LAPTOP_DISPLAY="eDP-1"
+MONITOR_DISPLAY="HDMI-1-0"
 
 laptop() {
   xrandr --output eDP-1 --mode 1920x1080 --pos 0x0 --rotate normal --output HDMI-1-0 --off
@@ -35,12 +37,28 @@ work() {
 }
 
 home() {
-  xrandr --output eDP-1 --primary --mode 1920x1080 --pos 3440x360 --rotate normal --output HDMI-1-0 --mode 3440x1440 --pos 0x0 --rotate normal
-  # xrandr --output eDP-1 --mode 1920x1080 --pos 3440x635 --rotate normal --output HDMI-1-0 --mode 3440x1440 --pos 0x0 --rotate normal
+  # Laptop on the left:
+  # xrandr --output $LAPTOP_DISPLAY --primary --auto --output $MONITOR_DISPLAY --auto --right-of $LAPTOP_DISPLAY
+  # Laptop on the right:
+  xrandr --output $LAPTOP_DISPLAY --primary --auto --output $MONITOR_DISPLAY --auto --left-of $LAPTOP_DISPLAY
 }
 
+# set_background() {
+#   feh --bg-fill $DEFAULT_BACKGROUND
+# }
+
 set_background() {
-  feh --bg-fill $DEFAULT_BACKGROUND
+    # Day of the week; Monday == Oneday
+    day_of_the_week=$(date +%u)
+    # Set these as arguments, to be used in the `feh` command!
+    set -- --randomize --image-bg "#1E1E2E"
+    if [ "${day_of_the_week}" -gt 5 ] ; then
+        # Fun Primeagen Wallpapers
+        feh "${@}" "${HOME}/Pictures/cringe-wallpapers/" --bg-max
+    else
+        # Non-embaressing Wallpapers
+        feh "${@}" "${HOME}/Pictures/normie-wallpapers/" --bg-fill
+    fi
 }
 
 usage() {

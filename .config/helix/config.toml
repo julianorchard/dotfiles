@@ -1,0 +1,41 @@
+theme            = "catppuccin_mocha"
+
+# Okay, wtf, try this:
+# `mips=<cr>&`
+
+[editor]
+auto-format      = true
+auto-pairs       = false
+bufferline       = "multiple"
+color-modes      = true
+cursorline       = true
+line-number      = "relative"
+rulers           = [80]
+
+[editor.cursor-shape]
+insert           = "bar"
+normal           = "block"
+select           = "underline"
+
+[editor.file-picker]
+hidden           = true
+
+[editor.lsp]
+display-messages = true
+
+[editor.indent-guides]
+render           = true
+
+[editor.whitespace.render]
+nbsp             = "all"
+newline          = "none"
+space            = "none"
+tab              = "all"
+
+[editor.whitespace.characters]
+nbsp             = "⍽"
+tab              = "→"
+tabpad           = "·"
+
+[keys.normal]
+esc = ["collapse_selection", "keep_primary_selection"]

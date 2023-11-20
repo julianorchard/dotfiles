@@ -1,0 +1,43 @@
+#!/bin/sh -e
+
+# unzip more saferly :)
+#
+# Usage:
+#
+# `unzips filename.zip`
+
+err() {
+    # error message = $1
+    # cleanup folder = $2
+    echo "ERROR: $1"
+
+    # Remove created files
+    rm -r "$2"
+
+    exit 1
+}
+
+main() {
+    # Check if unzip is installed
+    [ -x "$(which unzip)" ] || err "unzip not installed"
+
+    # Check input is and is a zip
+    [ -n "$1" ] || err "this argument requires an input of a zip file"
+    echo "$@" | grep "\.zip" > /dev/null 2>&1 || err "input is not a zip file"
+
+    # Input without .zip
+    input=$(echo "$@" | sed 's/\.zip$//')
+
+    # Create directory and move zip into it
+    mkdir "$input" || err "dir already exists" "$input"
+    mv "$1" "$input" || err "cannot move zip file" "$input"
+
+    # Move into this directory and unzip file
+    cd "$input" || err "could not cd into $input" "$input"
+    unzip "$1" || err "could not unzip file" "$input"
+    cd ..
+
+    echo "File has been unzipped in $input!"
+}
+
+main "$@"

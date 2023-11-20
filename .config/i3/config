@@ -18,7 +18,7 @@ exec --no-startup-id xss-lock --transfer-sleep-lock -- i3lock --nofork --bar-ind
 exec --no-startup-id nm-applet
 exec --no-startup-id picom -b
 exec --no-startup-id syncthing
-for_window [class="^.*"] border pixel 2
+for_window [class="^.*"] border pixel 10
 
 # Notification Daemon
 exec_always --no-startup-id dunst -config ~/.config/dunst/dunstrc
@@ -135,28 +135,36 @@ bindsym $mod+Shift+9 move container to workspace number $ws9
 bindsym $mod+Shift+c reload
 bindsym $mod+Shift+r restart
 
-assign [class="Chrome"]  $ws7
-assign [class="Emacs"]   $ws8
-assign [class="Signal"]  $ws6
-assign [class="Slack"]   $ws6
-assign [class="Spotify"] $ws9
-assign [class="firefox"] $ws2
-assign [class="obsidian"] $ws8
+assign [class="firefox"]             $ws2
 assign [class="org.remmina.Remmina"] $ws5
+# Only use this for Teams PWA
+assign [class="Chromium"]            $ws5
+# Messaging Workspace
+assign [class="Slack"]               $ws6
+assign [class="Signal"]              $ws6
+# Note Taking Workspace
+assign [class="obsidian"]            $ws7
+assign [class="Logseq"]              $ws7
+assign [class="Emacs"]               $ws7
+# Media
+assign [class="Spotify"]             $ws9
 
 # TODO: Get this working with the Teams PWA
 for_window [class="Chromium"] floating enable
+for_window [class="kleopatra"] floating enable
 for_window [class="Chromium"] resize set 800 600
 
 for_window [class="org.remmina.Remmina"] floating enable
 for_window [class="org.remmina.Remmina"] resize set 800 600
 
 # Startup Applications
-exec_always [ -z "$(pgrep spotify)" ] && i3-msg exec "/snap/bin/spotify"
 exec_always [ -z "$(pgrep slack)" ] && i3-msg exec "/snap/bin/slack"
-exec_always [ -z "$(pgrep obsidian)" ] && i3-msg exec "/bin/obsidian.AppImage"
+exec_always [ -z "$(pgrep logseq)" ] && i3-msg exec "/bin/logseq"
+exec_always [ -z "$(pgrep Chromium)" ] && i3-msg exec "/snap/bin/chromium"
 exec_always --no-startup-id i3-msg 'workspace $ws5; exec chromium https://teams.microsoft.com --app --new-window'
 exec_always --no-startup-id notify-send "Your i3 config file has been reloaded!"
+# exec_always [ -z "$(pgrep spotify)" ] && i3-msg exec "/snap/bin/spotify"
+# exec_always [ -z "$(pgrep obsidian)" ] && i3-msg exec "/bin/obsidian.AppImage"
 
 # Screen Layouts
 exec ~/.bin/layout laptop
@@ -210,13 +218,18 @@ bar {
   font pango:file-icons-10, Ubuntu Nerd Font 12
   colors {
     background          #1E1E2E
-    statusline          #CDD6F4     #1E1E2E   #CDD6F4  #F6E0DC #11111B
-    separator           #6C7086 #1E1E2E   #CDD6F4  #6C7086  #11111B
-    focused_workspace   #11111B    #89B4FA   #11111B #11111B     #11111B
-    inactive_workspace  #181825   #181825 #CDD6F4  #F6E0DC #11111B
-    urgent_workspace    #FAB387    #1E1E2E   #FAB387 #6C7086  #11111B
+    statusline          #CDD6F4  #1E1E2E  #CDD6F4  #F6E0DC #11111B
+    separator           #6C7086  #1E1E2E  #CDD6F4  #6C7086 #11111B
+    focused_workspace   #11111B  #89B4FA  #11111B  #11111B #11111B
+    inactive_workspace  #181825  #181825  #CDD6F4  #F6E0DC #11111B
+    urgent_workspace    #FAB387  #1E1E2E  #FAB387  #6C7086 #11111B
   }
 }
+
+client.focused          #89B4FA  #89B4FA  #11111B  #CDD6F4
+client.focused_inactive #6C7086  #6C7086  #11111B  #6C7086
+client.unfocused        #1E1E2E  #1E1E2E  #11111B  #1E1E2E
+client.urgent           #FAB387  #FAB387  #11111B  #FAB387
 
 bar {
   id main
@@ -229,11 +242,11 @@ bar {
   font pango:file-icons-10, Ubuntu Nerd Font 12
   colors {
     background          #1E1E2E
-    statusline          #CDD6F4     #1E1E2E   #CDD6F4  #F6E0DC #11111B
-    separator           #6C7086 #1E1E2E   #CDD6F4  #6C7086  #11111B
-    focused_workspace   #11111B    #89B4FA   #11111B #11111B     #11111B
-    inactive_workspace  #181825   #181825 #CDD6F4  #F6E0DC #11111B
-    urgent_workspace    #FAB387    #1E1E2E   #FAB387 #6C7086  #11111B
+    statusline          #CDD6F4  #1E1E2E  #CDD6F4  #F6E0DC #11111B
+    separator           #6C7086  #1E1E2E  #CDD6F4  #6C7086 #11111B
+    focused_workspace   #11111B  #89B4FA  #11111B  #11111B #11111B
+    inactive_workspace  #181825  #181825  #CDD6F4  #F6E0DC #11111B
+    urgent_workspace    #FAB387  #1E1E2E  #FAB387  #6C7086 #11111B
   }
 }
 
