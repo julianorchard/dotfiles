@@ -1,0 +1,4 @@
+[[language]]
+name = "yaml"
+language-servers = [ "yaml-language-server" ]
+# language-servers = [ { name = "yaml-language-server", except-features = [ "" ] } ]
