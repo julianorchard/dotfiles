@@ -1,4 +1,6 @@
-#!/bin/sh
+#!/usr/bin/env sh
+
+set -euf
 
 ##   layout  ---  Set default screen layouts.
 
@@ -15,7 +17,6 @@
 
 ## Code:
 
-DEFAULT_BACKGROUND="${HOME}/Pictures/bg.jpg"
 LAPTOP_DISPLAY="eDP-1"
 MONITOR_DISPLAY="HDMI-1-0"
 
@@ -36,16 +37,15 @@ work() {
   xrandr --output eDP-1 --mode 1920x1080 --pos 3840x1080 --rotate normal --output HDMI-1-0 --mode 3840x2160 --pos 0x0 --rotate normal --dpi 150 # --scale 1.25x1.25
 }
 
-home() {
+home_left() {
   # Laptop on the left:
-  # xrandr --output $LAPTOP_DISPLAY --primary --auto --output $MONITOR_DISPLAY --auto --right-of $LAPTOP_DISPLAY
+  xrandr --output $LAPTOP_DISPLAY --primary --auto --output $MONITOR_DISPLAY --auto --right-of $LAPTOP_DISPLAY
+}
+
+home_right() {
   # Laptop on the right:
   xrandr --output $LAPTOP_DISPLAY --primary --auto --output $MONITOR_DISPLAY --auto --left-of $LAPTOP_DISPLAY
 }
-
-# set_background() {
-#   feh --bg-fill $DEFAULT_BACKGROUND
-# }
 
 set_background() {
     # Day of the week; Monday == Oneday
@@ -55,6 +55,7 @@ set_background() {
     if [ "${day_of_the_week}" -gt 5 ] ; then
         # Fun Primeagen Wallpapers
         feh "${@}" "${HOME}/Pictures/cringe-wallpapers/" --bg-max
+
     else
         # Non-embaressing Wallpapers
         feh "${@}" "${HOME}/Pictures/normie-wallpapers/" --bg-fill
@@ -65,7 +66,7 @@ usage() {
   echo "Accepted arguments for this command are 'laptop', 'desktop', and 'deskonly'."
 }
 
-[ -z $1 ] && usage && exit 0
+[ -z "${1}" ] && usage && exit 0
 
 case $1 in
   laptop)
@@ -84,8 +85,12 @@ case $1 in
     work
     set_background
     ;;
-  home)
-    home
+  home_left)
+    home_left
+    set_background
+    ;;
+  home_right)
+    home_right
     set_background
     ;;
   *)

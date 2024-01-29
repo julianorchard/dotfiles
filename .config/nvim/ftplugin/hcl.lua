@@ -1,7 +1,7 @@
--- Run terraform format on save
+-- Run terragrunt format on save
 vim.api.nvim_create_autocmd(
   "BufWritePost", {
-    command = [[ :silent! !terraform fmt % ]]
+    command = [[ :silent! !terragrunt hclfmt --terragrunt-hclfmt-file % ]]
   }
 )
 
