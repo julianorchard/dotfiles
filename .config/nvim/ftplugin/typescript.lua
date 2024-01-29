@@ -4,7 +4,7 @@ vim.opt.colorcolumn = { "80", "120" }
 
 -- Run prettier on save
 vim.api.nvim_create_autocmd(
-    "BufWritePost", {
-        command = [[ :silent! !prettier % ]]
-    }
+  "BufWritePost", {
+    command = [[ :silent! !prettier % ]]
+  }
 )
