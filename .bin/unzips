@@ -1,4 +1,6 @@
-#!/bin/sh -e
+#!/usr/bin/env
+
+set -euf
 
 # unzip more saferly :)
 #
@@ -22,7 +24,6 @@ main() {
     [ -x "$(which unzip)" ] || err "unzip not installed"
 
     # Check input is and is a zip
-    [ -n "$1" ] || err "this argument requires an input of a zip file"
     echo "$@" | grep "\.zip" > /dev/null 2>&1 || err "input is not a zip file"
 
     # Input without .zip

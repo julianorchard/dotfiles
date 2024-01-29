@@ -8,3 +8,17 @@ vim.bo.expandtab = false
 vim.bo.shiftwidth = 4
 vim.bo.softtabstop = 4
 vim.bo.tabstop = 4
+
+-- vim.api.nvim_create_autocmd(
+--   "BufWritePost", {
+--     command = function ()
+--        if string.match(vim.fn.expand("%:p"), "cricwatch") then
+--             return "test"
+--          -- return [[ :!go test ]]
+--        end
+--     end
+--   }
+-- )
+
+
+vim.keymap.set("n", "<leader>ee", "oif err != nil {<cr><cr>}<esc>ki<tab>return err<esc>jj")

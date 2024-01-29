@@ -252,7 +252,7 @@
   iab rubyenv #!/c/MAMP/bin/ruby/bin/ruby.exe
   iab pythonenv #!/c/MAMP/bin/python/bin/python.exe
   iab ~~ Julian Orchard <hello@julianorchard.co.uk>
-  let gcfg = "git config --global "
+  let gcfg = "git config "
   iab <expr> ~g substitute(system(gcfg . 'user.name') . " <" . system(gcfg . 'user.email') . ">", '\n', '', 'g')
   iab lipsum
 \ Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do

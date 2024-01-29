@@ -1,0 +1,5 @@
+#!/usr/bin/env sh
+set -euf
+e() { echo "${1}" && exit 1 ; }
+[ -z "$(diff "${1}" "${2}")" ] && e "Nothing to diff"
+watch --color -n1 diff --color=always "${1}" "${2}"
