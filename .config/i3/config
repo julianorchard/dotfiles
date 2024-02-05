@@ -1,18 +1,10 @@
- #      _       _    __ _ _
- #   __| | ___ | |_ / _(_) | ___  ___
- #  / _` |/ _ \| __| |_| | |/ _ \/ __|
- # | (_| | (_) | |_|  _| | |  __/\__ \
- #  \__,_|\___/ \__|_| |_|_|\___||___/
- #
- #                          by julian
-
 set $mod Mod4
 
 # Monitors
 set $m1 HDMI-1-0
 set $m2 eDP-1
 
-font pango:file-icons:Fira Code:monospace 12
+font pango:file-icons:ComicShannsMono Nerd Font Mono:monospace 9
 exec --no-startup-id dex --autostart --environment i3
 exec --no-startup-id xss-lock --transfer-sleep-lock -- i3lock --nofork --bar-indicator
 exec --no-startup-id nm-applet
@@ -68,9 +60,9 @@ bindsym $mod+Shift+s sticky toggle
 # Screenshot
 bindsym Print exec flameshot gui -p ~/Pictures/captures/
 
+# Gaps
 exec i3-msg gaps inner all set 15px
 bindsym $mod+g gaps inner all toggle 15px
-
 
 # Workspace 0 Config
 workspace 0 output $m2
@@ -149,18 +141,18 @@ assign [class="Emacs"]               $ws7
 # Media
 assign [class="Spotify"]             $ws9
 
-# TODO: Get this working with the Teams PWA
-for_window [class="Chromium"] floating enable
+for_window [class="Org.gnome.Nautilus"] floating enable
+for_window [class="Org.gnome.Nautilus"] resize set 1000 1000
 for_window [class="kleopatra"] floating enable
-for_window [class="Chromium"] resize set 800 600
-
 for_window [class="org.remmina.Remmina"] floating enable
 for_window [class="org.remmina.Remmina"] resize set 800 600
 
 # Startup Applications
 exec_always [ -z "$(pgrep slack)" ] && i3-msg exec "/snap/bin/slack"
 exec_always [ -z "$(pgrep logseq)" ] && i3-msg exec "/bin/logseq"
-exec_always [ -z "$(pgrep Chromium)" ] && i3-msg exec "/snap/bin/chromium"
+# "They say that madness is doing the same thing over and over and expecting
+# different results."
+# ^ Literally me when Chrome opens twice every time I load into i3wm
 exec_always --no-startup-id i3-msg 'workspace $ws5; exec chromium https://teams.microsoft.com --app --new-window'
 exec_always --no-startup-id notify-send "Your i3 config file has been reloaded!"
 # exec_always [ -z "$(pgrep spotify)" ] && i3-msg exec "/snap/bin/spotify"
@@ -168,62 +160,63 @@ exec_always --no-startup-id notify-send "Your i3 config file has been reloaded!"
 
 # Screen Layouts
 exec ~/.bin/layout laptop
-set $layout_mode Layouts: (1) Laptop, (2) Home, (3) Work
+set $layout_mode Layouts: (1) Laptop, (2) Work, (3) Home (left), (4) Home (right)
 mode "$layout_mode" {
-  bindsym 1 exec ~/.bin/layout laptop
-  bindsym 2 exec ~/.bin/layout home
-  bindsym 3 exec ~/.bin/layout work
-  bindsym Return mode "default"
-  bindsym Escape mode "default"
+    bindsym 1 exec ~/.bin/layout laptop
+    bindsym 2 exec ~/.bin/layout work
+    bindsym 3 exec ~/.bin/layout home_left
+    bindsym 4 exec ~/.bin/layout home_right
+    bindsym Return mode "default"
+    bindsym Escape mode "default"
 }
 bindsym Ctrl+Shift+1 mode "$layout_mode"
 
 # System Commands
 set $system_mode System: (l) Lock, (e) Logout, (r) Reboot, (s) Shutdown
 mode "$system_mode" {
-  bindsym l mode "default" ; exec i3lock-fancy
-  bindsym e exec i3-msg exit
-  bindsym r exec systemctl reboot
-  bindsym s exec systemctl poweroff
+    bindsym l mode "default" ; exec i3lock-fancy
+    bindsym e exec i3-msg exit
+    bindsym r exec systemctl reboot
+    bindsym s exec systemctl poweroff
 
-  bindsym Return mode "default"
-  bindsym Escape mode "default"
+    bindsym Return mode "default"
+    bindsym Escape mode "default"
 }
 bindsym $mod+Shift+e mode "$system_mode"
 
 # Resize
 mode "Resize" {
-  bindsym h resize shrink width  50 px or 50 ppt
-  bindsym j resize grow   height 50 px or 50 ppt
-  bindsym k resize shrink height 50 px or 50 ppt
-  bindsym l resize grow   width  50 px or 50 ppt
+    bindsym h resize shrink width  50 px or 50 ppt
+    bindsym j resize grow   height 50 px or 50 ppt
+    bindsym k resize shrink height 50 px or 50 ppt
+    bindsym l resize grow   width  50 px or 50 ppt
 
-  bindsym Return mode "default"
-  bindsym Escape mode "default"
+    bindsym Return mode "default"
+    bindsym Escape mode "default"
 }
 bindsym $mod+r mode "Resize"
 
 bindsym $mod+Shift+b exec --no-startup-id $HOME/.bin/i3bartoggle.sh
 
 bar {
-# This bar is just for the systray icons!
-  id tray
-  workspace_buttons no
-  position top
-  mode hide
-  i3bar_command i3bar --transparency
-  hidden_state hide
-  modifier Mod1
-  tray_output primary
-  font pango:file-icons-10, Ubuntu Nerd Font 12
-  colors {
-    background          #1E1E2E
-    statusline          #CDD6F4  #1E1E2E  #CDD6F4  #F6E0DC #11111B
-    separator           #6C7086  #1E1E2E  #CDD6F4  #6C7086 #11111B
-    focused_workspace   #11111B  #89B4FA  #11111B  #11111B #11111B
-    inactive_workspace  #181825  #181825  #CDD6F4  #F6E0DC #11111B
-    urgent_workspace    #FAB387  #1E1E2E  #FAB387  #6C7086 #11111B
-  }
+    # This bar is just for the systray icons!
+    id tray
+    workspace_buttons no
+    position top
+    mode hide
+    i3bar_command i3bar --transparency
+    hidden_state hide
+    modifier Mod1
+    tray_output primary
+    font pango:file-icons-9, Ubuntu Nerd Font 9
+    colors {
+        background          #1E1E2E
+        statusline          #CDD6F4  #1E1E2E  #CDD6F4  #F6E0DC #11111B
+        separator           #6C7086  #1E1E2E  #CDD6F4  #6C7086 #11111B
+        focused_workspace   #11111B  #89B4FA  #11111B  #11111B #11111B
+        inactive_workspace  #181825  #181825  #CDD6F4  #F6E0DC #11111B
+        urgent_workspace    #FAB387  #1E1E2E  #FAB387  #6C7086 #11111B
+    }
 }
 
 client.focused          #89B4FA  #89B4FA  #11111B  #CDD6F4
@@ -232,22 +225,22 @@ client.unfocused        #1E1E2E  #1E1E2E  #11111B  #1E1E2E
 client.urgent           #FAB387  #FAB387  #11111B  #FAB387
 
 bar {
-  id main
-  tray_output none
-  i3bar_command i3bar --transparency
-  separator_symbol "  "
-  strip_workspace_numbers yes
-  status_command i3blocks
-  hidden_state show
-  font pango:file-icons-10, Ubuntu Nerd Font 12
-  colors {
-    background          #1E1E2E
-    statusline          #CDD6F4  #1E1E2E  #CDD6F4  #F6E0DC #11111B
-    separator           #6C7086  #1E1E2E  #CDD6F4  #6C7086 #11111B
-    focused_workspace   #11111B  #89B4FA  #11111B  #11111B #11111B
-    inactive_workspace  #181825  #181825  #CDD6F4  #F6E0DC #11111B
-    urgent_workspace    #FAB387  #1E1E2E  #FAB387  #6C7086 #11111B
-  }
+    id main
+    tray_output none
+    i3bar_command i3bar --transparency
+    separator_symbol " "
+    strip_workspace_numbers yes
+    status_command i3blocks
+    hidden_state show
+    font pango:file-icons-10, ComicShannsMono Nerd Font Mono 10
+    colors {
+        background          #1E1E2E
+        statusline          #CDD6F4  #1E1E2E  #CDD6F4  #F6E0DC #11111B
+        separator           #6C7086  #1E1E2E  #CDD6F4  #6C7086 #11111B
+        focused_workspace   #11111B  #89B4FA  #11111B  #11111B #11111B
+        inactive_workspace  #181825  #181825  #CDD6F4  #F6E0DC #11111B
+        urgent_workspace    #FAB387  #1E1E2E  #FAB387  #6C7086 #11111B
+    }
 }
 
 # vi: ft=i3config

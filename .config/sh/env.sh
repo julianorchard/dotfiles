@@ -4,6 +4,7 @@ our_tty=$(tty)
 export PATH="$HOME/.local/bin/:$PATH"
 export PATH="$HOME/.bin:$PATH"
 export PATH="$HOME/.local/bin/cargo:$PATH"
+export PATH="$HOME/.cargo/bin:$PATH"
 export PATH="$HOME/.pulumi/bin:$PATH"
 export XDG_CONFIG_HOME="${HOME}/.config"
 export XDG_CACHE_HOME="${HOME}/.cache"
@@ -62,3 +63,4 @@ export NVM_DIR="$([ -z "${XDG_CONFIG_HOME-}" ] && printf %s "${HOME}/.nvm" || pr
 [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
 # GHCUP
 [ -f "$HOME/.ghcup/env" ] && source "$HOME/.ghcup/env"
+export PATH="$HOME/.tfenv/bin:$PATH"
