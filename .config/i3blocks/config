@@ -1,49 +1,27 @@
 markup=pango
 
-[keyboard]
-command=setxkbmap -print -verbose 10 | awk '/layout/{print $2}'
-interval=5
-color=#ffffff
-
-[tailscale]
-command=/home/julian/.bin/i3tailscale.sh
-interval=30
-color=#585B70
-
-# [light]
-# command=echo ${$(light)%.00}
-# interval=2
-# color=#585b70
-
 [tmux]
-command=sessions=$(tmux ls | wc -l) ; echo $sessions | grep -q 'no session' && echo "   0 " || echo "   $sessions "
+command=sessions=$(tmux ls | wc -l) ; echo $sessions | ! grep -q 'no session' && echo "tmuxs: $sessions"
 interval=5
 color=#CBA6F7
 
-[internet]
-command=[ ! ping -q -c1 google.com &>/dev/null ] && echo "No Internet "
-interval=15
-
-[calendar]
-command=/home/julian/.bin/pm-cal.py
+[space]
+command=echo "vimrc: $(df -h | grep  '/$' | awk '{print $2}')"
 interval=300
+color=#EBBCBA
+
+[ipaddr]
+command=echo "$(hostname -I | awk '{print "leaked ip: " $1}')"
+interval=60
+color=#EB6F92
 
 [battery]
 command=/home/julian/.bin/battery-block
 interval=60
 
 [time]
-command=echo " $(date '+%H:%M') "
+command=echo "$(date '+%H:%M') "
 interval=5
 color=#89B4FA
-
-
-# [screens]
-# command=echo "$(/home/julian/.bin/automatic-xrandr.sh)"
-# interval=5
-
-[dotfiles]
-full_text=<span> f9c7117    </span>
-color=#F2CDCD
 
 # vi: ft=ini
