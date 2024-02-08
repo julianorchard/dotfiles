@@ -2,18 +2,3 @@
 !.gitignore
 !todo.org
 !init.el
-# auto-save-list/
-# elpa/
-# eln-cache/
-# transient/
-# var/
-# *~
-# eshell/
-# server/
-# bookmarks
-# tramp
-# etc
-# emojis
-# history
-# places
-# straight/
