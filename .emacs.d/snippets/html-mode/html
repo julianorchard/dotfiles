@@ -1,7 +1,0 @@
-# -*- mode: snippet -*-
-# contributor : Jimmy Wu <frozenthrone88@gmail.com>
-# name: <html>...</html>
-# --
-<html lang="en">
-  $0
-</html>
