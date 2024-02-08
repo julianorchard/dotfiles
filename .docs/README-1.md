@@ -11,13 +11,8 @@
 
 ## About
 
-- For colour schemes I'm switching between
-  [pinkmare](https://github.com/Matsuuu/pinkmare), [Rose
-  Pine](https://github.com/rose-pine/neovim), or
-  [Catppuccin](https://github.com/catppuccin/emacs) at the moment
-- I'm using [Comic Shanns](https://github.com/shannpersand/comic-shanns)
-  (patched) and recently switched from [Fira
-  Code](https://github.com/tonsky/FiraCode) everything
+- For colour schemes I'm switching between [pinkmare](https://github.com/Matsuuu/pinkmare), [Rose Pine](https://github.com/rose-pine/neovim), or [Catppuccin](https://github.com/catppuccin/emacs) at the moment
+- I'm using [Comic Shanns](https://github.com/shannpersand/comic-shanns) (patched) and recently switched from [Fira Code](https://github.com/tonsky/FiraCode) everything
 - I'm on Ubuntu most of the time
 - I'm primarily using Neovim, very rarely Emacs
 
