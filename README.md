@@ -2,15 +2,34 @@
 
 > These are my `dotfiles`. There are many like them, but these ones are mine.
 >
-> My `dotfiles` are my best friends. They are my life. I must master them as I master my life.
+> My `dotfiles` are my best friends. They are my life. I must master them as I
+> master my life.
 >
 > My `dotfiles`, without me, are useless. Without my `dotfiles`, I am useless.
 
-![A screenshot of my configuration on Linux.](.docs/example.png)
+![A screenshot of my configuration on Linux.](.docs/2023-10.png)
+
+## About
+
+- For colour schemes I'm switching between
+
+[pinkmare](https://github.com/Matsuuu/pinkmare), [Rose
+
+Pine](https://github.com/rose-pine/neovim), or
+
+[Catppuccin](https://github.com/catppuccin/emacs) at the moment
+- I'm using [Comic Shanns](https://github.com/shannpersand/comic-shanns)
+
+(patched) and recently switched from [Fira
+
+Code](https://github.com/tonsky/FiraCode) everything
+- I'm on Ubuntu most of the time
+- I'm primarily using Neovim, very rarely Emacs
 
 ## Deploy
 
-I use a [bare git repo](https://www.atlassian.com/git/tutorials/dotfiles) to manage these files, as I think it's simply and *fairly* system agnostic:
+I use a [bare git repo](https://www.atlassian.com/git/tutorials/dotfiles) to
+manage these files, as I think it's simply and *fairly* system agnostic:
 
 ```sh
 curl -Lks https://julianorchard.co.uk/bin/install.sh | /bin/bash
@@ -66,31 +85,60 @@ Use this script to create a shortcut to the current folder you're in. I've found
 
 ## Contributing
 
-These are my personal dotfiles. If you want to fork this repo and use them, that's absolutely fine, but (unless you find a breaking change) I probably won't be accepting PRs.
+These are my personal dotfiles. If you want to fork this repo and use them,
+that's absolutely fine, but (unless you find a breaking change) I probably
+won't be accepting PRs.
 
 ## License
 
-Everything here, unless otherwise stated, is under the MIT License. See [License](/LICENSE) for more information.
+Everything here, unless otherwise stated, is under the MIT License. See
+[License](/LICENSE) for more information.
 
 ## Credits
 
-These credits don't cover every resource that has helped me on my way to these configurations, but they're hopefully giving credit to some of the biggest influences on them...
+These credits don't cover every resource that has helped me on my way to these
+configurations, but they're hopefully giving credit to some of the biggest
+influences on them...
+
+#### Vim/Neovim
+
+- My Neovim config ~~is~~ was initially based on
+
+[kickstart.nvim](https://github.com/nvim-lua/kickstart.nvim) (I made the
+
+switch when the [Packer](https://github.com/wbthomason/packer.nvim) package
+
+manager became unmaintained)
+- [Tim Pope](https://github.com/tpope), for obvious reasons
+- [ThePrimeagen](https://github.com/ThePrimeagen) for getting me out of Emacs
+
+and into Neovim
+- Random bits from the dotfiles of [Daniel Hahler](https://github.com/blueyed)
 
 #### Emacs
 
-- [Daviwil's literate dotfiles](https://github.com/daviwil/dotfiles) and [his Emacs From Scratch series](https://github.com/daviwil/emacs-from-scratch) (which is what got me into Emacs in the first place!)
-- [Tecosaur's config](https://tecosaur.github.io/emacs-config/config.html); *the most beautiful literate configuration I've ever seen*
-- Even though I don't use it direcitly, [Doom Emacs](https://github.com/doomemacs/doomemacs) has been a massive help
-- [RedGuardToo's](https://github.com/redguardtoo/emacs.d) dotfiles, plus his [Mastering Emacs in One Year](https://github.com/redguardtoo/mastering-emacs-in-one-year-guide) Guide
-- [MatthewZMD's M-Emacs](https://github.com/MatthewZMD/.emacs.d)
-- [Protesilaos'](https://protesilaos.com/emacs/dotemacs) great Emacs tips, packages (especially themes), and [YouTube videos](https://www.youtube.com/@protesilaos)
+- A more minimal Emacs configuration by [Ronmi](https://github.com/Ronmi/emacs)
 
-#### Vim/Nvim
+is the biggest inspiration for my most recent Emacs version
+- [Daviwil's Emacs From Scratch
 
-- My Neovim config is based on [kickstart.nvim](https://github.com/nvim-lua/kickstart.nvim) (I made the switch when the [Packer](https://github.com/wbthomason/packer.nvim) package manager became unmaintained)
-- [Tim Pope](https://github.com/tpope), for obvious reasons
-- The dotfiles of [Daniel Hahler](https://github.com/blueyed)
+series](https://github.com/daviwil/emacs-from-scratch) (which is what got me
+
+into Emacs in the first place!)
+- [Tecosaur's config](https://tecosaur.github.io/emacs-config/config.html), a
+
+beautiful literate configuration
+- [RedGuardToo's](https://github.com/redguardtoo/emacs.d) dotfiles, plus his
+
+[Mastering Emacs in One
+
+Year](https://github.com/redguardtoo/mastering-emacs-in-one-year-guide) Guide
+- [Protesilaos' config](https://protesilaos.com/emacs/dotemacs) and his
+
+[YouTube videos](https://www.youtube.com/@protesilaos)
 
 #### Windows
 
-- [Chocolatey](https://chocolatey.org/) for their very useful [`refresh.cmd`](https://github.com/chocolatey/choco/blob/develop/src/chocolatey.resources/redirects/RefreshEnv.cmd)
+- [Chocolatey](https://chocolatey.org/) for their very useful
+
+[`refresh.cmd`](https://github.com/chocolatey/choco/blob/develop/src/chocolatey.resources/redirects/RefreshEnv.cmd)
