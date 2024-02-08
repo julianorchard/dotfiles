@@ -2,15 +2,29 @@
 
 > These are my `dotfiles`. There are many like them, but these ones are mine.
 >
-> My `dotfiles` are my best friends. They are my life. I must master them as I master my life.
+> My `dotfiles` are my best friends. They are my life. I must master them as I
+> master my life.
 >
 > My `dotfiles`, without me, are useless. Without my `dotfiles`, I am useless.
 
-![A screenshot of my configuration on Linux.](.docs/example.png)
+![A screenshot of my configuration on Linux.](.docs/2023-10.png)
+
+## About
+
+- For colour schemes I'm switching between
+  [pinkmare](https://github.com/Matsuuu/pinkmare), [Rose
+  Pine](https://github.com/rose-pine/neovim), or
+  [Catppuccin](https://github.com/catppuccin/emacs) at the moment
+- I'm using [Comic Shanns](https://github.com/shannpersand/comic-shanns)
+  (patched) and recently switched from [Fira
+  Code](https://github.com/tonsky/FiraCode) everything
+- I'm on Ubuntu most of the time
+- I'm primarily using Neovim, very rarely Emacs
 
 ## Deploy
 
-I use a [bare git repo](https://www.atlassian.com/git/tutorials/dotfiles) to manage these files, as I think it's simply and *fairly* system agnostic:
+I use a [bare git repo](https://www.atlassian.com/git/tutorials/dotfiles) to
+manage these files, as I think it's simply and *fairly* system agnostic:
 
 ```sh
 curl -Lks https://julianorchard.co.uk/bin/install.sh | /bin/bash
