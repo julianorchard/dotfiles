@@ -1,3 +1,2 @@
 #+title: Emacs todo list
 ** TODO Do more with LSPs
-** TODO Switch theme from Catppuccin 
