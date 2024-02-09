@@ -1,5 +1,15 @@
+;;; init.el --- Emacs configuration file
+
+;;; Commentary:
+
 ;; A fairly minimal Emacs config heavily inspired in layout (and choice for the nice-to-haves
 ;; I don't really care as much about) by https://github.com/Ronmi/emacs
+
+;;; Code:
+
+(let ((minver "29.1"))
+  (when (version< emacs-version minver)
+    (error "This Emacs config requires v%s or higher" minver)))
 
 ;; Bootstrap straight.el
 (defvar bootstrap-version)
@@ -17,12 +27,13 @@
       (goto-char (point-max))
       (eval-print-last-sexp)))
   (load bootstrap-file nil 'nomessage))
-
-(setq package-enable-at-startup nil
-      straight-use-package-by-default t)
-(straight-use-package 'use-package)
+(setq package-enable-at-startup nil)
+(setq-default straight-use-package-by-default t)
+(if (fboundp 'straight-use-package)
+    (straight-use-package 'use-package))
 
 (use-package emacs
+  :defines display-line-numbers-type
   :init
   ;; Load times
   (setq gc-cons-percentage 0.6
@@ -87,22 +98,29 @@
 (use-package diminish)
 (use-package ws-butler
   :diminish ws-butler-mode
+  :functions ws-butler-mode
   :config (add-hook 'prog-mode-hook #'ws-butler-mode))
 (use-package all-the-icons)
 (use-package catppuccin-theme
+  :defines catppuccin-flavor
   :config (setq catppuccin-flavor 'macchiato)
-  (catppuccin-reload))
-(use-package nyan-mode :config (nyan-mode))
+  :functions catppuccin-reload
+  :config (catppuccin-reload))
+(use-package nyan-mode
+  :functions nyan-mode
+  :config (nyan-mode))
 
 ;; Counsel == Consult
 (use-package company
   :bind (:map prog-mode-map
               ("C-i" . company-indent-or-complete-common))
+  :functions global-company-mode
   :config (global-company-mode t))
 (use-package company-box
   :after (company all-the-icons)
   :diminish company-box-mode
   :hook (company-mode . company-box-mode)
+  :defines company-box-icons-alist
   :init (setq company-box-icons-alist 'company-box-icons-all-the-icons))
 (use-package consult-lsp)
 (use-package consult
@@ -125,14 +143,17 @@
   :init (savehist-mode)
   :after vertico)
 (use-package marginalia ;; Annotations for Vertico
+  :functions marginalia-mode
   :config (marginalia-mode t)
   :after vertico)
 (use-package all-the-icons-completion
   :after marginalia
+  :functions all-the-icons-completion-mode
   :hook (marginalia-mode . all-the-icons-completion-marginalia-setup)
   :init (all-the-icons-completion-mode))
 (use-package yasnippet
   :diminish yas-minor-mode
+  :functions yas-reload-all
   :hook (prog-mode . yas-minor-mode)
   :config (yas-reload-all))
 (use-package yasnippet-snippets
@@ -142,27 +163,74 @@
 (use-package evil
   :after undo-fu
   :demand
+  :defines
+  evil-want-keybinding
+  evil-want-integration
+  evil-want-C-u-scroll
+  evil-want-C-i-jump
+  evil-undo-system
+  evil-split-window-below
+  evil-vsplit-window-right
+  tmux-mappings
+  :functions
+  evil-mode
+  evil-global-set-key
+  evil-ex-define-cmd
   :init
   (setq evil-want-keybinding nil)
   (setq evil-want-integration t)
   (setq evil-want-C-u-scroll t)
   (setq evil-want-C-i-jump nil)
   (setq evil-undo-system 'undo-fu)
+  :preface
+  ;; From the yay-evil-emacs config:
+  ;; https://github.com/ianyepan/yay-evil-emacs/blob/master/config.org#vi-keybindings
+  (defun save-and-kill-this-buffer ()
+    (interactive)
+    (save-buffer)
+    (kill-this-buffer))
   :config
   (evil-mode 1)
   (setq evil-split-window-below t)
   (setq evil-vsplit-window-right t)
   (evil-global-set-key 'motion "j" 'evil-next-visual-line)
-  (evil-global-set-key 'motion "k" 'evil-previous-visual-line))
+  (evil-global-set-key 'motion "k" 'evil-previous-visual-line)
+  (evil-ex-define-cmd "q" #'kill-this-buffer)
+  (evil-ex-define-cmd "wq" #'save-and-kill-this-buffer)
+  ;; Custom tmux-like key maps
+  (keymap-set global-map "C-a" tmux-mappings))
+;; Org mappings (this is currently causing evil-mode to fuck up somehow)
+(defvar-keymap tmux-org-mappings
+  "a" 'org-agenda
+  "c" 'org-capture)
+;; Navigational mappings with Ctrl+A (as I have configured for Tmux)
+;; These rely on Evil (see the line in evil above)
+(defvar-keymap tmux-mappings
+  "f" 'find-file
+  "s" 'split-window-right
+  "d" 'split-window-below
+  "h" 'evil-window-left
+  "k" 'evil-window-up
+  "j" 'evil-window-down
+  "l" 'evil-window-right
+  "n" 'next-buffer
+  "p" 'previous-buffer
+  "r" 'eval-region
+  "!" 'delete-other-windows
+  "q" 'delete-window
+  "o" tmux-org-mappings)
 (use-package evil-collection
   :after evil
   :diminish evil-collection-unimpaired-mode
+  :functions evil-collection-init
   :config (evil-collection-init))
 (use-package evil-commentary
   :after evil
+  :functions evil-commentary-mode
   :config (evil-commentary-mode +1))
 (use-package evil-surround
   :after evil
+  :functions global-evil-surround-mode
   :config (global-evil-surround-mode 1))
 (use-package undo-fu)
 
@@ -190,8 +258,9 @@
 ;; (use-package dap-mode)
 ;; (use-package typescript-mode)
 ;; (use-package web-mode)
-;; (use-package flycheck
-;;   :init (global-flycheck-mode))
+(use-package flycheck
+  :functions global-flycheck-mode
+  :init (global-flycheck-mode))
 ;; (use-package go-mode
 ;;   :custom
 ;;   (gofmt-command "goimports")
@@ -213,14 +282,17 @@
 
 (use-package dired-subtree
   :after dired
+  :functions dired-subtree-toggle dired-subtree-cycle
+  :defines dired-mode-map
   :config
   (bind-key "<tab>" #'dired-subtree-toggle dired-mode-map)
   (bind-key "<backtab>" #'dired-subtree-cycle dired-mode-map))
 
 (use-package org
   :commands (org-capture org-agenda org-tempo)
-  :bind (("C-x C-a" . org-agenda)
-         ("C-x C-c" . org-capture))
+  :defines
+  org-duration-format
+  org-capture-templates
   :init
   (setq org-agenda-files
 	'("~/Documents/org/"))
@@ -229,7 +301,6 @@
   (setq org-startup-folded 'content)
   (setq org-todo-keywords
         '(( sequence "TODO(t)" "NEXT(n)" "PEND(p)" "|" "DONE(d)" "CANC(c)")))
-
   (setq org-capture-templates
         '(("w" "Work")
           ("wt" "Task" entry (file+headline "~/Documents/org/work.org" "Tasklist")
@@ -240,7 +311,17 @@
           ("j" "Journal")
           ("jj" "Journal" entry (file+olp+datetree "~/Documents/org/journal/journal.org")
            "* Entry for %U\n%?"))))
-
 (use-package org-bullets
   :hook (org-mode . org-bullets-mode)
   :custom (org-bullets-bullet-list '("●" "○")))
+(use-package evil-org
+  :after (org evil)
+  :functions evil-org-agenda-set-keys
+  :defines evil-org-mode
+  :hook (org-mode . (lambda () evil-org-mode))
+  :config
+  (require 'evil-org-agenda)
+  (evil-org-agenda-set-keys))
+
+(provide 'init)
+;;; init.el ends here
