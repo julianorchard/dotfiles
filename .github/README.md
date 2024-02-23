@@ -7,7 +7,7 @@
 >
 > My `dotfiles`, without me, are useless. Without my `dotfiles`, I am useless.
 
-![A screenshot of my configuration on Linux.](.docs/2023-10.png)
+![A screenshot of my configuration on Linux.](.github/images/2023-10.png)
 
 ## About
 
@@ -60,10 +60,6 @@ Set default screen layouts using xrandr and resetting the wallpaper, basically.
 ### ll.bat <sup>[file](.bin/ll.bat)</sup>
 
 `dir` isn't it my muscle memory at all.
-
-### readme-details.py <sup>[file](.bin/readme-details.py)</sup>
-
-This is the script that generates what you might be reading *now*! It scrapes the `.bin/` folder and gets the text under the *'description'* heading (above). It's pretty simple, but nice to give an overview of what files are in this repo. Often run with a GitHub Action and the `--action` flag. See [.github/...](.github/workflows/main.yaml) for more!
 
 ### refreshprompt.bat <sup>[file](.bin/refreshprompt.bat)</sup>
 
