@@ -22,30 +22,31 @@ from pathlib import Path
 import os
 import re
 
-HOME_PATH   = str(Path.home())
-README_FILE = f"{HOME_PATH}/README.md"
-BIN_PATH    = f"{HOME_PATH}/.bin/"
+HOME_PATH = str(Path.home())
+README_FILE = f"{HOME_PATH}/.github/README.md"
+BIN_PATH = f"{HOME_PATH}/.bin/"
+
 
 def print_without_comments(line):
-    '''
+    """
     Simply removes comments from the start of the lines in a
     very simple manner.
 
     Would be nice to be able to use a case statement...
-    '''
+    """
     if "# " in line:
         line = line[2:]
     if ":: " in line:
         line = line[3:]
-    if "' " in line: # TODO: this would also remove ending apostophes' (like this)
+    if "' " in line:  # TODO: this would also remove ending apostophes' (like this)
         line = line[2:]
 
     return line.replace("\n", " ").replace("\t", " ")
 
-def main():
 
+def main():
     # Start of the file, title, etc.
-    with open(f"{HOME_PATH}/.docs/README-1.md") as preamble_file:
+    with open(f"{HOME_PATH}/.github/readme/README-1.md") as preamble_file:
         output = preamble_file.read()
 
     for file in sorted(os.listdir(os.fsencode(BIN_PATH))):
@@ -60,21 +61,20 @@ def main():
 
                 for line in lines:
                     if " Description:" in line:
-
                         # Title of the file we're getting the details of:
                         output = f"{output}### {filename} <sup>[file](.bin/{filename})</sup>\n\n"
                         description_active = True
-                    elif description_active == True  \
-                        and " License:"      in line \
-                         or " Code:"         in line \
-                         or " Instructions:" in line:
-
+                    elif (
+                        description_active == True
+                        and " License:" in line
+                        or " Code:" in line
+                        or " Instructions:" in line
+                    ):
                         # We're no longer dealing with the description:
                         description_active = "False"
                         output = f"{output}\n\n"
                         break
                     elif description_active == True and line != "\n":
-
                         # Output the line without the comment, ideally:
                         output = f"{output}{print_without_comments(line)}"
 
@@ -87,7 +87,7 @@ def main():
             continue
 
     # Finish the file off!
-    with open(f"{HOME_PATH}/.docs/README-2.md") as postamble_file:
+    with open(f"{HOME_PATH}/.github/readme/README-2.md") as postamble_file:
         output = f"{output}{postamble_file.read()}"
 
     # Write to the file
