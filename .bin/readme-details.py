@@ -26,10 +26,6 @@ import os
 import re
 import sys
 
-HOME_PATH = str(Path.home())
-README_FILE = f"{HOME_PATH}/.github/README.md"
-BIN_PATH = f"{HOME_PATH}/.bin/"
-
 
 def print_without_comments(line):
     """
@@ -105,6 +101,6 @@ if __name__ == "__main__":
         HOME_PATH = "."
     else:
         HOME_PATH = str(Path.home())
-    README_FILE = f"{HOME_PATH}/README.md"
+    README_FILE = f"{HOME_PATH}/.github/README.md"
     BIN_PATH = f"{HOME_PATH}/.bin/"
     main()
