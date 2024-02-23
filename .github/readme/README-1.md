@@ -7,7 +7,7 @@
 >
 > My `dotfiles`, without me, are useless. Without my `dotfiles`, I am useless.
 
-![A screenshot of my configuration on Linux.](.github/images/2023-10.png)
+![A screenshot of my configuration on Linux.](images/2023-10.png)
 
 ## About
 
