@@ -17,7 +17,8 @@ alias cdb="dirs | sed -e 's/\s/\n/g' | fzf"
 [ -x /usr/bin/netstat ]   && alias ports="sudo netstat -plnt"
 [ -x /usr/bin/xev ]       && alias get_key="xev"
 [ -x /usr/bin/xprop ]     && alias get_window_name="xprop | grep -i 'class'"
-[ -x /snap/bin/codium ]   && alias code="codium" # A slightly lesser evil
+[ -x /snap/bin/codium ]   && alias code="codium"                                             # A slightly lesser evil
+[ -x /snap/bin/spt ]      && alias sptr="systemctl restart --user spotifyd && /snap/bin/spt" # Annoying behaviour from spotifyd
 
 # systemd ----------------------------------------------------------------------
 #
@@ -70,21 +71,27 @@ fi
 # kubernetes -------------------------------------------------------------------
 #
 if [ -x /usr/local/bin/kubectl ] ; then
-    alias ks="kubectl"
-    alias kca="kubectl apply -f"
-    alias kcd="kubectl delete -f"
-    alias kcg="kubectl get"
-    alias kci="kubectl describe"
+    alias k="kubectl"
+    alias kg="kubectl get"
+    alias kga="kubectl get -A"
+    alias kd="kubectl describe"
+    alias kda="kubectl describe -A"
     # Get the auto-generated argocd password (this method avoids installing the
     # argocd command line tool!):
     alias argo_password="kubectl -n argocd get secret argocd-initial-admin-secret -o jsonpath='{.data.password}' | base64 -d && printf '\n'"
     # alias kcll="kubectl logs `kubectl get pods | awk 'END{print $1}'`"
     # Help
-    alias kch="printf ' kca  = kubectl apply -f\
-                     \n kcd  = kubectl delete -f\
-                     \n kcg  = kubectl get\
-                     \n kci  = kubectl describe\
-                     \n kcll = kubectl pod last logs"
+    alias kh="printf ' k    = kubectl\
+                    \n kg   = kubectl get\
+                    \n kga  = kubectl get -A\
+                    \n kd   = kubectl describe\
+                    \n kda  = kubectl describe -A\
+                    \n kcll = kubectl pod last logs"
+
+    # aws ----------------------------------------------------------------------
+    if [ -x "/home/julian/.local/bin/aws" ] ; then
+        alias kubeswitch="kubectl config use-context"
+    fi
 fi
 
 if [ -x /usr/local/bin/minikube ] ; then
@@ -126,3 +133,4 @@ alias ssh_tun="_ssh_tun"
 ssh_debug() {
   ssh -vvv "$@"
 }
+

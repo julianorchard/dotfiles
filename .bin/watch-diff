@@ -1,4 +1,19 @@
 #!/usr/bin/env sh
+
+##   watch-diff  ---  watch two diffs in colours
+
+# Copyright (c) 2024
+
+## Description:
+
+# A shell script to let you watch two diffs in colour.
+
+## License:
+
+# See /LICENSE file in the root of this repository.
+
+## Code:
+
 set -euf
 e() { echo "${1}" && exit 1 ; }
 [ -z "$(diff "${1}" "${2}")" ] && e "Nothing to diff"

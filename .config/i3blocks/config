@@ -16,7 +16,7 @@ interval=60
 color=#EB6F92
 
 [battery]
-command=/home/julian/.bin/battery-block
+command=${XDG_CONFIG_HOME}/i3blocks/battery-block.sh
 interval=60
 
 [time]

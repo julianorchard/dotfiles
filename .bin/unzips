@@ -1,12 +1,21 @@
-#!/usr/bin/env
+#!/usr/bin/env sh
+#
+##   unzips  ---  Unzip more saferly :)
+
+# Copyright (c) 2024
+
+## Description:
+
+# Small wrapper for `unzip` which just creates a folder for files to be zipped
+# into.
+
+## License:
+
+# See /LICENSE file in the root of this repository.
+
+## Code:
 
 set -euf
-
-# unzip more saferly :)
-#
-# Usage:
-#
-# `unzips filename.zip`
 
 err() {
     # error message = $1
@@ -21,7 +30,7 @@ err() {
 
 main() {
     # Check if unzip is installed
-    [ -x "$(which unzip)" ] || err "unzip not installed"
+    # [ -x "$(which unzip)" ] || err "unzip not installed"
 
     # Check input is and is a zip
     echo "$@" | grep "\.zip" > /dev/null 2>&1 || err "input is not a zip file"

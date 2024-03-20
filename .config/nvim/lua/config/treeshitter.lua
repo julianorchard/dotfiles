@@ -37,7 +37,7 @@ require("nvim-treesitter.configs").setup {
     end,
   },
   indent = {
-    enable = false
+    enable = true
   },
   sync_install = false,
   -- TODO: When treesitter stops being slow as hell, do something nice with this

@@ -196,7 +196,7 @@ mode "Resize" {
 }
 bindsym $mod+r mode "Resize"
 
-bindsym $mod+Shift+b exec --no-startup-id $HOME/.bin/i3bartoggle.sh
+bindsym $mod+Shift+b exec --no-startup-id $XDG_CONFIG_HOME/i3/bartoggle.sh
 
 bar {
     # This bar is just for the systray icons!
@@ -208,7 +208,7 @@ bar {
     hidden_state hide
     modifier Mod1
     tray_output primary
-    font pango:file-icons-9, Ubuntu Nerd Font 9
+    font pango:file-icons-9, ComicShannsMono Nerd Font Mono 9
     colors {
         background          #1E1E2E
         statusline          #CDD6F4  #1E1E2E  #CDD6F4  #F6E0DC #11111B
@@ -232,7 +232,7 @@ bar {
     strip_workspace_numbers yes
     status_command i3blocks
     hidden_state show
-    font pango:file-icons-10, ComicShannsMono Nerd Font Mono 10
+    font pango:file-icons-10, ComicShannsMono Nerd Font Mono 9
     colors {
         background          #1E1E2E
         statusline          #CDD6F4  #1E1E2E  #CDD6F4  #F6E0DC #11111B
