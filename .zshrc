@@ -66,6 +66,13 @@ zle -N zle-line-init
 echo -ne '\e[5 q' # Use beam shape cursor on startup.
 preexec() { echo -ne '\e[5 q' ;} # Use beam shape cursor for each new prompt.
 
+# Ctrl+R to search backwards in history
+HISTSIZE=10000
+SAVEHIST=10000
+HISTFILE=~/.zsh_history
+bindkey -v
+bindkey '^R' history-incremental-search-backward
+
 # Don't need to type cd anymore
 setopt autocd
 

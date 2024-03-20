@@ -15,7 +15,8 @@ export BUNDLE_USER_CACHE="$XDG_CACHE_HOME"/bundle
 export BUNDLE_USER_PLUGIN="$XDG_DATA_HOME"/bundle
 # Golang
 export PATH="${PATH}:/usr/local/go/bin"
-export GOPATH="${HOME}/Code/"
+export GOPATH="${HOME}/Code/go/"
+export PATH="${HOME}/Code/go/:$PATH"
 export GOROOT="/usr/local/go/"
 # GPG
 export GNUPGHOME="$XDG_CONFIG_HOME"/gnupg

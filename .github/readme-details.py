@@ -62,7 +62,7 @@ def main():
                 for line in lines:
                     if " Description:" in line:
                         # Title of the file we're getting the details of:
-                        output = f"{output}### {filename} <sup>[file](.bin/{filename})</sup>\n\n"
+                        output = f"{output}### {filename} <sup>[file](/.bin/{filename})</sup>\n\n"
                         description_active = True
                     elif (
                         description_active == True

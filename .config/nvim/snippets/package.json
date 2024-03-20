@@ -29,6 +29,10 @@
       {
         "language": ["lua"],
         "path": "./lua.json"
+      },
+      {
+        "language": ["yaml"],
+        "path": "./yaml.json"
       }
     ]
   }

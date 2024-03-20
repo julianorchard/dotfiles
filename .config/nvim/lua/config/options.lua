@@ -96,3 +96,9 @@ vim.api.nvim_create_autocmd(
 -- Tryin to make a change :-\ ………………slime man
 vim.opt.statusline = "%#WinSeparator#%{%v:lua.string.rep('—', v:lua.vim.fn.winwidth(0))%}"
 vim.opt.laststatus = 0
+
+vim.filetype.add({
+  extension = {
+    jenkins = "groovy"
+  }
+})

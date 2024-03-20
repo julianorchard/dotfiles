@@ -20,7 +20,16 @@ function t() {
   elif [ ! -x /usr/bin/tmux ] ; then
     echo "You do not have tmux installed."
   else
-    [ $# -gt 1 ] && selected=$1 || selected=$(find $HOME/Code/ $HOME/.config/nvim/ $HOME/Code/go/ /usr/local/go/src/julian/ -mindepth 1 -maxdepth 1 -type d | fzf)
+    [ $# -gt 1 ] \
+        && selected=$1 \
+        || selected=$(find \
+        "${HOME}/Code/personal-gh" \
+        "${HOME}/Code/work-gitlab" \
+        "${HOME}/Code/work-gh" \
+        "${HOME}/Code/work-azure" \
+        "${HOME}/.config/nvim/" \
+        "${HOME}/Code/go/" \
+        -mindepth 1 -maxdepth 1 -type d | fzf)
 
     selected_name=$(basename "$selected" | tr . _)
 
@@ -37,3 +46,14 @@ function t() {
   fi
 }
 
+alias tfdoc='find . -name \*.tf | xargs -I{} dirname "{}" | uniq | xargs -I{} terraform-docs markdown table --output-file README.md --output-mode inject "{}"'
+
+# Wrapper for git checkout using fzf to search for branches
+function checkout() {
+  if [ ! -x /usr/bin/fzf ] ; then
+    echo "You do not have fzf installed."
+  else
+    [ $# -gt 1 ] && bruh=$1 || bruh=$(git branch | sed 's/ //g' | fzf)
+    git checkout "${bruh}"
+  fi
+}
