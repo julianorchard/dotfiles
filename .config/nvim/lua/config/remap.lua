@@ -1,5 +1,8 @@
+vim.g.mapleader = " "
+vim.g.maplocalleader = " "
+
 function Map(mode, a, b)
--- Helper for mapping with silent and noremap
+  -- Helper for mapping with silent and noremap
   vim.keymap.set(mode, a, b, {
     noremap = true,
     silent = true,
@@ -41,7 +44,7 @@ vim.keymap.set("n", "j", "v:count == 0 ? 'gj' : 'j'", {
 -- Yank to system with 'Y'
 Map("v", "Y", "\"+y")
 
- -- Helper function
+-- Helper function
 function InsertAtPoint(i)
   local p = vim.api.nvim_win_get_cursor(0)[2]
   local l = vim.api.nvim_get_current_line()
@@ -62,8 +65,9 @@ function Fill(c)
     print("ERROR: Cannot fill at this point.")
   end
 end
+
 -- Aforementioned bindings -----------------------------------------------------
-Map("i", "<C-t>", "<space><esc>:lua Fill()<cr>") --------------------
+Map("i", "<C-t>", "<space><esc>:lua Fill()<cr>")  --------------------
 Map("n", "<C-t>", "a<space><esc>:lua Fill()<cr>") -------------------
 
 -- Insert timestamp <C-s>
@@ -91,6 +95,9 @@ Map("t", "<esc>", "<C-n><C-\\>")
 
 Map("v", "<leader>ea", [[ <CMD>EasyAlign<CR> ]])
 
+-- noremap <expr> <LocalLeader>e ':e ' . expand("%:h") . '/'
+Map("n", "<leader>ee", ":e ")
+
 -- Abbreviations
 vim.cmd([[
   " Signs
@@ -98,4 +105,3 @@ vim.cmd([[
   iab @@ hello@julianorchard.co.uk
   iab <expr> ~g substitute(system(gcfg . 'user.name') . " <" . system(gcfg . 'user.email') . ">", '\n', '', 'g')
 ]])
-

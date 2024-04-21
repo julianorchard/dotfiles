@@ -20,6 +20,7 @@ alias cdb="dirs | sed -e 's/\s/\n/g' | fzf"
 [ -x /snap/bin/codium ]   && alias code="codium"                                             # A slightly lesser evil
 [ -x /snap/bin/spt ]      && alias sptr="systemctl restart --user spotifyd && /snap/bin/spt" # Annoying behaviour from spotifyd
 
+
 # systemd ----------------------------------------------------------------------
 #
 alias jctl="journalctl"
@@ -52,7 +53,7 @@ if [ -x /usr/bin/git ] ; then
     alias gc="git c"
     alias gs="git status"
     alias gd="git diff"
-    alias gdc="git diff --cached"
+    alias gds="git diff --staged"
     alias gpl="git pull"
     alias gr="git remote"
     alias grv="git remote -v"
@@ -102,6 +103,10 @@ if [ -x /usr/local/bin/minikube ] ; then
                     \n mh   = kubectl pod last logs"
 fi
 
+if [ -x /snap/bin/microk8s ] ; then
+    alias k8s="microk8s kubectl"
+fi
+
 # terraform / terragrunt -------------------------------------------------------
 if [ -x /snap/bin/terraform ] ; then
     autoload -U +X bashcompinit && bashcompinit
@@ -121,6 +126,11 @@ if [ -x /home/julian/.local/bin/terragrunt ] ; then
     alias tga="terragrunt run-all"
 fi
 
+# openstack --------------------------------------------------------------------
+if [ -x /home/julian/.local/bin/openstack ] ; then
+    alias os="openstack"
+fi
+
 # ssh tunneling / debugging ----------------------------------------------------
 _ssh_tun() {
     if [ -z "${1}" ]; then
@@ -131,6 +141,17 @@ _ssh_tun() {
 }
 alias ssh_tun="_ssh_tun"
 ssh_debug() {
-  ssh -vvv "$@"
+    ssh -vvv "$@"
 }
+
+# profile-selctor --------------------------------------------------------------
+
+PROFILE_SELECTOR="/home/julian/.local/bin/sources/profile-selector"
+AWS_PROFILE_SELECTOR_FILE="${HOME}/.config/codewizards/aws-profile"
+function _aws_profile(){
+    "${PROFILE_SELECTOR}" aws
+    aws_profile=$(cat "${AWS_PROFILE_SELECTOR_FILE}")
+    export AWS_PROFILE=${aws_profile}
+}
+[ -x "${PROFILE_SELECTOR}" ] && alias ap="_aws_profile"
 

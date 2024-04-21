@@ -7,8 +7,8 @@ function config-fix-date {
 }
 
 function config-remove-history {
-# Remove a commit from git history
-  config filter-branch -f --index-filter 'git rm -rf --cached --ignore-unmatch $1' HEAD
+  # Remove a commit from git history
+  config filter-branch -f --index-filter "git rm -rf --cached --ignore-unmatch $1" HEAD
 }
 
 # fzf+tmux Goodness
@@ -20,20 +20,25 @@ function t() {
   elif [ ! -x /usr/bin/tmux ] ; then
     echo "You do not have tmux installed."
   else
+    dir_list=$(find \
+      "${HOME}/Code/personal-gh" \
+      "${HOME}/Code/work-gitlab" \
+      "${HOME}/Code/work-gh" \
+      "${HOME}/Code/work-azure" \
+      "${HOME}/Code/work-bitbucket" \
+      "${HOME}/Code/go/" \
+      "${HOME}/Perforce/" \
+      -mindepth 1 -maxdepth 1 -type d)
+    other=$(echo "
+    ${HOME}/.config/nvim
+    ${HOME}/.config/sh
+    " | sed -e 's/^[ \t]*//')
+
     [ $# -gt 1 ] \
-        && selected=$1 \
-        || selected=$(find \
-        "${HOME}/Code/personal-gh" \
-        "${HOME}/Code/work-gitlab" \
-        "${HOME}/Code/work-gh" \
-        "${HOME}/Code/work-azure" \
-        "${HOME}/.config/nvim/" \
-        "${HOME}/Code/go/" \
-        -mindepth 1 -maxdepth 1 -type d | fzf)
+      && selected=$1 \
+      || selected=$(echo "${dir_list}${other}" | fzf)
 
     selected_name=$(basename "$selected" | tr . _)
-
-    echo $selected_name
 
     if [[ -n $TMUX ]]; then
       tmux switch-client -t "$selected_name" \
@@ -53,7 +58,7 @@ function checkout() {
   if [ ! -x /usr/bin/fzf ] ; then
     echo "You do not have fzf installed."
   else
-    [ $# -gt 1 ] && bruh=$1 || bruh=$(git branch | sed 's/ //g' | fzf)
+    [ $# -gt 1 ] && bruh=$1 || bruh=$(git branch -av | awk '{print $1}' | sed 's/ //g' | fzf)
     git checkout "${bruh}"
   fi
 }
