@@ -6,6 +6,7 @@ export PATH="$HOME/.bin:$PATH"
 export PATH="$HOME/.local/bin/cargo:$PATH"
 export PATH="$HOME/.cargo/bin:$PATH"
 export PATH="$HOME/.pulumi/bin:$PATH"
+export PATH="$HOME/.local/bin/sources:$PATH"
 export XDG_CONFIG_HOME="${HOME}/.config"
 export XDG_CACHE_HOME="${HOME}/.cache"
 
@@ -16,7 +17,7 @@ export BUNDLE_USER_PLUGIN="$XDG_DATA_HOME"/bundle
 # Golang
 export PATH="${PATH}:/usr/local/go/bin"
 export GOPATH="${HOME}/Code/go/"
-export PATH="${HOME}/Code/go/:$PATH"
+export PATH="${HOME}/Code/go/bin/:$PATH"
 export GOROOT="/usr/local/go/"
 # GPG
 export GNUPGHOME="$XDG_CONFIG_HOME"/gnupg
