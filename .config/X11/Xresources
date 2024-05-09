@@ -1,93 +1,52 @@
-*foreground: #f1e0d1
-*background: #141e27
-*.foreground: #f1e0d1
-*.background: #141e27
+! Scaling with Xresources dpi --------------------------------------------------
+Xft.dpi: 144
+Xft.autohint: 0
+Xft.lcdfilter: lcddefault
+Xft.hintstyle: hintfull
+Xft.hinting: 1
+Xft.antialias: 1
+Xft.rgba: rgb
 
-! Terminal
-URxvt*foreground: #f1e0d1
-!URxvt*background: [100]#141e27
-URxvt*background: [100]#949494
-URxvt*cursorColor: #f1e0d1
-URxvt*borderColor: [100]#141e27
-! Term Language Support
-URxvt.inputMethod: ibus
-URxvt.preeditType: OverTheSpot
-! Set depth to make transparency work.
-URxvt*depth: 32
-! Sxiv
+! Sxiv -------------------------------------------------------------------------
 Sxiv.foreground: #f1e9d1
 Sxiv.background: #141e27
 Sxiv.font: Roboto-Mono:size=9
-! Rofi
+
+! Rofi -------------------------------------------------------------------------
 rofi.font: RobotoMono-Light 8
 
-! Colors 0-15.
-! special
-*.foreground:   #c5c8c6
-*.background:   #1d1f21
-*.cursorColor:  #c5c8c6
-! black
-*.color0:       #282a2e
-*.color8:       #373b41
-! red
-*.color1:       #a54242
-*.color9:       #cc6666
-! green
-*.color2:       #8c9440
-*.color10:      #b5bd68
-! yellow
-*.color3:       #de935f
-*.color11:      #f0c674
-! blue
-*.color4:       #5f819d
-*.color12:      #81a2be
-! magenta
-*.color5:       #85678f
-*.color13:      #b294bb
-! cyan
-*.color6:       #5e8d87
-*.color14:      #8abeb7
-! white
-*.color7:       #707880
-*.color15:      #c5c8c6
+! Catppuccin Macchiato ---------------------------------------------------------
+*background: #24273A
+*foreground: #CAD3F5
 
-! Atom One Light theme
-xterm*background: #f9f9f9
-xterm*foreground: #383a42
-xterm*cursorColor: #d0d0d0
-xterm*color0: #000000
-xterm*color1: #E45649
-xterm*color2: #50A14F
-xterm*color3: #986801
-xterm*color4: #4078F2
-xterm*color5: #A626A4
-xterm*color6: #0184BC
-xterm*color7: #A0A1A7
-xterm*color8: #5c6370
-xterm*color9: #e06c75
-xterm*color10: #50A14F
-xterm*color11: #986801
-xterm*color12: #4078F2
-xterm*color13: #A626A4
-xterm*color14: #0184BC
-xterm*color15: #ffffff
-! Atom One Light theme
-urxvt*background: #f9f9f9
-urxvt*foreground: #383a42
-urxvt*cursorColor: #d0d0d0
-urxvt*color0: #000000
-urxvt*color1: #E45649
-urxvt*color2: #50A14F
-urxvt*color3: #986801
-urxvt*color4: #4078F2
-urxvt*color5: #A626A4
-urxvt*color6: #0184BC
-urxvt*color7: #A0A1A7
-urxvt*color8: #5c6370
-urxvt*color9: #e06c75
-urxvt*color10: #50A14F
-urxvt*color11: #986801
-urxvt*color12: #4078F2
-urxvt*color13: #A626A4
-urxvt*color14: #0184BC
-urxvt*color15: #ffffff
+! black
+*color0: #494D64
+*color8: #5B6078
+
+! red
+*color1: #ED8796
+*color9: #ED8796
+
+! green
+*color2: #A6DA95
+*color10: #A6DA95
+
+! yellow
+*color3: #EED49F
+*color11: #EED49F
+
+! blue
+*color4: #8AADF4
+*color12: #8AADF4
+
+! magenta
+*color5: #F5BDE6
+*color13: #F5BDE6
+
+! cyan
+*color6: #8BD5CA
+*color14: #8BD5CA
+
+! white
+*color7: #B8C0E0
+*color15: #A5ADCB
