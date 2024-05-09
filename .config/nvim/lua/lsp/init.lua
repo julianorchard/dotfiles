@@ -84,7 +84,13 @@ M.config = function()
       Lua = {
         diagnostics = {
           globals = {
-            "vim"
+            -- Neovim
+            "vim",
+            -- Awesome
+            "awesome",
+            "client",
+            "screen",
+            "tag",
           }
         },
         workspace = { checkThirdParty = false },
