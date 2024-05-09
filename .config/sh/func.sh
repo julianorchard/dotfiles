@@ -32,6 +32,7 @@ function t() {
     other=$(echo "
     ${HOME}/.config/nvim
     ${HOME}/.config/sh
+    ${HOME}/.config/awesome
     " | sed -e 's/^[ \t]*//')
 
     [ $# -gt 1 ] \
