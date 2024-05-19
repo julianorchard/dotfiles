@@ -1,8 +1,15 @@
+[user]
+  name = Julian Orchard
+  email = hello@julianorchard.co.uk
+
 [includeIf "gitdir/i:~/Code/personal-gh/"]
     path = ~/Code/personal-gh/.gitconfig
 
 [includeIf "gitdir/i:~/Code/work-azure/"]
     path = ~/Code/work-azure/.gitconfig
+
+[includeIf "gitdir/i:~/Code/work-bitbucket/"]
+    path = ~/Code/work-bitbucket/.gitconfig
 
 [init]
   defaultBranch = main

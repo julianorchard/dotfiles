@@ -12,7 +12,7 @@ local editor_cmd = Term .. " -e " .. editor
 -- Widgets ---------------------------------------------------------------------
 -- Battery widget
 local wi_battery -- Set as either a wibox.widget.textbox OR a battery_widget
-local has_batter_widget, battery_widget = pcall(require, "battery-widget")
+local has_batter_widget, battery_widget = pcall(require, "components.battery-widget")
 if not has_batter_widget then
   Julog(
     "Could not load battery widget. \
@@ -32,7 +32,7 @@ local wi_clock = Wibox.widget.textclock()
 
 -- Menu ------------------------------------------------------------------------
 local myawesomemenu = {
-  { "hotkeys",     function() Hotkeys_popup.show_help(nil, Awful.screen.focused()) end },
+  { "hotkeys",     function() Popkeys.show_help(nil, Awful.screen.focused()) end },
   { "manual",      Term .. " -e man awesome" },
   { "edit config", editor_cmd .. " " .. Awesome.conffile },
   { "restart",     Awesome.restart },
@@ -158,23 +158,55 @@ Awful.mouse.append_global_mousebindings({
 })
 
 
--- Tags ------------------------------------------------------------------------
+-- Layouts ---------------------------------------------------------------------
 Tag.connect_signal("request::default_layouts", function()
-  Awful.layout.append_default_layouts({
-    Awful.layout.suit.spiral,
+  -- Awful.layout.append_default_layouts is also an option here
+  Awful.layout.layouts = {
     Awful.layout.suit.tile,
-    Awful.layout.suit.tile.left,
-    Awful.layout.suit.tile.bottom,
     Awful.layout.suit.tile.top,
-    Awful.layout.suit.floating,
-    Awful.layout.suit.fair,
-    Awful.layout.suit.fair.horizontal,
-    Awful.layout.suit.spiral.dwindle,
+    Awful.layout.suit.spiral,
     Awful.layout.suit.max,
-    Awful.layout.suit.max.fullscreen,
-    Awful.layout.suit.magnifier,
-    Awful.layout.suit.corner.nw,
-  })
+    Awful.layout.suit.floating,
+  }
+end)
+
+
+-- Titlebars -------------------------------------------------------------------
+Client.connect_signal("request::titlebars", function(c)
+  -- buttons for the titlebar
+  local buttons = {
+    Awful.button({}, 1, function()
+      c:activate { context = "titlebar", action = "mouse_move" }
+    end),
+    Awful.button({}, 3, function()
+      c:activate { context = "titlebar", action = "mouse_resize" }
+    end),
+  }
+
+  Awful.titlebar(c, { size = 20 }).widget = {
+    { -- Left
+      Awful.titlebar.widget.iconwidget(c),
+      buttons = buttons,
+      layout  = Wibox.layout.fixed.horizontal
+    },
+    {   -- Middle
+      { -- Title
+        halign = "center",
+        widget = Awful.titlebar.widget.titlewidget(c)
+      },
+      buttons = buttons,
+      layout  = Wibox.layout.flex.horizontal
+    },
+    { -- Right
+      Awful.titlebar.widget.floatingbutton(c),
+      Awful.titlebar.widget.maximizedbutton(c),
+      Awful.titlebar.widget.stickybutton(c),
+      Awful.titlebar.widget.ontopbutton(c),
+      Awful.titlebar.widget.closebutton(c),
+      layout = Wibox.layout.fixed.horizontal()
+    },
+    layout = Wibox.layout.align.horizontal,
+  }
 end)
 
 

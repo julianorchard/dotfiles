@@ -67,6 +67,8 @@ if [ -x /usr/bin/git ] ; then
     alias gl="git log"
     alias glo="git log --oneline"
     alias config='git --git-dir=$HOME/.dotfiles/ --work-tree=$HOME'
+    alias git_delete_merged="git branch -d $(git branch --merged | grep -v '^*' | grep -v 'master' | tr -d '\n')"
+    alias git_reset="git reset --soft HEAD^"
 fi
 
 # kubernetes -------------------------------------------------------------------
