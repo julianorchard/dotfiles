@@ -17,7 +17,9 @@ local M = {
         -- Setup neovim lua configuration
         require("neodev").setup()
       end
-    }
+    },
+
+    "b0o/SchemaStore.nvim"
   }
 }
 
@@ -68,17 +70,19 @@ M.config = function()
     pyright  = {},
     gopls    = {},
     tsserver = {},
-    -- WARN: This shit just refuses to work
+    jsonls   = {
+      json = {
+        schemas = require("schemastore").json.schemas()
+      }
+    },
     yamlls   = {
       yaml = {
-        schemas = {
-          ["https://json.schemastore.org/github-workflow.json"] = "/.github/workflows/*",
+        customTags = {
+          "!reference sequence", -- This was extremely hard to figure out
+          "!ImportValue"
         },
-        customTags = { "!reference", "!ImportValue" },
-      },
-      flags = {
-        debounce_text_changes = 150,
-      },
+        schemas = require("schemastore").yaml.schemas()
+      }
     },
     lua_ls   = {
       Lua = {

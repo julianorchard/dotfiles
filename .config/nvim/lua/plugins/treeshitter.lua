@@ -1,6 +1,7 @@
-M = {
+local M = {
   "nvim-treesitter/nvim-treesitter",
   dependencies = {
+    "nvim-treesitter/nvim-treesitter-refactor",
     "nvim-treesitter/nvim-treesitter-context",
     "nvim-treesitter/nvim-treesitter-textobjects",
   },
@@ -50,9 +51,16 @@ M.config = function()
       enable = true
     },
     sync_install = false,
-    -- TODO: When treesitter stops being slow as hell, do something nice with this
     modules = {},
     ignore_install = {},
+    refactor = {
+      smart_rename = {
+        enable = true,
+        keymaps = {
+          smart_rename = "<leader>rn"
+        }
+      },
+    },
   }
 end
 
