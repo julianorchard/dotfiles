@@ -1,19 +1,6 @@
-M = {
-  "nvim-telescope/telescope.nvim",
-  branch = "0.1.x",
-  dependencies = {
-    "nvim-lua/plenary.nvim",
-    {
-      "nvim-telescope/telescope-fzf-native.nvim",
-      build = "make",
-      cond = function()
-        return vim.fn.executable "make" == 1
-      end,
-    },
-  },
-}
+local M = {}
 
-M.config = function()
+M.setup = function()
   local actions = require("telescope.actions")
 
   require("telescope").setup {
@@ -86,5 +73,7 @@ M.config = function()
   vim.keymap.set("n", "<leader>fd", function() wrapiscope(t.diagnostics) end)
   vim.keymap.set("n", "<leader>fr", function() wrapiscope(t.resume) end)
 end
+
+M.setup()
 
 return M
