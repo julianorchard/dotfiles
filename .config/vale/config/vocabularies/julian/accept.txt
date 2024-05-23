@@ -1,0 +1,6 @@
+dotfiles
+Dotfiles
+neovim
+Neovim
+nvim
+Nvim
