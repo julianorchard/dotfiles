@@ -1,19 +1,6 @@
-M = {
-  "nvim-telescope/telescope.nvim",
-  branch = "0.1.x",
-  dependencies = {
-    "nvim-lua/plenary.nvim",
-    {
-      "nvim-telescope/telescope-fzf-native.nvim",
-      build = "make",
-      cond = function()
-        return vim.fn.executable "make" == 1
-      end,
-    },
-  },
-}
+local M = {}
 
-M.config = function()
+M.setup = function()
   local actions = require("telescope.actions")
 
   require("telescope").setup {
@@ -37,11 +24,8 @@ M.config = function()
 
   local t = require("telescope.builtin")
   local opts = require("telescope.themes").get_ivy({})
-
-  local function wrapiscope(cmd)
-    local pog = opts
-    cmd(pog)
-  end
+  -- Wrap telescope cmd with telescope opts (above)
+  local function t_cmd_with_opts(cmd) cmd(opts) end
 
   -- Edited from the other (probably nicer...) way of doing it:
   -- https://github.com/nvim-telescope/telescope.nvim/wiki/Configuration-Recipes#falling-back-to-find_files-if-git_files-cant-find-a-git-directory
@@ -65,26 +49,34 @@ M.config = function()
   -- Enable telescope fzf native, if installed
   pcall(require("telescope").load_extension, "fzf")
 
-  -- Find old files (<leader>fh == find history)
-  vim.keymap.set("n", "<leader>fh", function() wrapiscope(t.oldfiles) end)
-
-  -- Find in buffers (<leader>b == buffers)
-  vim.keymap.set("n", "<leader><space>", function() wrapiscope(t.buffers) end)
+  -- Find in buffers (<leader><leader> == buffers)
+  vim.keymap.set("n", "<leader><space>", function()
+    local bufs = vim.fn.getbufinfo({ buflisted = 1 })
+    if #bufs > 2 then
+      t_cmd_with_opts(t.buffers)
+    else
+      vim.cmd.bnext()
+    end
+  end)
 
   -- fzf in the current buffer
   vim.keymap.set("n", "<leader>/", function()
     require("telescope.builtin").current_buffer_fuzzy_find(require("telescope.themes").get_ivy {
-      winblend = 10,
+      -- winblend = 10,
       previewer = false,
     })
   end)
 
-  vim.keymap.set("n", "<leader>gf", function() wrapiscope(t.git_files) end)
-  vim.keymap.set("n", "<leader>fo", function() wrapiscope(t.find_files) end)
-  vim.keymap.set("n", "<leader>fw", function() wrapiscope(t.grep_string) end)
-  vim.keymap.set("n", "<leader>fg", function() wrapiscope(t.live_grep) end)
-  vim.keymap.set("n", "<leader>fd", function() wrapiscope(t.diagnostics) end)
-  vim.keymap.set("n", "<leader>fr", function() wrapiscope(t.resume) end)
+  -- Other than that, I only really live_grep stuff
+  vim.keymap.set("n", "<leader>fg", function() t_cmd_with_opts(t.live_grep) end)
+  vim.keymap.set("n", "<leader>fd", function() t_cmd_with_opts(t.diagnostics) end)
+  vim.keymap.set("n", "<leader>fh", function() t_cmd_with_opts(t.oldfiles) end)
+
+  -- Just in case I want to run these manually
+  vim.keymap.set("n", "<leader>fgit", function() t_cmd_with_opts(t.git_files) end)
+  vim.keymap.set("n", "<leader>files", function() t_cmd_with_opts(t.find_files) end)
 end
+
+M.setup()
 
 return M

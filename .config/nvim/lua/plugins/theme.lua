@@ -1,5 +1,6 @@
 local M = {}
 local T = {}
+local current_theme = "pinkmare"
 
 function BgNunify(selector)
   vim.api.nvim_set_hl(0, selector, {
@@ -48,18 +49,23 @@ T.catppuccin = {
   end,
 }
 
-for _, v in pairs(T) do
-  v.priority = 1000
+local function set_theme()
+  for _, v in pairs(T) do
+    v.priority = 1000
+  end
+
+
+  if current_theme == "pinkmare" then
+    table.insert(M, T.pinkmare)
+  elseif current_theme == "catppuccin" then
+    table.insert(M, T.catppuccin)
+  else
+    -- Not really tested this stuff yet
+    vim.cmd("source /home/julian/.config/nvim/theme.vim")
+    return {}
+  end
 end
 
-if VimOps.theme == "pinkmare" then
-  table.insert(M, T.pinkmare)
-elseif VimOps.theme == "catppuccin" then
-  table.insert(M, T.catppuccin)
-else
-  -- Not really tested this stuff yet
-  vim.cmd("source /home/julian/.config/nvim/theme.vim")
-  return {}
-end
+set_theme()
 
 return M

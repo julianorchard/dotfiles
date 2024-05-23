@@ -1,6 +1,3 @@
-vim.g.mapleader = " "
-vim.g.maplocalleader = " "
-
 function Map(mode, a, b)
   -- Helper for mapping with silent and noremap
   vim.keymap.set(mode, a, b, {
@@ -105,3 +102,14 @@ vim.cmd([[
   iab @@ hello@julianorchard.co.uk
   iab <expr> ~g substitute(system(gcfg . 'user.name') . " <" . system(gcfg . 'user.email') . ">", '\n', '', 'g')
 ]])
+
+
+-- Split navigation
+Map("n", "<C-j>", "<C-w><C-j>")
+Map("n", "<C-k>", "<C-w><C-k>") -- I think this one's busted
+Map("n", "<C-l>", "<C-w><C-l>")
+Map("n", "<C-h>", "<C-w><C-h>")
+
+-- Source current file
+Map("n", "<leader>x", "<cmd>.lua<CR>")
+Map("n", "<leader><leader>x", "<cmd>source %<CR>")
