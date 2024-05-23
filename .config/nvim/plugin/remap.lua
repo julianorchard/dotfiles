@@ -104,10 +104,12 @@ vim.cmd([[
 ]])
 
 
+-- Split navigation
 Map("n", "<C-j>", "<C-w><C-j>")
-Map("n", "<C-k>", "<C-w><C-k>")
+Map("n", "<C-k>", "<C-w><C-k>") -- I think this one's busted
 Map("n", "<C-l>", "<C-w><C-l>")
 Map("n", "<C-h>", "<C-w><C-h>")
 
+-- Source current file
 Map("n", "<leader>x", "<cmd>.lua<CR>")
 Map("n", "<leader><leader>x", "<cmd>source %<CR>")

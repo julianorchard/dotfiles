@@ -1,102 +1,66 @@
--- Idea to use plugin/ stolen from TJ
+-- Idea to use the plugin/ directory for this stolen from TJ
 
--- General
-vim.opt.encoding = "UTF-8"
-vim.opt.history = 1000
-
--- Set highlight on search
-vim.o.hlsearch = false
-
--- Okay this is amazing wtf
-vim.opt.inccommand = "split"
-
--- Make line numbers default
-vim.wo.number = true
-
--- Enable mouse mode
-vim.o.mouse = "a"
-
--- Text width/wrap/offsets
-vim.opt.scrolloff = 13
--- TODO: Line break at a certin point
--- vim.opt.textwidth = 80
-vim.opt.wrap = false
-
--- Line numbering
-vim.opt.number = true
-vim.opt.relativenumber = true
-
--- Indentation
-vim.opt.autoindent = true
-vim.opt.smartindent = true
--- vim.o.breakindent = true
-
--- Tab
 local tab_default = 4
-vim.opt.expandtab = true
-vim.opt.shiftwidth = tab_default
-vim.opt.softtabstop = tab_default
-vim.opt.tabstop = tab_default
-
--- Char icons
-vim.opt.list = true
-vim.opt.listchars = "tab:| ,nbsp:␣"
-
--- Spelling
-vim.opt.spelllang = {
-  "en",
-  -- "jp",
+local options = {
+  wo = {
+    number = true,
+    -- Keep signcolumn on by default
+    signcolumn = "yes",
+  },
+  o = {
+    hlsearch = false,
+    mouse = "a",
+    -- Save undo history
+    undofile = true,
+    -- Case-insensitive searching UNLESS \C or capital in search
+    ignorecase = true,
+    smartcase = true,
+    -- Decrease update time
+    updatetime = 250,
+    timeoutlen = 300,
+    -- Set completeopt to have a better completion experience
+    completeopt = "menuone,noselect",
+  },
+  opt = {
+    encoding = "UTF-8",
+    history = 1000,
+    -- Set highlight on search
+    -- Okay this is amazing wtf
+    inccommand = "split",
+    -- Make line numbers default
+    -- Text width/wrap/offsets
+    scrolloff = 13,
+    -- TODO: Line break at a certin point
+    -- textwidth = 80
+    wrap = false,
+    -- Line numbering
+    number = true,
+    relativenumber = true,
+    -- Indentation
+    autoindent = true,
+    smartindent = true,
+    -- Tab
+    expandtab = true,
+    shiftwidth = tab_default,
+    softtabstop = tab_default,
+    tabstop = tab_default,
+    -- Char icons
+    list = true,
+    listchars = "tab:| ,nbsp:␣",
+    spelllang = { "en" },
+    -- Update time
+    updatetime = 500,
+    -- Colour column
+    colorcolumn = "80",
+    -- Highlight cursor
+    cursorline = true,
+    cursorcolumn = true,
+  }
 }
 
--- Update time
-vim.opt.updatetime = 500
-
--- Colour column
-vim.opt.colorcolumn = "80"
-
--- Highlight cursor
-vim.opt.cursorline = true
-vim.opt.cursorcolumn = true
-
--- Remove blank line endings on save
-vim.api.nvim_create_autocmd(
-  "BufWritePre",
-  { command = [[ :%s/\s\+$//ge ]] }
-)
-
--- Return-cursor
-vim.api.nvim_create_autocmd(
-  "BufReadPost",
-  { command = [[ if line("'\"") > 1 && line("'\"") <= line("$") | exe "normal! g`\"" | endif ]] }
-)
-
--- Save undo history
-vim.o.undofile = true
-
--- Case-insensitive searching UNLESS \C or capital in search
-vim.o.ignorecase = true
-vim.o.smartcase = true
-
--- Keep signcolumn on by default
-vim.wo.signcolumn = "yes"
-
--- Decrease update time
-vim.o.updatetime = 250
-vim.o.timeoutlen = 300
-
--- Set completeopt to have a better completion experience
-vim.o.completeopt = "menuone,noselect"
-
--- Terminal
-vim.api.nvim_create_autocmd(
-  "TermOpen", {
-    command = [[
-      :startinsert
-      :setlocal nonumber norelativenumber
-    ]]
-  }
-)
-
--- Tryin to make a change :-\ ………………slime man
-vim.opt.statusline = "%#WinSeparator#%{%v:lua.string.rep('—', v:lua.vim.fn.winwidth(0))%}"
-vim.opt.laststatus = 0
+-- The idea for this kinda thing taken from @ellisonleao on GitHub
+for k1, v1 in pairs(options) do
+  for k2, v2 in pairs(v1) do
+    vim[k1][k2] = v2
+  end
+end
