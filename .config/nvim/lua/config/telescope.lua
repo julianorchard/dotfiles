@@ -1,3 +1,5 @@
+local telescope = require("telescope")
+
 local M = {}
 
 M.setup = function()
