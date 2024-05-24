@@ -47,4 +47,16 @@ return {
     },
   },
 
+  {
+    "folke/todo-comments.nvim",
+    dependencies = { "nvim-lua/plenary.nvim" },
+    opt = {},
+    keys = {
+      { "<leader>td", "<cmd>TodoQuickFix<cr>" }
+    },
+    init = function()
+      require("todo-comments").setup()
+    end
+  },
+
 }
