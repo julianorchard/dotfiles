@@ -26,6 +26,41 @@ return {
     opts = {
       default_file_explorer = true,
       show_hidden = true,
+      keymaps = {
+        ["q"] = "actions.close",
+      }
+    },
+    keys = {
+      -- Regular oil
+      {
+        "-",
+        "<cmd>Oil<cr>"
+      },
+
+      -- Oil as a sidebar, <leader><CR> temporarily set to enter the file and
+      -- :only it
+      {
+        "<leader>-",
+        function()
+          vim.cmd("vsplit")
+          vim.cmd("vertical resize 30")
+          -- TODO: When we open a file we should close the split and stuff
+          vim.cmd("Oil")
+
+          vim.keymap.set("n", "<leader><CR>", function()
+            vim.keymap.del("n", "<leader><CR>")
+            -- This is really useful to remember...
+            vim.api.nvim_input("<cr>")
+            vim.cmd("only")
+          end)
+        end
+      },
+
+      -- Float
+      {
+        "<leader>=",
+        "<cmd>Oil --float<cr>"
+      }
     }
   }
 }
