@@ -7,7 +7,9 @@ return {
 
   {
     "julianorchard/mason-nvim-lint",
-    branch = "fix-ansible-mapping",
+    name = "mason-nvim-lint",
+    dev = true,
+    -- branch = "fix-ansible-mapping",
     dependencies = {
       "williamboman/mason.nvim",
       "mfussenegger/nvim-lint",
