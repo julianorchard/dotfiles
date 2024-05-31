@@ -60,4 +60,31 @@ return {
     end
   },
 
+  {
+    "chrisgrieser/nvim-scissors",
+    dependencies = {
+      "nvim-telescope/telescope.nvim",
+      "L3MON4D3/LuaSnip"
+    },
+    opts = {
+      snippetDir = vim.fn.stdpath('config') .. "/snippets/",
+      jsonFormatter = "jq"
+    },
+    keys = {
+      {
+        '<leader>se',
+        function() require('scissors').editSnippet() end,
+      },
+      {
+        '<leader>sa',
+        function() require('scissors').addNewSnippet() end,
+        mode = { 'x', 'n' },
+      }
+    }
+  }
+
+
+
+
+
 }

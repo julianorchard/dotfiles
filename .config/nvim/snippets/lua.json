@@ -1,8 +1,6 @@
 {
   "Vim Map": {
-    "prefix": "remap",
-    "body": [
-        "vim.keymap.set(\"$1\", \"$2\", \"$3\")"
-    ]
+    "body": ["vim.keymap.set(\"$1\", \"$2\", \"$3\")"],
+    "prefix": "remap"
   }
 }

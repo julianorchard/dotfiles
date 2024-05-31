@@ -14,7 +14,7 @@ local M = {
           css = { "prettier" },
           scss = { "prettier" },
           html = { "prettier" },
-          json = { "prettier" },
+          json = { "jq" },
           yaml = { "prettier" },
 
         },
