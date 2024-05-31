@@ -44,7 +44,6 @@ return {
         function()
           vim.cmd("vsplit")
           vim.cmd("vertical resize 30")
-          -- TODO: When we open a file we should close the split and stuff
           vim.cmd("Oil")
 
           vim.keymap.set("n", "<leader><CR>", function()
