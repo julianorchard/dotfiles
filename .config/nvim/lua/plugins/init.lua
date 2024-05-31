@@ -1,3 +1,3 @@
 return {
-  "julianorchard/bertie.vim",
+  -- "julianorchard/bertie.vim",
 }

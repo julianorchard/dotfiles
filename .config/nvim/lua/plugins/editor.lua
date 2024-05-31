@@ -2,6 +2,7 @@ local function center_comment_any()
   -- Get the next key pressed
   local next_keypress = vim.fn.getcharstr()
 
+
   -- Include the next key as the center comment character
   vim.cmd(string.format([[:CenterComment %s]], next_keypress))
 end
@@ -58,5 +59,32 @@ return {
       require("todo-comments").setup()
     end
   },
+
+  {
+    "chrisgrieser/nvim-scissors",
+    dependencies = {
+      "nvim-telescope/telescope.nvim",
+      "L3MON4D3/LuaSnip"
+    },
+    opts = {
+      snippetDir = vim.fn.stdpath('config') .. "/snippets/",
+      jsonFormatter = "jq"
+    },
+    keys = {
+      {
+        '<leader>se',
+        function() require('scissors').editSnippet() end,
+      },
+      {
+        '<leader>sa',
+        function() require('scissors').addNewSnippet() end,
+        mode = { 'x', 'n' },
+      }
+    }
+  }
+
+
+
+
 
 }

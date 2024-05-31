@@ -9,7 +9,7 @@ function M.setup()
   local linters = lint.linters
 
   lint.linters_by_ft = {
-    markdown = { "vale" },
+    -- markdown = { "vale" },
     lua = { "codespell", "luacheck" },
     ["yaml.ansible"] = { "ansible_lint" },
     yaml = { "yamllint" },

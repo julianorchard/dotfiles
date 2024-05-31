@@ -1,3 +1,4 @@
+-- local M = {}
 local M = {
   "nvim-treesitter/nvim-treesitter",
   dependencies = {

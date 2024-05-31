@@ -24,8 +24,8 @@ function M.setup()
     -- Most useful (but I don't often get to use them)
     nmap("<leader>gc", vim.lsp.buf.rename)
     nmap("<leader>gd", vim.lsp.buf.definition)
-    nmap('<leader>D', vim.lsp.buf.type_definition)
-    nmap('K', vim.lsp.buf.hover)
+    nmap("<leader>D", vim.lsp.buf.type_definition)
+    nmap("<leader>K", vim.lsp.buf.hover)
 
     nmap("<leader>ga", vim.lsp.buf.code_action)
     nmap("<leader>gr", telescope_builtin.lsp_references)
@@ -34,48 +34,31 @@ function M.setup()
     nmap('<leader>ws', telescope_builtin.lsp_dynamic_workspace_symbols)
 
     -- Lesser used LSP functionality
-    nmap('<C-k>', vim.lsp.buf.signature_help)
-    nmap('gD', vim.lsp.buf.declaration)
-    nmap('<leader>wa', vim.lsp.buf.add_workspace_folder)
-    nmap('<leader>wr', vim.lsp.buf.remove_workspace_folder)
-    nmap('<leader>wl', function()
+    nmap("<C-k>", vim.lsp.buf.signature_help)
+    nmap("gD", vim.lsp.buf.declaration)
+    nmap("<leader>wa", vim.lsp.buf.add_workspace_folder)
+    nmap("<leader>wr", vim.lsp.buf.remove_workspace_folder)
+    nmap("<leader>wl", function()
       print(vim.inspect(vim.lsp.buf.list_workspace_folders()))
     end)
 
     -- Create a command `:Format` local to the LSP buffer
-    vim.api.nvim_buf_create_user_command(bufnr, 'Format', function(_)
+    vim.api.nvim_buf_create_user_command(bufnr, "Format", function(_)
       vim.lsp.buf.format()
-    end)
+    end, {})
   end
 
   -- Servers which don't need any configuring here
   local unconfigured = {
-    -- Non-LSP (but are still required)
-    actionlint  = false,
-    ansiblelint = false,
-    black       = false,
-    codespell   = false,
-    curlylint   = false,
-    gofumpt     = false,
-    goimports   = false,
-    gotests     = false,
-    hadolint    = false,
-    jq          = false,
-    luacheck    = false,
-    prettier    = false,
-    shellcheck  = false,
-    vale        = false,
-    yamllint    = false,
-    -- LSP ones
     cssls       = true,
     dockerls    = true,
-    eslint      = true,
+    eslint      = true, -- move this?
     gopls       = true,
     groovyls    = true,
     html        = true,
     pyright     = true,
     terraformls = true,
-    tflint      = true,
+    tflint      = true, -- move this?
     tsserver    = true,
   }
   -- Servers which ARE configured
