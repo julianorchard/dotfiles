@@ -2,14 +2,15 @@ local M = {}
 local T = {}
 local current_theme = "pinkmare"
 
-function BgNunify(selector)
+local function bg_nullify(selector)
   vim.api.nvim_set_hl(0, selector, {
     bg      = "none",
     ctermbg = "none"
   })
 end
 
-function ColourMyPencils(pencils)
+-- This one goes out to the Primagen
+local function colour_my_pencils(pencils)
   vim.cmd.colorscheme(pencils)
 
   local elms = {
@@ -19,7 +20,7 @@ function ColourMyPencils(pencils)
     "EndOfBuffer"
   }
   for _, elm in ipairs(elms) do
-    BgNunify(elm)
+    bg_nullify(elm)
   end
 end
 
@@ -27,7 +28,7 @@ T.pinkmare = {
   "matsuuu/pinkmare",
   config = function()
     vim.opt.tgc = true
-    ColourMyPencils("pinkmare")
+    colour_my_pencils("pinkmare")
   end
 }
 
