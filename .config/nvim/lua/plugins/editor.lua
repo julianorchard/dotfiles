@@ -81,10 +81,25 @@ return {
         mode = { 'x', 'n' },
       }
     }
+  },
+
+  {
+    "junegunn/vim-easy-align",
+    lazy = false,
+    init = function()
+      local vis = { "v", "x" }
+      local prefix = "<leader>a"
+      vim.g.easy_align_ignore_groups = { "String" }
+      -- TODO: There must be a nicer way of doing this with `keys = {}`?
+      vim.keymap.set(vis,
+        prefix .. "a",
+        "<cmd>'<,'>EasyAlign<cr>"
+      )
+      vim.keymap.set(vis,
+        prefix .. "|",
+        "<cmd>'<,'>EasyAlign<cr>"
+      )
+    end
   }
-
-
-
-
 
 }
