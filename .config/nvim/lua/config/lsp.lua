@@ -1,8 +1,4 @@
-local capabilities = vim.lsp.protocol.make_client_capabilities()
 local icons = require("helpers.icons")
-local mason_lspconfig = require("mason-lspconfig")
-local schemastore = require("schemastore")
-local telescope_builtin = require("telescope.builtin")
 
 local M = {}
 
@@ -14,6 +10,8 @@ function M.setup()
   vim.keymap.set("n", "<leader>gl", vim.diagnostic.setloclist)
 
   local on_attach = function(_, bufnr)
+    -- TODO: Figure this out
+    -- require("virtualtypes").on_attach()
     local nmap = function(keys, func, desc)
       if desc then
         desc = "LSP: " .. desc
@@ -28,54 +26,51 @@ function M.setup()
     nmap("<leader>K", vim.lsp.buf.hover)
 
     nmap("<leader>ga", vim.lsp.buf.code_action)
-    nmap("<leader>gr", telescope_builtin.lsp_references)
-    nmap("<leader>gI", telescope_builtin.lsp_implementations)
-    nmap('<leader>ds', telescope_builtin.lsp_document_symbols)
-    nmap('<leader>ws', telescope_builtin.lsp_dynamic_workspace_symbols)
+    nmap("<leader>gr", require("telescope.builtin").lsp_references)
+    nmap("<leader>gI", require("telescope.builtin").lsp_implementations)
+    nmap("<leader>ds", require("telescope.builtin").lsp_document_symbols)
+    nmap(
+      "<leader>ws",
+      require("telescope.builtin").lsp_dynamic_workspace_symbols
+    )
 
     -- Lesser used LSP functionality
-    nmap("<C-k>", vim.lsp.buf.signature_help)
+    -- nmap("<C-k>", vim.lsp.buf.signature_help)
     nmap("gD", vim.lsp.buf.declaration)
     nmap("<leader>wa", vim.lsp.buf.add_workspace_folder)
     nmap("<leader>wr", vim.lsp.buf.remove_workspace_folder)
     nmap("<leader>wl", function()
       print(vim.inspect(vim.lsp.buf.list_workspace_folders()))
     end)
-
-    -- Create a command `:Format` local to the LSP buffer
-    vim.api.nvim_buf_create_user_command(bufnr, "Format", function(_)
-      vim.lsp.buf.format()
-    end, {})
   end
 
   -- Servers which don't need any configuring here
   local unconfigured = {
-    cssls       = true,
-    dockerls    = true,
-    eslint      = true, -- move this?
-    gopls       = true,
-    groovyls    = true,
-    html        = true,
-    pyright     = true,
+    cssls = true,
+    dockerls = true,
+    gopls = true,
+    groovyls = true,
+    html = true,
+    pyright = true,
     terraformls = true,
-    tflint      = true, -- move this?
-    tsserver    = true,
+    tsserver = true,
   }
   -- Servers which ARE configured
   local servers = {
+    tsserver = {},
     jsonls = {
       json = {
-        schemas = schemastore.json.schemas()
-      }
+        schemas = require("schemastore").json.schemas(),
+      },
     },
     yamlls = {
       yaml = {
         customTags = {
           "!reference sequence", -- This was extremely hard to figure out
-          "!ImportValue"
+          "!ImportValue",
         },
-        schemas = schemastore.yaml.schemas()
-      }
+        schemas = require("schemastore").yaml.schemas(),
+      },
     },
     lua_ls = {
       Lua = {
@@ -88,7 +83,7 @@ function M.setup()
             "client",
             "screen",
             "tag",
-          }
+          },
         },
         workspace = { checkThirdParty = false },
         telemetry = { enable = false },
@@ -104,9 +99,11 @@ function M.setup()
   -- Enable the following language servers
 
   -- nvim-cmp supports additional completion capabilities, so broadcast that to servers
+  local capabilities = vim.lsp.protocol.make_client_capabilities()
   capabilities = require("cmp_nvim_lsp").default_capabilities(capabilities)
 
   -- Ensure the servers above are installed
+  local mason_lspconfig = require("mason-lspconfig")
   mason_lspconfig.setup({
     ensure_installed = vim.tbl_keys(servers),
   })
@@ -118,12 +115,7 @@ function M.setup()
         settings = servers[server_name],
         filetypes = (servers[server_name] or {}).filetypes,
       })
-    end
-  })
-
-  -- Disable virtual_text since it's redundant due to lsp_lines.
-  vim.diagnostic.config({
-    virtual_text = false,
+    end,
   })
 
   -- Custom signs
@@ -134,24 +126,21 @@ function M.setup()
   end
 
   -- json (includes: tfstate)
-  vim.api.nvim_create_autocmd(
-    { "BufNewFile", "BufRead" }, {
-      pattern = { "*.tfstate" },
-      command = [[ :set filetype=json]]
-    }
-  )
+  vim.api.nvim_create_autocmd({ "BufNewFile", "BufRead" }, {
+    pattern = { "*.tfstate" },
+    command = [[ :set filetype=json]],
+  })
+
   -- html (includes: njk, )
-  vim.api.nvim_create_autocmd(
-    { "BufNewFile", "BufRead" }, {
-      pattern = { "*.njk" },
-      command = [[ :set filetype=html]]
-    }
-  )
+  vim.api.nvim_create_autocmd({ "BufNewFile", "BufRead" }, {
+    pattern = { "*.njk" },
+    command = [[ :set filetype=html]],
+  })
 
   vim.filetype.add({
     extension = {
-      jenkins = "groovy"
-    }
+      jenkins = "groovy",
+    },
   })
 end
 

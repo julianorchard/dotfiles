@@ -1,43 +1,36 @@
 vim.g.mapleader = " "
 vim.g.maplocalleader = " "
 
-local lazypath = vim.fn.stdpath "data" .. "/lazy/lazy.nvim"
+local lazypath = vim.fn.stdpath("data") .. "/lazy/lazy.nvim"
 if not vim.loop.fs_stat(lazypath) then
-  vim.fn.system {
+  vim.fn.system({
     "git",
     "clone",
     "--filter=blob:none",
     "https://github.com/folke/lazy.nvim.git",
     "--branch=stable",
-    lazypath
-  }
+    lazypath,
+  })
 end
 vim.opt.rtp:prepend(lazypath)
 
-local lazy_opts = {
-  {
-    notify = "false",
-  },
+require("lazy").setup({
+  { import = "plugins" },
+}, {
   checker = {
-    concurrency = 30,
     enabled = true,
-    frequency = 3600,
-    notify = false,
+    check_pinned = true,
+    frequency = 86400,
   },
   performance = {
     rtp = {
       disabled_plugins = {
         "netrw",
-        "netrwPlugin"
+        "netrwPlugin",
       },
     },
   },
   dev = {
-    path = "~/Code/personal-gh/"
-  }
-}
-
-require("lazy").setup({
-  { import = "lsp" },
-  { import = "plugins" }
-}, lazy_opts)
+    path = "~/Code/personal-gh/",
+  },
+})

@@ -5,7 +5,5 @@ vim.opt.softtabstop = 2
 
 vim.opt.spell = true
 
-
 -- Easy Align <leader>\
 vim.keymap.set("v", "<leader><Bslash>", [[ :EasyAlign*<Bar><Enter> ]])
-
