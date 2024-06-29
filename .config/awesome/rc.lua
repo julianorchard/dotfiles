@@ -4,64 +4,37 @@
 pcall(require, "luarocks.loader")
 
 -- This is probably not the play
-Awesome, Client, Screen, Tag = awesome, client, screen, tag
+-- Awesome, Client, Screen, Tag = awesome, client, screen, tag
+
+local logging = require("helpers.logging")
 
 -- Standard awesome library
-Gears = require("gears")
-Awful = require("awful")
+local gears = require("gears")
 require("awful.autofocus")
 
--- Widget and layout library
-Wibox = require("wibox")
-
 -- Theme handling library
-Beautiful = require("beautiful")
+local beautiful = require("beautiful")
 
 -- Notification library
-Naughty = require("naughty")
-
--- Declarative object management
-Ruled = require("ruled")
-Menubar = require("menubar")
-Popkeys = require("awful.hotkeys_popup")
+local naughty = require("naughty")
 
 -- Enable hotkeys help widget for VIM and other apps
 -- when client with a matching name is opened:
 require("awful.hotkeys_popup.keys")
 
---------------------------------------------------------------------------------
--- Logging and error handling
-
-function Julog(message, level)
-  -- Useful for logging stuff for testing stuff
-  local date_string, debug_file
-
-  -- ERROR, WARN, DEBUG, INFO
-  if level == nil then level = "DEBUG" end
-  date_string = os.date("%c")
-  debug_file = io.open(
-    Gears.filesystem.get_configuration_dir() .. "awesome.log", "a"
-  )
-  if debug_file ~= nil then
-    debug_file:write(date_string .. " - " .. level .. ": " .. message .. "\n")
-    debug_file:close()
-  else
-    error("Debug file does not exist")
-  end
-end
-
 -- Log a restart
-Julog("Restarting configuration", "INFO")
+logging.julog("Restarting configuration", "INFO")
 
-Naughty.connect_signal("request::display_error", function(message, startup)
+naughty.connect_signal("request::display_error", function(message, startup)
   -- Log the error
-  Julog(message, "ERROR")
+  logging.julog(message, "ERROR")
 
   -- Notify about fallbacking
-  Naughty.notification({
+  naughty.notification({
     urgency = "critical",
-    title   = "Oops, an error happened" .. (startup and " during startup!" or "!"),
-    message = message
+    title = "Oops, an error happened"
+      .. (startup and " during startup!" or "!"),
+    message = message,
   })
 end)
 
@@ -69,7 +42,8 @@ end)
 -- Configuration
 
 -- {{{ Variables
-Beautiful.init(Gears.filesystem.get_themes_dir() .. "default/theme.lua")
+beautiful.init(gears.filesystem.get_themes_dir() .. "default/theme.lua")
+beautiful.font = "ComicShannsMono Nerd Font Mono 9"
 Term = "alacritty"
 Modkey = "Mod4"
 -- }}}
