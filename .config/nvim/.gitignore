@@ -1,5 +1,5 @@
 .luarc.json
 nvim
-cd-project.nvim.json
+projects.json
 lazy-lock.json
 colors

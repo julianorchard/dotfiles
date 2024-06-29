@@ -1,5 +1,4 @@
--- local M = {}
-local M = {
+return {
   "nvim-treesitter/nvim-treesitter",
   dependencies = {
     "nvim-treesitter/nvim-treesitter-refactor",
@@ -7,10 +6,7 @@ local M = {
     "nvim-treesitter/nvim-treesitter-textobjects",
   },
   build = ":TSUpdate",
+  config = function()
+    require("config.treeshitter").setup()
+  end,
 }
-
-M.config = function()
-  require("config.treeshitter").setup()
-end
-
-return M
