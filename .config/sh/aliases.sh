@@ -1,5 +1,14 @@
 # Shell aliases for bashrc and zshrc
 
+installed() {
+    # Check if ${1} input is installed:
+    #
+    # Use: `installed application_name`
+    ! command -v "${1}" >/dev/null 2>&1 &&
+        return 1 ||
+        return 0
+}
+
 alias src="source ~/.zshrc"
 alias config='git --git-dir=$HOME/.dotfiles/ --work-tree=$HOME'
 alias cls='clear'
@@ -10,16 +19,15 @@ alias spotifyd="/home/julian/Code/spotifyd/target/release/spotifyd"
 # THANKS @ALESSIOMINERVA XD (I had never used dirs before)
 alias cdb="dirs | sed -e 's/\s/\n/g' | fzf"
 
-[ -x /usr/bin/batcat ]    && alias cat="bat"
-[ -x /usr/bin/lesspipe ]  && eval "$(SHELL=/bin/sh lesspipe)"
-[ -x /usr/bin/ranger ]    && alias r="ranger"
-[ -x /usr/bin/tailscale ] && alias ts="sudo tailscale"
-[ -x /usr/bin/netstat ]   && alias ports="sudo netstat -plnt"
-[ -x /usr/bin/xev ]       && alias get_key="xev"
-[ -x /usr/bin/xprop ]     && alias get_window_name="xprop | grep -i 'class'"
-[ -x /snap/bin/codium ]   && alias code="codium"                                             # A slightly lesser evil
-[ -x /snap/bin/spt ]      && alias sptr="systemctl restart --user spotifyd && /snap/bin/spt" # Annoying behaviour from spotifyd
-
+installed batcat && alias cat="bat"
+installed lesspipe && eval "$(SHELL=/bin/sh lesspipe)"
+installed ranger && alias r="ranger"
+installed tailscale && alias ts="sudo tailscale"
+installed netstat && alias ports="sudo netstat -plnt"
+installed xev && alias get_key="xev"
+installed xprop && alias get_window_name="xprop | grep -i 'class'"
+installed codium && alias code="codium"                                          # A slightly lesser evil
+installed spt && alias sptr="systemctl restart --user spotifyd && /snap/bin/spt" # Annoying behaviour from spotifyd
 
 # systemd ----------------------------------------------------------------------
 #
@@ -30,11 +38,11 @@ alias sst="ss stop"
 
 # ls ---------------------------------------------------------------------------
 #
-if [ -x /usr/bin/lsd ] ; then
+if installed lsd; then
     alias la="lsd -la"
     alias ll="lsd -l"
     alias ls="lsd"
-elif [ -x /home/julian/.cargo/bin/exa ] ; then
+elif installed exa; then
     alias ls="exa --icons"
     alias ll="exa -l --icons"
     alias la="exa -la --icons"
@@ -48,7 +56,11 @@ fi
 
 # git --------------------------------------------------------------------------
 #
-if [ -x /usr/bin/git ] ; then
+_git_delete_merged() {
+    git branch -d "$(git branch --merged | grep -v '^*' | grep -v 'master' | tr -d '\n')"
+}
+
+if installed git; then
     alias g="git"
     alias gc="git c"
     alias gs="git status"
@@ -67,13 +79,13 @@ if [ -x /usr/bin/git ] ; then
     alias gl="git log"
     alias glo="git log --oneline"
     alias config='git --git-dir=$HOME/.dotfiles/ --work-tree=$HOME'
-    alias git_delete_merged="git branch -d $(git branch --merged | grep -v '^*' | grep -v 'master' | tr -d '\n')"
+    alias git_delete_merged="_git_delete_merged"
     alias git_reset="git reset --soft HEAD^"
 fi
 
 # kubernetes -------------------------------------------------------------------
 #
-if [ -x /usr/local/bin/kubectl ] ; then
+if installed kubectl; then
     alias k="kubectl"
     alias kg="kubectl get"
     alias kga="kubectl get -A"
@@ -92,12 +104,12 @@ if [ -x /usr/local/bin/kubectl ] ; then
                     \n kcll = kubectl pod last logs"
 
     # aws ----------------------------------------------------------------------
-    if [ -x "/home/julian/.local/bin/aws" ] ; then
+    if installed aws; then
         alias kubeswitch="kubectl config use-context"
     fi
 fi
 
-if [ -x /usr/local/bin/minikube ] ; then
+if installed minikube; then
     alias msa="minikube start"
     alias mso="minikube stop"
     alias mh="printf ' msa  = minikube start\
@@ -105,12 +117,12 @@ if [ -x /usr/local/bin/minikube ] ; then
                     \n mh   = kubectl pod last logs"
 fi
 
-if [ -x /snap/bin/microk8s ] ; then
+if installed microk8s; then
     alias k8s="microk8s kubectl"
 fi
 
 # terraform / terragrunt -------------------------------------------------------
-if [ -x /snap/bin/terraform ] ; then
+if installed terraform; then
     autoload -U +X bashcompinit && bashcompinit
     # complete -o nospace -C /usr/bin/terraform terraform
 
@@ -123,13 +135,13 @@ if [ -x /snap/bin/terraform ] ; then
     alias tfn="touch outputs.tf provider.tf main.tf terraform.tf variables.tf"
 fi
 
-if [ -x /home/julian/.local/bin/terragrunt ] ; then
+if installed terragrunt; then
     alias tg="terragrunt"
     alias tga="terragrunt run-all"
 fi
 
 # openstack --------------------------------------------------------------------
-if [ -x /home/julian/.local/bin/openstack ] ; then
+if installed openstack; then
     alias os="openstack"
 fi
 
@@ -146,14 +158,17 @@ ssh_debug() {
     ssh -vvv "$@"
 }
 
+# # nvr --------------------------------------------------------------------------
+# installed nvr && [ ! -z "${NVIM}" ] &&
+#     alias nvim="nvr -s"
+
 # profile-selctor --------------------------------------------------------------
 
 PROFILE_SELECTOR="/home/julian/.local/bin/sources/profile-selector"
 AWS_PROFILE_SELECTOR_FILE="${HOME}/.config/codewizards/aws-profile"
-function _aws_profile(){
+function _aws_profile() {
     "${PROFILE_SELECTOR}" aws
     aws_profile=$(cat "${AWS_PROFILE_SELECTOR_FILE}")
     export AWS_PROFILE=${aws_profile}
 }
 [ -x "${PROFILE_SELECTOR}" ] && alias ap="_aws_profile"
-

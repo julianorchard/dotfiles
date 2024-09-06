@@ -49,11 +49,10 @@ export LANGUAGE=en_GB.UTF8
 export LC_CTYPE=en_GB.UTF8
 # Other
 export BROWSER="firefox"
-if [ -x /snap/bin/nvim ] ; then
-  export EDITOR="nvim"
-  alias vim="nvim"
+if [ -x /snap/bin/nvim ]; then
+    export EDITOR="nvim"
 else
-  export EDITOR="vim"
+    export EDITOR="vim"
 fi
 export FILE="ranger"
 # IM
@@ -66,3 +65,6 @@ export NVM_DIR="$([ -z "${XDG_CONFIG_HOME-}" ] && printf %s "${HOME}/.nvm" || pr
 # GHCUP
 [ -f "$HOME/.ghcup/env" ] && source "$HOME/.ghcup/env"
 export PATH="$HOME/.tfenv/bin:$PATH"
+
+# How do I get the pods? -- AlessioMinerva, 2024
+export KUBE_CONFIG_PATH="${HOME}/.kube/config"
