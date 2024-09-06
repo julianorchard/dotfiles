@@ -1,0 +1,5 @@
+---
+
+- name: Install JRE
+  ansible.builtin.apt:
+    pkg: default-jre

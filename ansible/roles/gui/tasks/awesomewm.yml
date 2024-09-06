@@ -1,0 +1,76 @@
+---
+
+# TODO: Evaluate requirements
+- name: Install AwesomeWM prerequisites
+  ansible.builtin.apt:
+    pkg:
+      - asciidoctor
+      - build-essential
+      - cmake
+      - dbus-x11
+      - debhelper-compat
+      - gcc
+      - gir1.2-gtk-3.0
+      - imagemagick
+      - libcairo2-dev
+      - libdbus-1-dev
+      - libgdk-pixbuf2.0-dev
+      - libglib2.0-dev
+      - liblua5.3-dev
+      - libpango1.0-dev
+      - libstartup-notification0-dev
+      - libx11-xcb-dev
+      - libxcb-cursor-dev
+      - libxcb-icccm4-dev
+      - libxcb-icccm4-dev
+      - libxcb-keysyms1-dev
+      - libxcb-randr0-dev
+      - libxcb-shape0-dev
+      - libxcb-util0-dev
+      - libxcb-util0-dev
+      - libxcb-xfixes0-dev
+      - libxcb-xinerama0-dev
+      - libxcb-xkb-dev
+      - libxcb-xrm-dev
+      - libxcb-xtest0-dev
+      - libxcb1-dev
+      - libxdg-basedir-dev
+      - libxkbcommon-dev
+      - libxkbcommon-x11-dev
+      - lua-busted
+      - lua-discount
+      - lua-ldoc
+      - lua-lgi
+      - lua5.2
+      - lua5.3
+      - make
+      - x11-apps
+      - x11-utils
+      - x11-xserver-utils
+      - x11proto-core-dev
+      - xfonts-base
+      - xmlto
+      - xterm
+      - xvfb
+      - zsh
+
+- name: Clone AwesomeWM repository
+  ansible.builtin.git:
+    repo: https://github.com/awesomeWM/awesome.git
+    dest: /src/awesome
+    single_branch: true
+    version: master
+    force: true
+
+- name: Make AwesomeWM
+  # TODO: Create some kind of test to see if it's installed already?
+  # register: o
+  # changed_when: o.rc != 0
+  ansible.builtin.command:
+    cmd: make package
+    chdir: /src/awesome
+
+- name: Install AwesomeWM
+  ansible.builtin.shell:
+    cmd: apt-get install ./*.deb
+    chdir: /src/awesome/build

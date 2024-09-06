@@ -1,0 +1,10 @@
+---
+
+- name: Install Go
+  ansible.builtin.import_tasks: go.yml
+
+- name: Install Node
+  ansible.builtin.import_tasks: node.yml
+
+- name: Install Java (JRE)
+  ansible.builtin.import_tasks: java.yml
