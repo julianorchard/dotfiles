@@ -1,0 +1,21 @@
+#!/usr/bin/env ansible-playbook
+---
+
+- name: All
+  hosts: localhost
+  gather_facts: true
+  become: true
+
+  vars:
+    go_version: 1.22.1
+    node_version: 22.2.0
+    awesome_version: 4.3
+    slack_version: 4.39.95
+
+  roles:
+    - role: development
+    - role: neovim
+    - role: gui
+    - role: apps
+#
+# vi: ft=yaml.ansible

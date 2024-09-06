@@ -1,0 +1,4 @@
+---
+- name: Install Slack from official deb package
+  ansible.builtin.apt:
+    deb: https://downloads.slack-edge.com/desktop-releases/linux/x64/{{ slack_version }}/slack-desktop-{{ slack_version }}-amd64.deb

@@ -1,0 +1,13 @@
+---
+
+- name: Install NVM
+  ansible.builtin.shell: >
+    set -o pipefail
+    curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.7/install.sh | bash
+  args:
+    creates: '{{ ansible_env.HOME }}/.nvm/nvm.sh'
+
+- name: Use target Node version
+  ansible.builtin.shell: >-
+    [ -s "{{ ansible_env.HOME }}/.nvm/nvm.sh" ] && . "{{ ansible_env.HOME }}/.nvm/nvm.sh"
+    nvm use v{{ node_version }}

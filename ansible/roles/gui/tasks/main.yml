@@ -1,0 +1,12 @@
+---
+
+- name: Install Cargo Packages
+  community.general.cargo:
+    name: '{{ item }}'
+  loop: [alacritty]
+
+# - name: AwesomeWM
+#   ansible.builtin.import_tasks: awesomewm.yml
+
+- name: Picom
+  ansible.builtin.import_tasks: picom.yml
