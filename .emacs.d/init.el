@@ -81,6 +81,8 @@
            (slot . 0)
            (window-parameters . ((mode-line-format . none))))
           ))
+  ;; Set global EDE mode, see: https://www.gnu.org/software/emacs/manual/html_node/emacs/EDE.html
+  (global-ede-mode t)
   :custom
   (indent-tabs-mode nil)
   (inhibit-startup-screen t)
@@ -176,6 +178,8 @@
   evil-mode
   evil-global-set-key
   evil-ex-define-cmd
+  evil-define-key
+  evil-set-leader
   :init
   (setq evil-want-keybinding nil)
   (setq evil-want-integration t)
@@ -198,7 +202,11 @@
   (evil-ex-define-cmd "q" #'kill-this-buffer)
   (evil-ex-define-cmd "wq" #'save-and-kill-this-buffer)
   ;; Custom tmux-like key maps
-  (keymap-set global-map "C-a" tmux-mappings))
+  (keymap-set global-map "C-a" tmux-mappings)
+  ;; Vim Leader Mappings
+  (evil-set-leader nil (kbd "SPC"))
+  (evil-define-key 'normal 'global (kbd "<leader>ff") 'find-file)
+  (evil-define-key 'normal 'global (kbd "<leader><leader>") 'list-buffers))
 ;; Org mappings (this is currently causing evil-mode to fuck up somehow)
 (defvar-keymap tmux-org-mappings
   "a" 'org-agenda
@@ -206,7 +214,6 @@
 ;; Navigational mappings with Ctrl+A (as I have configured for Tmux)
 ;; These rely on Evil (see the line in evil above)
 (defvar-keymap tmux-mappings
-  "f" 'find-file
   "s" 'split-window-right
   "d" 'split-window-below
   "h" 'evil-window-left
@@ -216,6 +223,7 @@
   "n" 'next-buffer
   "p" 'previous-buffer
   "r" 'eval-region
+  "b" 'eval-buffer
   "!" 'delete-other-windows
   "q" 'delete-window
   "o" tmux-org-mappings)
@@ -276,8 +284,9 @@
 ;; (use-package toml-mode)
 ;; (use-package markdown-mode+)
 ;; (use-package markdown-preview-mode)
-;; (use-package terraform-mode
-;;   :init (setq terraform-format-on-save t))
+(use-package terraform-mode
+  :defines terraform-format-on-save
+  :init (setq terraform-format-on-save t))
 ;; (use-package hcl-mode)
 
 (use-package dired-subtree
