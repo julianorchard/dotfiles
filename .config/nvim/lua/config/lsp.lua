@@ -51,12 +51,32 @@ function M.setup()
     gopls = true,
     groovyls = true,
     html = true,
+    jsonnet_ls = true,
     pyright = true,
     terraformls = true,
     tsserver = true,
   }
   -- Servers which ARE configured
   local servers = {
+    -- TODO: Evaluate
+    intelephense = {
+      stubs = {
+        -- Surely we get Core for free?
+        "Core",
+        -- "Reflection",
+        -- "SPL",
+        -- "SimpleXML",
+        -- "ctype",
+        -- "date",
+        -- "exif",
+        -- "filter",
+        -- "imagick",
+        -- "json",
+        -- "pcre",
+        -- "random",
+        -- "standard",
+      },
+    },
     tsserver = {},
     jsonls = {
       json = {
@@ -69,7 +89,24 @@ function M.setup()
           "!reference sequence", -- This was extremely hard to figure out
           "!ImportValue",
         },
-        schemas = require("schemastore").yaml.schemas(),
+        schemaStore = require("schemastore").yaml.schemas(),
+        schemas = {
+          kubernetes = "*.yaml",
+          ["http://json.schemastore.org/github-workflow"] = ".github/workflows/*",
+          ["http://json.schemastore.org/github-action"] = ".github/action.{yml,yaml}",
+          ["https://raw.githubusercontent.com/microsoft/azure-pipelines-vscode/master/service-schema.json"] = "azure-pipelines*.{yml,yaml}",
+          ["https://raw.githubusercontent.com/ansible/ansible-lint/main/src/ansiblelint/schemas/ansible.json#/$defs/tasks"] = "roles/tasks/*.{yml,yaml}",
+          ["https://raw.githubusercontent.com/ansible/ansible-lint/main/src/ansiblelint/schemas/ansible.json#/$defs/playbook"] = "*play*.{yml,yaml}",
+          ["http://json.schemastore.org/prettierrc"] = ".prettierrc.{yml,yaml}",
+          ["http://json.schemastore.org/kustomization"] = "kustomization.{yml,yaml}",
+          ["http://json.schemastore.org/chart"] = "Chart.{yml,yaml}",
+          ["https://json.schemastore.org/dependabot-v2"] = ".github/dependabot.{yml,yaml}",
+          ["https://gitlab.com/gitlab-org/gitlab/-/raw/master/app/assets/javascripts/editor/schema/ci.json"] = "*gitlab-ci*.{yml,yaml}",
+          ["https://raw.githubusercontent.com/OAI/OpenAPI-Specification/main/schemas/v3.1/schema.json"] = "*api*.{yml,yaml}",
+          ["https://raw.githubusercontent.com/compose-spec/compose-spec/master/schema/compose-spec.json"] = "*docker-compose*.{yml,yaml}",
+          ["https://raw.githubusercontent.com/argoproj/argo-workflows/master/api/jsonschema/schema.json"] = "*flow*.{yml,yaml}",
+        },
+        hover = true,
       },
     },
     lua_ls = {
@@ -109,6 +146,10 @@ function M.setup()
   })
   mason_lspconfig.setup_handlers({
     function(server_name)
+      -- https://github.com/neovim/nvim-lspconfig/pull/3232
+      if server_name == "tsserver" then
+        server_name = "ts_ls"
+      end
       require("lspconfig")[server_name].setup({
         capabilities = capabilities,
         on_attach = on_attach,
@@ -124,18 +165,6 @@ function M.setup()
     local hl = "DiagnosticSign" .. type
     vim.fn.sign_define(hl, { text = icon, texthl = hl, numhl = hl })
   end
-
-  -- json (includes: tfstate)
-  vim.api.nvim_create_autocmd({ "BufNewFile", "BufRead" }, {
-    pattern = { "*.tfstate" },
-    command = [[ :set filetype=json]],
-  })
-
-  -- html (includes: njk, )
-  vim.api.nvim_create_autocmd({ "BufNewFile", "BufRead" }, {
-    pattern = { "*.njk" },
-    command = [[ :set filetype=html]],
-  })
 
   vim.filetype.add({
     extension = {

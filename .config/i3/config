@@ -8,7 +8,7 @@ font pango:file-icons:ComicShannsMono Nerd Font Mono:monospace 9
 exec --no-startup-id dex --autostart --environment i3
 exec --no-startup-id xss-lock --transfer-sleep-lock -- i3lock --nofork --bar-indicator
 exec --no-startup-id nm-applet
-exec --no-startup-id picom -b
+exec --no-startup-id picom
 exec --no-startup-id syncthing
 for_window [class="^.*"] border pixel 10
 
@@ -174,7 +174,7 @@ bindsym Ctrl+Shift+1 mode "$layout_mode"
 # System Commands
 set $system_mode System: (l) Lock, (e) Logout, (r) Reboot, (s) Shutdown
 mode "$system_mode" {
-    bindsym l mode "default" ; exec i3lock-fancy
+    bindsym l mode "default" ; exec i3lock
     bindsym e exec i3-msg exit
     bindsym r exec systemctl reboot
     bindsym s exec systemctl poweroff

@@ -11,7 +11,7 @@ local M = {
 
 -- Theme map
 local T = {}
-local current_theme = "rose-pine"
+local current_theme = "nightfox"
 
 local function bg_nullify(selector)
   vim.api.nvim_set_hl(0, selector, {
@@ -34,6 +34,23 @@ local function colour_my_pencils(pencils)
     bg_nullify(elm)
   end
 end
+
+T.nightfox = {
+  "EdenEast/nightfox.nvim",
+  config = function()
+    require("nightfox").setup({
+      options = {
+        transparent = true,
+        dim_inactive_windows = true,
+        styles = {
+          comments = "italic",
+          strings = "italic",
+        },
+      },
+    })
+    vim.cmd.colorscheme("terafox")
+  end,
+}
 
 T.pinkmare = {
   "matsuuu/pinkmare",
@@ -83,8 +100,8 @@ local function set_theme()
     table.insert(M, T.pinkmare)
   elseif current_theme == "catppuccin" then
     table.insert(M, T.catppuccin)
-  elseif current_theme == "catppuccin" then
-    table.insert(M, T.catppuccin)
+  elseif current_theme == "nightfox" then
+    table.insert(M, T.nightfox)
   elseif current_theme == "rose-pine" then
     table.insert(M, T.rosepine)
   else

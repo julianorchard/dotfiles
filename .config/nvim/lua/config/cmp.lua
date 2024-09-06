@@ -6,13 +6,13 @@ function M.setup()
   local cmp = require("cmp")
 
   require("luasnip.loaders.from_vscode").lazy_load({
-    paths = "/home/julian/.config/nvim/snippets"
+    paths = "/home/julian/.config/nvim/snippets",
   })
 
   luasnip.config.setup()
 
   local cmp_select = { behavior = cmp.SelectBehavior.Select }
-  cmp.setup {
+  cmp.setup({
 
     snippet = {
       expand = function(args)
@@ -20,14 +20,14 @@ function M.setup()
       end,
     },
 
-    mapping = cmp.mapping.preset.insert {
+    mapping = cmp.mapping.preset.insert({
       ["<C-k>"] = cmp.mapping.select_prev_item(cmp_select),
       ["<C-j>"] = cmp.mapping.select_next_item(cmp_select),
       ["<C-Space>"] = cmp.mapping.complete({}),
-      ["<CR>"] = cmp.mapping.confirm {
+      ["<CR>"] = cmp.mapping.confirm({
         behavior = cmp.ConfirmBehavior.Replace,
         select = true,
-      },
+      }),
       ["<Tab>"] = cmp.mapping(function(fallback)
         if cmp.visible() then
           cmp.select_next_item()
@@ -46,7 +46,7 @@ function M.setup()
           fallback()
         end
       end, { "i", "s" }),
-    },
+    }),
 
     sources = {
       { name = "nvim_lsp" },
@@ -72,10 +72,9 @@ function M.setup()
           org = "[Org]",
         })[entry.source.name]
         return vim_item
-      end
+      end,
     },
-
-  }
+  })
 end
 
 M.setup()
