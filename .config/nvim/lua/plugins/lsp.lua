@@ -2,6 +2,7 @@ local M = {
   -- config.lsp
   "neovim/nvim-lspconfig",
   dependencies = {
+    "HiPhish/jinja.vim",
     {
       "williamboman/mason.nvim",
       config = true,
@@ -11,6 +12,10 @@ local M = {
     "williamboman/mason-lspconfig.nvim",
     "b0o/SchemaStore.nvim",
     "jubnzv/virtual-types.nvim",
+    {
+      "towolf/vim-helm",
+      ft = "helm",
+    },
 
     -- config.cmp
     {
@@ -18,6 +23,7 @@ local M = {
       dependencies = {
         "L3MON4D3/LuaSnip",
         "hrsh7th/cmp-nvim-lsp",
+        "hrsh7th/cmp-path",
         "lukas-reineke/cmp-rg",
         "nvim-orgmode/orgmode",
         "rafamadriz/friendly-snippets",
@@ -40,12 +46,15 @@ local M = {
             -- formatters
             "black",
             "jq",
+            "jsonnetfmt",
             "prettier",
             "shfmt",
             "stylua",
+            "yamlfix",
             -- linters
             "hadolint",
             "ansible-lint",
+            "phpstan",
           },
         })
       end,

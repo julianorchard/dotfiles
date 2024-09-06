@@ -1,6 +1,5 @@
 {
   "Main Preamble": {
-    "prefix": "preamble",
     "body": [
       "$LINE_COMMENT$LINE_COMMENT   $TM_FILENAME  ---  $1",
       "",
@@ -15,12 +14,23 @@
       "$LINE_COMMENT See /LICENSE file in the root of this repository.",
       "",
       "$LINE_COMMENT$LINE_COMMENT Code:"
-    ]
+    ],
+    "prefix": "preamble"
   },
   "My Signature": {
-    "prefix": "signature",
     "body": [
       "Julian Orchard <jorchard@pm.me>"
-    ]
+    ],
+    "prefix": "signature"
+  },
+  "dct": {
+    "body": [
+      "${2}:",
+      "  web:",
+      "    build: .",
+      "    ports:",
+      "      - \"${1}:${0}\""
+    ],
+    "prefix": "dct"
   }
 }

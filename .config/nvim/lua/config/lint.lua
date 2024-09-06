@@ -7,9 +7,10 @@ function M.setup()
   lint.linters_by_ft = {
     ["yaml.ansible"] = { "ansible_lint" },
     dockerfile = { "hadolint" },
+    php = { "phpstan" },
     -- TODO: Evaluate
     -- ghaction = { "actionlint" },
-    -- nunjucks = { "curlylint" },
+    nunjucks = { "curlylint" },
   }
 
   -- Hadolint config
