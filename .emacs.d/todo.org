@@ -1,2 +1,0 @@
-#+title: Emacs todo list
-** TODO Do more with LSPs
