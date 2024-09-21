@@ -1,0 +1,26 @@
+{% for text in stamp %}
+{{ text }}
+{% endfor %}
+
+window:
+  dynamic_padding: true
+  padding:
+    x: 3
+    y: 3
+  opacity: 0.9
+
+font:
+  size: {{ alacritty.font_size }}
+  normal:
+    family: {{ alacritty.font }}
+    style: Light
+
+key_bindings:
+  - { key: Equals, mods: Command, action: IncreaseFontSize }
+  - { key: Minus,  mods: Command, action: DecreaseFontSize }
+
+cursor:
+  style: Underline
+  vi_mode_style: Block
+
+# vi: ft=yaml

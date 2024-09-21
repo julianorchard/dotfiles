@@ -15,6 +15,7 @@
     dest: /src/neovim
     single_branch: true
     version: master
+    force: true
 
 - name: Install Neovim
   # changed_when:

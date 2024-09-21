@@ -42,3 +42,14 @@
       meson setup --buildtype=release build
       ninja -C build install
     chdir: /src/picom
+
+- name: Picom get version
+  ansible.builtin.command: picom --version
+  register: picom_version
+  changed_when: picom_version.rc != 1
+
+- name: Template Picom config
+  # mode: preserve
+  ansible.builtin.template:
+    dest: '{{ xdg_home }}/picom.conf'
+    src: picom.conf.j2

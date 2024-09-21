@@ -1,0 +1,44 @@
+markup=pango
+
+[tailscale]
+command=tscmd=$(tailscale status | awk 'NR==1{ print $1}'); [ $tscmd=="Tailscale" ] && [ $tscmd=="USAGE" ] && echo "   ${tscmd} "
+interval=30
+color={{ surface2 }}
+
+# [light]
+# command=echo ${$(light)%.00}
+# interval=2
+# color=#585b70
+
+[tmux]
+command=sessions=$(tmux ls | wc -l) ; echo $sessions | grep -q 'no session' && echo "   0 " || echo "   $sessions "
+interval=5
+color={{ mauve }}
+
+[internet]
+command=[ ! ping -q -c1 google.com &>/dev/null ] && echo "No Internet "
+interval=15
+
+[calendar]
+command=/home/julian/.bin/pm-cal.py
+interval=300
+
+[battery]
+command=/home/julian/.bin/battery-block
+interval=60
+
+[time]
+command=echo " $(date '+%H:%M') "
+interval=5
+color={{ blue }}
+
+
+# [screens]
+# command=echo "$(/home/julian/.bin/automatic-xrandr.sh)"
+# interval=5
+
+[dotfiles]
+full_text=<span> {{ dotfiles_version }}    </span>
+color={{ flamingo }}
+
+# vi: ft=ini

@@ -1,0 +1,32 @@
+---
+
+- name: Generate dotfiles_version
+  ansible.builtin.command: git rev-parse --short HEAD
+  register: dotfiles_version
+  changed_when: dotfiles_version.rc != 0
+
+- name: Set dotfiles_version
+  ansible.builtin.set_fact:
+    dotfiles_version: '{{ dotfiles_version.stdout }}'
+
+- name: Template i3
+  mode: preserve
+  ansible.builtin.template:
+    dest: '{{ xdg_home }}/i3/config'
+    src: i3_config.j2
+
+- name: Template i3blocks
+  mode: preserve
+  ansible.builtin.template:
+    dest: '{{ xdg_home }}/i3blocks/config'
+    src: i3blocks_config.j2
+
+- name: Template alacritty
+  mode: preserve
+  ansible.builtin.template:
+    dest: '{{ xdg_home }}/alacritty/alacritty.yml'
+    src: alacritty.yml.j2
+
+- name: Install Slack from official deb package
+  ansible.builtin.apt:
+    deb: https://downloads.slack-edge.com/desktop-releases/linux/x64/{{ slack_version }}/slack-desktop-{{ slack_version }}-amd64.deb
