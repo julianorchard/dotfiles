@@ -1,5 +1,8 @@
 ---
 
+- name: Install Python dependencies
+  ansible.builtin.import_tasks: python_depends.yml
+
 - name: Install Go
   ansible.builtin.import_tasks: go.yml
 
@@ -8,3 +11,15 @@
 
 - name: Install Java (JRE)
   ansible.builtin.import_tasks: java.yml
+
+- name: Install Jsonnet
+  ansible.builtin.import_tasks: jsonnet.yml
+
+- name: Install Rust/Cargo
+  ansible.builtin.import_tasks: rust.yml
+  become_user: "{{ lookup('ansible.builtin.env', 'USER') }}"
+
+- name: Install pkg-config
+  ansible.builtin.apt:
+    name: pkg-config
+    state: present

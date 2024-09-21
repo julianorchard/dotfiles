@@ -1,0 +1,4 @@
+
+- name: Install jsonnet with pip
+  ansible.builtin.pip:
+    name: jsonnet

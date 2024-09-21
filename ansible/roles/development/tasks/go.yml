@@ -1,11 +1,19 @@
 ---
 
+- name: Check if Go is installed
+  become_user: "{{ lookup('ansible.builtin.env', 'USER') }}"
+  ansible.builtin.shell: command -v go
+  register: go_exists
+  ignore_errors: true
+
 - name: Remove old Go installation
+  changed_when: go_exists is failed
   ansible.builtin.file:
     path: /usr/local/go
     state: absent
 
 - name: Download and extract new Go installation
+  changed_when: go_exists is failed
   ansible.builtin.unarchive:
     src: https://go.dev/dl/go{{ go_version }}.linux-amd64.tar.gz
     dest: /usr/local

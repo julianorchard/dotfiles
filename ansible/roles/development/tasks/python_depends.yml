@@ -1,0 +1,4 @@
+- name: Install additional Python packages required for other things
+  ansible.builtin.apt:
+    pkg:
+    - python3.10-venv

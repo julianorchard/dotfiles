@@ -5,6 +5,7 @@
     deb: https://downloads.slack-edge.com/desktop-releases/linux/x64/{{ slack_version }}/slack-desktop-{{ slack_version }}-amd64.deb
 
 - name: Install Cargo Packages
+  become_user: "{{ lookup('ansible.builtin.env', 'USER') }}"
   community.general.cargo:
     name: '{{ item }}'
   loop: [alacritty]
