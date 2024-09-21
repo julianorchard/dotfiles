@@ -1,12 +1,25 @@
 ---
 
+- name: Install Slack from official deb package
+  ansible.builtin.apt:
+    deb: https://downloads.slack-edge.com/desktop-releases/linux/x64/{{ slack_version }}/slack-desktop-{{ slack_version }}-amd64.deb
+
 - name: Install Cargo Packages
   community.general.cargo:
     name: '{{ item }}'
   loop: [alacritty]
 
-# - name: AwesomeWM
+- name: Template alacritty
+  ansible.builtin.template:
+    dest: '{{ xdg_home }}/alacritty/alacritty.yml'
+    src: alacritty.yml.j2
+  # mode: preserve
+
+- name: Install and configure i3wm
+  ansible.builtin.import_tasks: i3wm.yml
+
+# - name: Install and AwesomeWM
 #   ansible.builtin.import_tasks: awesomewm.yml
 
-- name: Picom
+- name: Install and configure picom
   ansible.builtin.import_tasks: picom.yml

@@ -1,0 +1,199 @@
+{% for text in stamp %}
+{{ text }}
+{% endfor %}
+
+set $mod Mod4
+
+# Monitors
+set $m1 HDMI-1-0
+set $m2 eDP-1
+
+font pango:file-icons:{{ i3.secondary_font }}:monospace {{ i3.font_size }}
+exec --no-startup-id dex --autostart --environment i3
+exec --no-startup-id xss-lock --transfer-sleep-lock -- i3lock --nofork --bar-indicator
+exec --no-startup-id nm-applet
+exec --no-startup-id picom
+exec --no-startup-id syncthing
+for_window [class="^.*"] border pixel 10
+
+# Notification Daemon
+exec_always --no-startup-id dunst -config ~/.config/dunst/dunstrc
+
+set $refresh_i3status killall -SIGUSR1 i3status
+# Brightness
+bindsym XF86MonBrightnessDown exec light -U 5
+bindsym XF86MonBrightnessUp exec light -A 5
+bindsym Ctrl+XF86MonBrightnessDown exec light -S 2
+bindsym Ctrl+XF86MonBrightnessUp exec light -S 100
+# Volume
+bindsym XF86AudioRaiseVolume exec --no-startup-id pactl set-sink-volume @DEFAULT_SINK@ +10% && $refresh_i3status
+bindsym XF86AudioLowerVolume exec --no-startup-id pactl set-sink-volume @DEFAULT_SINK@ -10% && $refresh_i3status
+bindsym XF86AudioMute exec --no-startup-id pactl set-sink-mute @DEFAULT_SINK@ toggle && $refresh_i3status
+bindsym XF86AudioMicMute exec --no-startup-id pactl set-source-mute @DEFAULT_SOURCE@ toggle && $refresh_i3status
+floating_modifier $mod
+
+bindsym $mod+Return exec alacritty
+bindsym $mod+q kill
+bindsym $mod+d exec dmenu_run -nb '{{ mantle }}' -sf '{{ red }}' -sb '{{ crust }}' -nf '{{ sky }}' -i -p " Run: "
+
+bindsym $mod+h focus left
+bindsym $mod+k focus down
+bindsym $mod+j focus up
+bindsym $mod+l focus right
+
+bindsym $mod+Shift+h move left
+bindsym $mod+Shift+j move down
+bindsym $mod+Shift+k move up
+bindsym $mod+Shift+l move right
+
+# Multiple Monitors
+bindsym $mod+Shift+Ctrl+k move container to output up   ; focus output up
+bindsym $mod+Shift+Ctrl+j move container to output down ; focus output down
+bindsym $mod+Ctrl+k focus output up
+bindsym $mod+Ctrl+j focus output down
+
+bindsym $mod+a focus parent
+bindsym $mod+e layout toggle split
+bindsym $mod+f fullscreen toggle
+bindsym $mod+s split h
+bindsym $mod+Shift+space floating toggle
+bindsym $mod+space focus mode_toggle
+bindsym $mod+v split v
+bindsym $mod+Shift+s sticky toggle
+
+# Screenshot
+bindsym Print exec flameshot gui -p ~/Pictures/captures/
+
+# Gaps
+exec i3-msg gaps inner all set {{ i3.gaps }}
+bindsym $mod+g gaps inner all toggle {{ i3.gaps }}
+
+{% for ws_name in i3.workspace_names %}
+{% set j = loop.index - 1 %}
+
+# Workspace {{ j }} Config
+{% if (j > 5) or (j == 0) %}
+workspace {{ j }} output $m2
+{% else %}
+workspace {{ j }} output $m1
+{% endif %}
+set $ws{{ j }} "{{ ws_name }}"
+bindsym $mod+{{ j }} workspace number $ws{{ j }}
+bindsym $mod+Shift+{{ j }} move container to workspace number $ws{{ j }}
+{% endfor %}
+
+bindsym $mod+Shift+c reload
+bindsym $mod+Shift+r restart
+
+assign [class="firefox"]             $ws2
+assign [class="org.remmina.Remmina"] $ws5
+# Only use this for Teams PWA
+assign [class="Chromium"]            $ws5
+# Messaging Workspace
+assign [class="Slack"]               $ws6
+assign [class="Signal"]              $ws6
+# Note Taking Workspace
+assign [class="obsidian"]            $ws7
+assign [class="Logseq"]              $ws7
+assign [class="Emacs"]               $ws7
+# Media
+assign [class="Spotify"]             $ws9
+
+# Startup Applications
+exec_always [ -z "$(pgrep slack)" ] && i3-msg exec "/snap/bin/slack"
+exec_always [ -z "$(pgrep logseq)" ] && i3-msg exec "/bin/logseq"
+# "They say that madness is doing the same thing over and over and expecting
+# different results."
+# ^ Literally me when Chrome opens twice every time I load into i3wm
+exec_always --no-startup-id i3-msg 'workspace $ws5; exec chromium https://teams.microsoft.com --app --new-window'
+exec_always --no-startup-id notify-send "Your i3 config file has been reloaded!"
+# exec_always [ -z "$(pgrep spotify)" ] && i3-msg exec "/snap/bin/spotify"
+# exec_always [ -z "$(pgrep obsidian)" ] && i3-msg exec "/bin/obsidian.AppImage"
+
+# Screen Layouts
+exec ~/.bin/layout laptop
+set $layout_mode Layouts: (1) Laptop, (2) Work, (3) Home (left), (4) Home (right)
+mode "$layout_mode" {
+    bindsym 1 exec ~/.bin/layout laptop
+    bindsym 2 exec ~/.bin/layout work
+    bindsym 3 exec ~/.bin/layout home_left
+    bindsym 4 exec ~/.bin/layout home_right
+    bindsym Return mode "default"
+    bindsym Escape mode "default"
+}
+bindsym Ctrl+Shift+1 mode "$layout_mode"
+
+# System Commands
+set $system_mode System: (l) Lock, (e) Logout, (r) Reboot, (s) Shutdown
+mode "$system_mode" {
+    bindsym l mode "default" ; exec i3lock
+    bindsym e exec i3-msg exit
+    bindsym r exec systemctl reboot
+    bindsym s exec systemctl poweroff
+
+    bindsym Return mode "default"
+    bindsym Escape mode "default"
+}
+bindsym $mod+Shift+e mode "$system_mode"
+
+# Resize
+mode "Resize" {
+    bindsym h resize shrink width  50 px or 50 ppt
+    bindsym j resize grow   height 50 px or 50 ppt
+    bindsym k resize shrink height 50 px or 50 ppt
+    bindsym l resize grow   width  50 px or 50 ppt
+
+    bindsym Return mode "default"
+    bindsym Escape mode "default"
+}
+bindsym $mod+r mode "Resize"
+
+bindsym $mod+Shift+b exec --no-startup-id $HOME/.bin/i3bartoggle.sh
+
+bar {
+# This bar is just for the systray icons!
+  id tray
+  workspace_buttons no
+  position top
+  mode hide
+  i3bar_command i3bar --transparency
+  hidden_state hide
+  modifier Mod1
+  tray_output primary
+  font pango:file-icons-10, {{ i3.font }} {{ i3.font_size }}
+  colors {
+    background          {{ base }}
+    statusline          {{ text }}     {{ base }}   {{ text }}  {{ rosewater }} {{ crust }}
+    separator           {{ overlay0 }} {{ base }}   {{ text }}  {{ overlay0 }}  {{ crust }}
+    focused_workspace   {{ crust }}    {{ blue }}   {{ crust }} {{ crust }}     {{ crust }}
+    inactive_workspace  {{ mantle }}   {{ mantle }} {{ text }}  {{ rosewater }} {{ crust }}
+    urgent_workspace    {{ peach }}    {{ base }}   {{ peach }} {{ overlay0 }}  {{ crust }}
+  }
+}
+
+# TODO: See what colours we're looking at here in the nice template
+client.focused          #89B4FA  #89B4FA  #11111B  #CDD6F4
+client.focused_inactive #6C7086  #6C7086  #11111B  #6C7086
+client.unfocused        #1E1E2E  #1E1E2E  #11111B  #1E1E2E
+client.urgent           #FAB387  #FAB387  #11111B  #FAB387
+
+bar {
+  id main
+  tray_output none
+  i3bar_command i3bar --transparency
+  separator_symbol "  "
+  strip_workspace_numbers yes
+  status_command i3blocks
+  hidden_state show
+  font pango:file-icons-10, {{ i3.font }} {{ i3.font_size }}
+  colors {
+    background          {{ base }}
+    statusline          {{ text }}     {{ base }}   {{ text }}  {{ rosewater }} {{ crust }}
+    separator           {{ overlay0 }} {{ base }}   {{ text }}  {{ overlay0 }}  {{ crust }}
+    focused_workspace   {{ crust }}    {{ blue }}   {{ crust }} {{ crust }}     {{ crust }}
+    inactive_workspace  {{ mantle }}   {{ mantle }} {{ text }}  {{ rosewater }} {{ crust }}
+    urgent_workspace    {{ peach }}    {{ base }}   {{ peach }} {{ overlay0 }}  {{ crust }}
+  }
+}
+
+# vi: ft=i3config

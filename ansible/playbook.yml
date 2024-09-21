@@ -14,8 +14,12 @@
 
   roles:
     - role: development
+      tags: [development]
     - role: neovim
+      tags: [neovim]
     - role: gui
+      tags: [gui, apps-all]
     - role: apps
+      tags: [apps, apps-all]
 #
 # vi: ft=yaml.ansible

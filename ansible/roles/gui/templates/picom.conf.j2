@@ -1,0 +1,38 @@
+{% for text in stamp %}
+{{ text }}
+{% endfor %}
+
+# PICOM CONFIG
+#
+# Basic options, v9, etc. ------------------------------------------------------
+opacity-rule = [
+    {% for item in picom_transparency %}
+    "100:class_g = '{{ item }}' && focused",
+    "98:class_g = '{{ item }}' && !focused",
+    {% endfor %}
+];
+
+# TODO: Add an if statement for the picom version here
+
+# These requires picom v12-rc1 or later ----------------------------------------
+# fading = true;
+# duration = 0.2;
+backend = "xrender";
+animations = ({
+    triggers = [
+        "close",
+        "hide",
+    ];
+    preset = "disappear";
+    duration = 0.2;
+    scale = 1.0;
+}, {
+    triggers = [
+        "show",
+        "open",
+    ];
+    preset = "appear";
+    duration = 0.2;
+    scale = 1.0;
+    # direction = "down";
+});
